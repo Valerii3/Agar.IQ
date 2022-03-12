@@ -11,9 +11,6 @@
 
 #include "ElementsFactory.h"
 
-const int VIEW_SCALE = 2;
-const int FRAME_MS = 120;
-
 struct Map : public QGraphicsScene {
 
 public:
@@ -44,13 +41,13 @@ public:
     QList<EjectedFood*> ejected_food_list;
 
 protected:
-    void key_press_event(QKeyEvent *event) override ;
-    void mouse_move_event( QGraphicsSceneMouseEvent *event ) override ;
+    void key_press_event(QKeyEvent *event) ;
+    void mouse_move_event( QGraphicsSceneMouseEvent *event ) ;
 
 private:
     Map();
 
-    static Map* map_ptr = nullptr;
+    static Map* map_ptr;
     QTimer* timer;
 };
 

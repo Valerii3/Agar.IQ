@@ -1,5 +1,7 @@
-#include "include/LoginWindow.h"
+#include "include/GameWindow.h"
 #include "include/Map.h"
+
+Map* Map::map_ptr = nullptr;
 
 // reference to GameWindow
 
@@ -17,23 +19,23 @@ Map::~Map() {
 
 Map* Map::get_instance() {
     if (!map_ptr)
-        mapPtr = new Map();
+        map_ptr = new Map();
     return map_ptr;
 }
 
 void Map::advance() {
-    for( int k = 0; k < playerList.size(); k++)
-        playerList[k]->checkCollision();
+    for( int k = 0; k < player_list.size(); k++)
+        player_list[k]->check_collision();
 
-    getInstance()->update();
+    get_instance()->update();
 }
 
 void Map::key_press_event(QKeyEvent *event) {
-    for( k = 0; k < playerList.size(); k++) {
-        if ( playerList[k]->getName() == playerName ) {
+    for( int k = 0; k < player_list.size(); k++) {
+        if ( player_list[k]->get_name() == player_name ) {
             switch(event->key()) {
                 case Qt::Key_F:
-                    playerList[k]->ejectFood();
+                    player_list[k]->eject_food();
                     break;
                 default:
                     break;
@@ -48,7 +50,7 @@ void Map::mouse_move_event( QGraphicsSceneMouseEvent *event ) {
         for (int i = 0; i < player_list.size(); i++) {
             if ( player_list[i]->get_name() == player_name ) {
                 player_list[i]->mouse_move( event -> scenePos().x() / VIEW_SCALE,
-                                          event -> scenePos().y() / VIEW_SCALE );
+                                            event -> scenePos().y() / VIEW_SCALE );
                 break;
             }
         }
@@ -61,7 +63,7 @@ void Map::move_player(QString id , QString x , QString y) {
             player_list[i]->setx(x);
             player_list[i]->sety(y);
 
-            player_list[i]->setPos( playerList[i]->getXPosition(), player_list[i]->get_y_position());
+            player_list[i]->setPos( player_list[i]->get_x_position(), player_list[i]->get_y_position());
 
             break;
         }
@@ -80,7 +82,7 @@ void Map::update_player(QString id , QString s , QString r) {
 
 void Map::player_eject_food(QString id) {
     for (int i = 0; i < player_list.size(); i++) {
-        if( player_list[i]->getName() == id ) {
+        if( player_list[i]->get_name() == id ) {
             player_list[i]->score_ -= 12;
             player_list[i]->radius_ =( ( player_list[i]->score_ / 5 ) + 17 );
             break;
@@ -89,7 +91,7 @@ void Map::player_eject_food(QString id) {
 }
 
 void Map::remove_ejected_food(QString x , QString y) {
-    for( int k = 0; k < ejectedFoodList.size(); k++ ) {
+    for( int k = 0; k < ejected_food_list.size(); k++ ) {
         if( ejected_food_list[k]->get_y_position() == y.toDouble() && ejected_food_list[k]->get_x_position() == x.toDouble()) {
             removeItem(ejected_food_list[k]);
             ejected_food_list.removeOne(ejected_food_list[k]);
@@ -135,14 +137,14 @@ void Map::food_element_is_eaten(QString xp, QString yp, QString x, QString y, QS
         if( food_list[i]->get_x_position() == xp.toDouble() && food_list[i]->get_y_position() == yp.toDouble() ) {
             removeItem(food_list[i]);
             food_list.removeOne(food_list[i]);
-            get_new)+_food( x, y, c);
+            get_new_food( x, y, c);
 
             break;
         }
     }
 }
 
-void Map::getNewPlayer(QString x, QString y, QString c , QString r, QString s, QString id) {
+void Map::get_new_player(QString x, QString y, QString c , QString r, QString s, QString id) {
     Player* player = ElementsFactory::get_instance()->create_player( x, y, c, r, s, id );
     addItem(player);
     player_list.append(player);
@@ -160,9 +162,10 @@ Player* Map::this_player() {
             return player_list[k];
         }
     }
+    return nullptr;
 }
 
-void Map::playerPunish(QString n) {
+void Map::player_punish(QString n) {
     for (int k = 0; k < player_list.size(); k++) {
         if ( player_list[k]->get_name() == n ) {
             player_list[k]->score_ -= 14;

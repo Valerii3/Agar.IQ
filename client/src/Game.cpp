@@ -4,7 +4,7 @@ Game* Game::gamePtr = nullptr;
 
 Game::Game( QWidget *parent ) : QMainWindow( parent ) {
     graphicsView = new QGraphicsView();
-    myMap = Map::getInstance();
+    myMap = Map::get_instance();
     graphicsView->setScene(myMap);
 }
 

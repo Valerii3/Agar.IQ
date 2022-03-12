@@ -31,7 +31,7 @@ float Player::speed() const {
 }
 
 void Player::mouse_move(qreal x, qreal y) {
-    QPointF tmpVec = QPointF(x - xPosition_ , y - yPosition_);;
+    QPointF tmpVec = QPointF(x - x_position_ , y - y_position_);;
 
     qreal xDis = x_position_ - x;
     qreal yDis = y_position_ - y;
@@ -44,10 +44,10 @@ void Player::mouse_move(qreal x, qreal y) {
     }
 
     if ( targetVector_.x() != 0 || targetVector_.y() != 0 ) {
-        targetVector_ = targetVector_ / (sqrt( targetVector_.x() * targetVector_.x() + targetVector_.y() * targetVector_.y() ) ); // normalize
+        targetVector_ = targetVector_ / (sqrt( targetVector_.x() * targetVector_.x() + targetVector_.y() * targetVector_.y() ) );
 
-        qreal dx = (targetVector_.x() * speed()); // how far move in x direction
-        qreal dy = (targetVector_.y() * speed()); // how far move in y direction
+        qreal dx = (targetVector_.x() * speed());
+        qreal dy = (targetVector_.y() * speed());
 
         x_position_ += dx;
         y_position_ += dy;
@@ -63,20 +63,20 @@ void Player::mouse_move(qreal x, qreal y) {
 
     LoginWindow::getInstance()->sendInfo(playerMove);
 
-    checkCollision();
+    check_collision();
 }
 
 void Player::eat_element(const Element* toBeEaten) {
-    Cell* cell = const_cast<Element*>(to_be_eaten);
-    QString what = cell->who();
+    Element* element = const_cast<Element*>(toBeEaten);
+    QString what = element->who();
 
-    cell->is_eaten(); // change that cell status to eaten
+    element->is_eaten(); // change that cell status to eaten
 
-    QString eatCell = "p|eatElement|";
-    eatCell += getName();
-    eatCell += "|";
-    eatCell += QString::number(cell->get_radius());
-    eatCell += "|";
+    QString eat_element = "p|eatElement|";
+    eat_element += get_name();
+    eat_element += "|";
+    eat_element += QString::number(element->get_radius());
+    eat_element += "|";
 
     LoginWindow::getInstance() ->sendInfo(eat_element);
 }
@@ -96,10 +96,10 @@ void Player::is_eaten() {
 
 void Player::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     painter->setBrush(color_); // set color
-    painter->drawEllipse( Cell::boundingRect() ); // draw rectangle
+    painter->drawEllipse( Element::boundingRect() ); // draw rectangle
 
     painter->setBrush(Qt::black); // set text Brush
-    painter->drawText(xPosition_ - DISPLACEMENT_X, yPosition_ + DISPLACEMENT_Y, name_); // set name on item
+    painter->drawText(x_position_ - DISPLACEMENT_X, y_position_ + DISPLACEMENT_Y, name_); // set name on item
 }
 
 QString Player::get_name() {
@@ -119,9 +119,9 @@ void Player::advance(int step) {
         return;
     }
 
-    for (int k = 0; k < Map::getInstance()->playerList.size(); k++) {
-        if( Map::getInstance()->playerList[k]->getName() == Map::getInstance()->playerName ) {
-            checkCollision();
+    for (int k = 0; k < Map::get_instance()->player_list.size(); k++) {
+        if( Map::get_instance()->player_list[k]->get_name() == Map::get_instance()->player_name ) {
+            check_collision();
             QString p = "p";
             LoginWindow::getInstance()->updateMonitor( p );
 
@@ -157,7 +157,7 @@ void Player::eject_food() {
     ejectedFood += "|";
     ejectedFood += QString::number(col);
     ejectedFood += "|";
-    ejectedFood += getName();
+    ejectedFood += get_name();
     ejectedFood += "|";
 
     LoginWindow::getInstance()->sendInfo(ejectedFood);

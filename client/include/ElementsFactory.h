@@ -13,14 +13,12 @@ public:
     ~ElementsFactory();
 
     Food* create_food(QString, QString, QString);
-    Bot* create_bot( QString, QString, QString, QString, QString, QString );
     Player* create_player( QString, QString, QString, QString, QString, QString );
     EjectedFood* create_ejected_food( QString , QString , QString );
-    Virus* create_virus(QString, QString);
 
 private:
 
-    static ElementsFactory* elements_factory_ptr = nullptr;
+    static ElementsFactory* elements_factory_ptr;
 };
 
 

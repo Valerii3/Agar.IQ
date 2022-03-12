@@ -1,20 +1,16 @@
-#ifndef CLIENT_CELL_H
-#define CLIENT_CELL_H
+#ifndef CLIENT_ELEMENT_H
+#define CLIENT_ELEMENT_H
 
 #include <QGraphicsEllipseItem>
 #include <QPainter>
 #include <QTime>
 #include <QObject>
 
-const int BOARD_WIDTH = 800;
-const int BOARD_HEIGHT = 600;
-const int QRECT_SCALE = 2;
-
 struct Element : public QObject, public QGraphicsEllipseItem {
 
 private:
 
-Q_OBJECT
+    Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 
 public:
@@ -35,12 +31,14 @@ public:
     bool has_been_eaten_;
 
 protected:
+
+    const int QRECT_SCALE = 2;
     QPainterPath shape() const override ;
-    QRectF bounding_rect() const override ;
+    QRectF bounding_rect() const ;
 
     qreal x_position_, y_position_;
     QColor color_;
 };
 
 
-#endif //CLIENT_CELL_H
+#endif //CLIENT_ELEMENT_H

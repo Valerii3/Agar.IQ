@@ -6,12 +6,7 @@
 
 #include "MovingElement.h"
 
-const int DISPLACEMENT_X = 11;
-const int DISPLACEMENT_Y = 4;
 
-const float PLAYER_SPEED_FACTOR = (-1.0)/(32.0);
-const float PLAYER_MINIMUM_SPEED = 0.5;
-const float PLAYER_ADDITIONAL_SPEED_FACTOR = 2.5;
 
 struct Player : public MovingElement {
 public:
@@ -19,7 +14,7 @@ public:
     Player( QString x, QString y, QString c, QString r, QString s, QString n );
 
     void mouse_move(qreal x, qreal y);
-    virtual void eat_element(const Element* to_be_eaten);
+    virtual void eat_element(const Element* to_be_eaten) override;
     float speed() const;
     void eject_food();
 
@@ -31,12 +26,19 @@ public:
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    virtual void is_eaten();
-    virtual QString who();
+    virtual void is_eaten() override;
+    virtual QString who() override;
 
     void advance(int step) override;
 
 private:
+    const int DISPLACEMENT_X = 11;
+    const int DISPLACEMENT_Y = 4;
+
+    const float PLAYER_SPEED_FACTOR = (-1.0)/(32.0);
+    const float PLAYER_MINIMUM_SPEED = 0.5;
+    const float PLAYER_ADDITIONAL_SPEED_FACTOR = 2.5;
+
     QString name_;
     QPointF targetVector_;
 };

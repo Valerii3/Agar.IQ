@@ -7,11 +7,12 @@ struct Food : public Element {
 private:
     const int FOOD_RADIUS = 6;
 
+
 public:
     Food(QString xP, QString yP, QString cP);
 
-    virtual void is_eaten();
-    virtual QString who();
+    virtual void is_eaten() override;
+    virtual QString who() override;
 
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

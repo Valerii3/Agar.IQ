@@ -7,8 +7,8 @@ EjectedFood::EjectedFood( QString xD, QString yD, QString cP) {
     x_position_ = xD.toDouble();
     y_position_ = yD.toDouble();
 
-    setRect(getLeftEdge(), getTopEdge(), QRECT_SCALE * radius_, QRECT_SCALE * radius_);
-    setPos(getLeftEdge(), getTopEdge());
+    setRect(get_left_edge(), get_top_edge(), QRECT_SCALE * radius_, QRECT_SCALE * radius_);
+    setPos(get_left_edge(), get_top_edge());
 }
 
 void EjectedFood::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) {
@@ -21,9 +21,9 @@ void EjectedFood::paint( QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 void EjectedFood::is_eaten() {
     QString foodEaten = "ef|";
-    foodEaten += QString::number(this->getXPosition());
+    foodEaten += QString::number(this->get_x_position());
     foodEaten += "|";
-    foodEaten += QString::number(this->getYPosition());
+    foodEaten += QString::number(this->get_y_position());
     foodEaten += "|";
 
     LoginWindow::getInstance()->sendInfo( foodEaten );

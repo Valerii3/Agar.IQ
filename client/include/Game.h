@@ -7,12 +7,10 @@
 
 #include "Map.h"
 
-const int DIFFERENCE_SCENE_VIEW = 50;
-
 struct Game : public QMainWindow {
 private:
 
-Q_OBJECT
+    Q_OBJECT
 
 public:
     QGraphicsView * graphicsView;
@@ -21,6 +19,7 @@ public:
     ~Game();
 
 private:
+
     explicit Game(QWidget *parent = 0);
     static Game* gamePtr;
     Map * myMap;
