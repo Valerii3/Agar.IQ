@@ -93,6 +93,7 @@ void Scene::slotGameFinish(){
     qDebug() << "finish";
     workerThread.quit();
     workerThread.wait();
-    delete worker;
+ //   delete worker;
     ui->startGameButton->show();
+    isMenu = true;
 }

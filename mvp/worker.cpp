@@ -9,8 +9,8 @@ Worker::Worker(QObject *parent)
     entities.push_back(Entity{});
     for (int i = 1; i < 20; i++){
         entities.push_back(Entity{
-                               250.0 + rand() % 900,
-                               100.0 + rand() % 600,
+                               250.0 + rand() % 1400,
+                               100.0 + rand() % 700,
                                50,
                                0,
                                0,
@@ -72,8 +72,7 @@ void Worker::update(){
     for (int i = 0; i < entities.size() - 1; i++){
         for (int j = i+1; j < entities.size(); j++){
             if (collision(entities[i].x, entities[i].y, entities[i].r, entities[j].x, entities[j].y, entities[j].r)){
-                qDebug() << entities[i].x << " " << entities[i].y << " " << entities[i].r << " " << entities[j].x
-      << " " << entities[j].y << " " << entities[j].r;
+
                 if (entities[j].num == generator){
                     entities.erase(entities.begin() + j);
                     score += 5;
