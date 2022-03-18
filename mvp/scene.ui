@@ -15,49 +15,16 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QGroupBox" name="menuBox">
+    <widget class="QPushButton" name="startGameButton">
      <property name="maximumSize">
       <size>
-       <width>200</width>
-       <height>100</height>
+       <width>150</width>
+       <height>16777215</height>
       </size>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>9</pointsize>
-      </font>
+     <property name="text">
+      <string>Начать игру</string>
      </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="title">
-      <string>Menu</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-     <widget class="QPushButton" name="startGameButton">
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>40</y>
-        <width>93</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>150</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Начать игру</string>
-      </property>
-     </widget>
     </widget>
    </item>
   </layout>

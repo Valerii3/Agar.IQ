@@ -16,21 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="Scene" name="scene" native="true">
-      <widget class="QPushButton" name="pushButton">
-       <property name="geometry">
-        <rect>
-         <x>330</x>
-         <y>150</y>
-         <width>93</width>
-         <height>29</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-      </widget>
-     </widget>
+     <widget class="Scene" name="scene" native="true"/>
     </item>
    </layout>
   </widget>

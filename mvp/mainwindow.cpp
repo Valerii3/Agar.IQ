@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    scene = new Scene;
+  //  scene = new Scene;
    // ui->scene->setParent(scene);
  //   scene->show();
  //   this->hide();
@@ -19,10 +19,10 @@ MainWindow::~MainWindow()
 
 }
 
-
+/*
 void MainWindow::on_pushButton_clicked()
 {
 
     scene->show();
 }
-
+*/

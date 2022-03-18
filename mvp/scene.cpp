@@ -34,8 +34,13 @@ void Scene::paintEvent(QPaintEvent *event){
     }
     for (auto it : worker->entities){
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
+<<<<<<< HEAD
         painter.drawEllipse(it.get_x_position(), it.get_y_position(), 2*it.get_radius(), 2*it.get_radius());
         painter.drawText(QPoint(it.get_x_position() + it.get_radius()/2.0,it.get_y_position() + it.get_radius()), QString::number(it.num));   // добавил
+=======
+        painter.drawEllipse(QPointF(it.x, it.y), it.r, it.r);
+        painter.drawText(QPoint(it.x - it.r/4,it.y + it.r/4), QString::number(it.num));   // добавил
+>>>>>>> origin/main
     }
     fnt.setPixelSize(40);
     painter.setFont(fnt);
