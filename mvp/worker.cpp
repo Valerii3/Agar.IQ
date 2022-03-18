@@ -6,27 +6,19 @@ Worker::Worker(QObject *parent)
     : QObject{parent}
 {
     srand(time(0));
-    entities.push_back(Entity{});
-    for (int i = 1; i < 20; i++){
-        entities.push_back(Entity{
-                               250.0 + rand() % 900,
-                               100.0 + rand() % 600,
-                               50,
-                               0,
-                               0,
-                               i,
-                               Qt::red
-                           });
+    for (int i = 1; i < 20; i++) {
+        answers.push_back(Answer{i});
     }
 
     bool flag = true;
     while (true){
         flag = true;
         for (int i = 0; i < entities.size() - 1; i++){
-            for (int j = i+1; j < entities.size(); j++){
-                if (collision(entities[i].x, entities[i].y, entities[i].r, entities[j].x, entities[j].y, entities[j].r)){
-                    entities[i].x += 5;
-                    entities[i].y += 5;
+            for (int j = i+1; j < entities.size(); j++) {
+                if (collision(entities[i].get_x_position(), entities[i].get_y_position(), entities[i].get_radius(),
+                              entities[j].get_x_position(), entities[j].get_y_position(), entities[j].get_radius())){
+                    entities[i].x_position += 5;
+                    entities[i].y_position += 5;
                     flag = false;
                 }
             }
@@ -35,8 +27,8 @@ Worker::Worker(QObject *parent)
             break;
         }
     }
-
 }
+
 bool Worker::collision(double x1, double y1, double r1, double x2, double y2, double r2){
     if (pow(x1-x2, 2) + pow(y1-y2, 2) <= pow(r1 + r2, 2) ){
         return true;
@@ -64,17 +56,17 @@ void Worker::doWork() {
 
 void Worker::update(){
     for (auto &it : entities){
-        it.x += it.speedX;
-        it.y += it.speedY;
+        it.x_position += it.speed_X;
+        it.y_position += it.speed_Y;
     }
 
     srand(time(0));
     for (int i = 0; i < entities.size() - 1; i++){
         for (int j = i+1; j < entities.size(); j++){
-            if (collision(entities[i].x, entities[i].y, entities[i].r, entities[j].x, entities[j].y, entities[j].r)){
-                qDebug() << entities[i].x << " " << entities[i].y << " " << entities[i].r << " " << entities[j].x
-      << " " << entities[j].y << " " << entities[j].r;
-                if (entities[j].num == generator){
+            if (collision(entities[i].get_x_position(), entities[i].get_y_position(), entities[i].get_radius(),
+                          entities[j].get_x_position(), entities[j].get_y_position(), entities[j].get_radius())){
+
+                if (entities[j].get_number() == generator){
                     entities.erase(entities.begin() + j);
                     score += 5;
                     generator = 1 + rand() % 19;

@@ -2,26 +2,23 @@
 #define WORKER_H
 
 #include <QObject>
-#include <QColor>
 #include <QDebug>
 #include <chrono>
 #include <vector>
 #include <ctime>
 
-struct Entity {
-    double x = 40, y = 500, r = 30;
-    double speedX = 0, speedY = 0;
-    int num;
-    QColor color = Qt::green;
-};
-
+#include "entity.h"
+#include "answers.h"
+#include "food.h"
+#include "player.h"
 
 class Worker : public QObject
 {
     Q_OBJECT
 public:
     explicit Worker(QObject *parent = nullptr);
-    std::vector<Entity> entities;
+    std::vector<Answer> answers;
+    std::vector<Food> food;
     int generator = 5;
     QString text = "Score: ";
     int score = 0;

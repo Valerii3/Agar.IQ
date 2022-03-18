@@ -34,8 +34,8 @@ void Scene::paintEvent(QPaintEvent *event){
     }
     for (auto it : worker->entities){
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-        painter.drawEllipse(it.x, it.y, 2*it.r, 2*it.r);
-        painter.drawText(QPoint(it.x + it.r/2.0,it.y + it.r), QString::number(it.num));   // добавил
+        painter.drawEllipse(it.get_x_position(), it.get_y_position(), 2*it.get_radius(), 2*it.get_radius());
+        painter.drawText(QPoint(it.get_x_position() + it.get_radius()/2.0,it.get_y_position() + it.get_radius()), QString::number(it.num));   // добавил
     }
     fnt.setPixelSize(40);
     painter.setFont(fnt);
@@ -49,13 +49,13 @@ void Scene::keyPressEvent(QKeyEvent *event){
     if (!isMenu && event->type() == QEvent::KeyPress){
         QKeyEvent *key = static_cast<QKeyEvent*>(event);
         if (key->key() == Qt::Key_W){
-            worker->entities[0].speedY = -5;
+            worker->entities[0].speed_Y = -5;
         } else if (key->key() == Qt::Key_S){
-            worker->entities[0].speedY = 5;
+            worker->entities[0].speed_Y = 5;
         } else if (key->key() == Qt::Key_A){
-            worker->entities[0].speedX = -5;
+            worker->entities[0].speed_X = -5;
         } else if (key->key() == Qt::Key_D){
-            worker->entities[0].speedX = 5;
+            worker->entities[0].speed_X = 5;
         }
     }
 }
@@ -64,13 +64,13 @@ void Scene::keyReleaseEvent(QKeyEvent *event){
     if (!isMenu && event->type() == QEvent::KeyRelease){
         QKeyEvent *key = static_cast<QKeyEvent*>(event);
         if (key->key() == Qt::Key_W){
-            worker->entities[0].speedY = 0;
+            worker->entities[0].speed_Y = 0;
         } else if (key->key() == Qt::Key_S){
-            worker->entities[0].speedY = 0;
+            worker->entities[0].speed_Y = 0;
         } else if (key->key() == Qt::Key_A){
-            worker->entities[0].speedX = 0;
+            worker->entities[0].speed_X = 0;
         } else if (key->key() == Qt::Key_D){
-            worker->entities[0].speedX = 0;
+            worker->entities[0].speed_X = 0;
         }
     }
 }
@@ -93,6 +93,7 @@ void Scene::slotGameFinish(){
     qDebug() << "finish";
     workerThread.quit();
     workerThread.wait();
-    delete worker;
+ //   delete worker;
     ui->startGameButton->show();
+    isMenu = true;
 }
