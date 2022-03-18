@@ -25,12 +25,14 @@ public:
     std::string rndExpr(int &generator);
     std::string expr = rndExpr(generator);
 
+    Player player;
+
 public slots:
-    void doWork();
+            void doWork();
     void slotQuitGame(bool value);
 
-signals:
-    void signalResultReady();
+    signals:
+            void signalResultReady();
     void signalGameFinish();
 
 private:

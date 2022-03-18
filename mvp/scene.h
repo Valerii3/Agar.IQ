@@ -8,7 +8,7 @@
 #include "worker.h"
 
 namespace Ui {
-class Scene;
+    class Scene;
 }
 
 class Scene : public QWidget
@@ -20,11 +20,11 @@ public:
     ~Scene();
 
 public slots:
-    void slotResultReady();
+            void slotResultReady();
     void slotGameFinish();
 
-signals:
-    void signalQuitGame(bool value);
+    signals:
+            void signalQuitGame(bool value);
     void startWork();
 
 private:
@@ -39,7 +39,7 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
 private slots:
-    void on_startGameButton_clicked();
+            void on_startGameButton_clicked();
 };
 
 #endif // SCENE_H

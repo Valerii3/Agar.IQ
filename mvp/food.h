@@ -3,7 +3,7 @@
 
 #include "entity.h"
 
-class Food : Entity {
+struct Food : Entity {
 public:
     Food();
 };

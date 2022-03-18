@@ -3,42 +3,33 @@
 using namespace std::chrono_literals;
 
 Worker::Worker(QObject *parent)
-    : QObject{parent}
+        : QObject{parent}
 {
     srand(time(0));
-<<<<<<< HEAD
-    for (int i = 1; i < 20; i++) {
-        answers.push_back(Answer{i});
-=======
-    entities.push_back(Entity{});
-    for (int i = 1; i < 20; i++){
-        entities.push_back(Entity{
-                               250.0 + rand() % 1400,
-                               100.0 + rand() % 700,
-                               50,
-                               0,
-                               0,
-                               i,
-                               Qt::red
-                           });
->>>>>>> origin/main
-    }
 
-    bool flag = true;
-    while (true){
-        flag = true;
-        for (int i = 0; i < entities.size() - 1; i++){
-            for (int j = i+1; j < entities.size(); j++) {
-                if (collision(entities[i].get_x_position(), entities[i].get_y_position(), entities[i].get_radius(),
-                              entities[j].get_x_position(), entities[j].get_y_position(), entities[j].get_radius())){
-                    entities[i].x_position += 5;
-                    entities[i].y_position += 5;
-                    flag = false;
+    Player player;
+
+    for (int i = 1; i < 40; i++) {
+        answers.push_back(Answer{i / 2});
+        food.push_back(Food());
+        food.push_back(Food());
+
+        bool flag = true;
+        while (true) {
+            flag = true;
+            for (int i = 0; i < answers.size() - 1; i++){
+                for (int j = i + 1; j < answers.size(); j++) {
+                    if (collision(answers[i].get_x_position(), answers[i].get_y_position(), answers[i].get_radius(),
+                                  answers[j].get_x_position(), answers[j].get_y_position(), answers[j].get_radius())){
+                        answers[i].x_position += 15;
+                        answers[i].y_position += 15;
+                        flag = false;
+                    }
                 }
             }
-        }
-        if (flag){
-            break;
+            if (flag) {
+                break;
+            }
         }
     }
 }
@@ -68,43 +59,44 @@ void Worker::doWork() {
     }
 }
 
-void Worker::update(){
-    for (auto &it : entities){
-        it.x_position += it.speed_X;
-        it.y_position += it.speed_Y;
-    }
+void Worker::update() {
+    player.x_position += player.speed_X;
+    player.y_position += player.speed_Y;
 
     srand(time(0));
-    for (int i = 0; i < entities.size() - 1; i++){
-        for (int j = i+1; j < entities.size(); j++){
-<<<<<<< HEAD
-            if (collision(entities[i].get_x_position(), entities[i].get_y_position(), entities[i].get_radius(),
-                          entities[j].get_x_position(), entities[j].get_y_position(), entities[j].get_radius())){
+    for (int i = 0; i < answers.size() - 1; i++){
+        if (collision(answers[i].get_x_position(), answers[i].get_y_position(), answers[i].get_radius(),
+                      player.get_x_position(), player.get_y_position(), player.get_radius())){
 
-                if (entities[j].get_number() == generator){
-=======
-            if (collision(entities[i].x, entities[i].y, entities[i].r, entities[j].x, entities[j].y, entities[j].r)){
-
-                if (entities[j].num == generator){
->>>>>>> origin/main
-                    entities.erase(entities.begin() + j);
-                    score += 5;
-                    generator = 1 + rand() % 19;
-                    expr = rndExpr(generator);
-                } else {
-                    quitGame = true;
-                    emit signalGameFinish();
-                }
+            if (answers[i].get_number() == generator){
+                answers.erase(answers.begin() + i);
+                score += 10;
+                player.radius += 1;
+                generator = 1 + rand() % 19;
+                expr = rndExpr(generator);
+            } else {
+                quitGame = true;
+                emit signalGameFinish();
             }
+        }
+    }
+
+    for (int i = 0; i < food.size() - 1; i++){
+        if (collision(food[i].get_x_position(), food[i].get_y_position(), food[i].get_radius(),
+                      player.get_x_position(), player.get_y_position(), player.get_radius())){
+
+            food.erase(food.begin() + i);
+            score += 3;
+            player.radius += 0.4;
         }
     }
 }
 
-void Worker::slotQuitGame(bool value){
+void Worker::slotQuitGame(bool value) {
     quitGame = value;
 }
 
-std::string Worker::rndExpr(int &generator){
+std::string Worker::rndExpr(int &generator) {
     srand(time(0));
     int a = rand() % 10;
     int b = rand() % 10;

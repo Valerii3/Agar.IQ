@@ -1,5 +1,5 @@
 #include "food.h"
 
-Food::Food() : Entity(10) {
+Food::Food() : Entity(5) {
 
 }

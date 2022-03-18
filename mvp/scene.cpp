@@ -2,8 +2,8 @@
 #include "ui_scene.h"
 
 Scene::Scene(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Scene)
+        QWidget(parent),
+        ui(new Ui::Scene)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -32,16 +32,18 @@ void Scene::paintEvent(QPaintEvent *event){
     if (isMenu){
         return;
     }
-    for (auto it : worker->entities){
+    for (auto it : worker->answers) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-<<<<<<< HEAD
-        painter.drawEllipse(it.get_x_position(), it.get_y_position(), 2*it.get_radius(), 2*it.get_radius());
-        painter.drawText(QPoint(it.get_x_position() + it.get_radius()/2.0,it.get_y_position() + it.get_radius()), QString::number(it.num));   // добавил
-=======
-        painter.drawEllipse(QPointF(it.x, it.y), it.r, it.r);
-        painter.drawText(QPoint(it.x - it.r/4,it.y + it.r/4), QString::number(it.num));   // добавил
->>>>>>> origin/main
+        painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
+        painter.drawText(QPoint(it.get_x_position() - it.get_radius()/4,it.get_y_position() + it.get_radius()/4), QString::number(it.get_number()));     }
+    for (auto it : worker->food) {
+        painter.setBrush(QBrush(it.color, Qt::SolidPattern));
+        painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
     }
+
+    painter.setBrush(QBrush(worker->player.color, Qt::SolidPattern));
+    painter.drawEllipse(QPointF(worker->player.get_x_position(), worker->player.get_y_position()), 2*worker->player.get_radius(), 2*worker->player.get_radius());
+
     fnt.setPixelSize(40);
     painter.setFont(fnt);
     painter.drawText(QPoint(1700,40), worker->text);
@@ -54,13 +56,13 @@ void Scene::keyPressEvent(QKeyEvent *event){
     if (!isMenu && event->type() == QEvent::KeyPress){
         QKeyEvent *key = static_cast<QKeyEvent*>(event);
         if (key->key() == Qt::Key_W){
-            worker->entities[0].speed_Y = -5;
+            worker->player.speed_Y = -5;
         } else if (key->key() == Qt::Key_S){
-            worker->entities[0].speed_Y = 5;
+            worker->player.speed_Y = 5;
         } else if (key->key() == Qt::Key_A){
-            worker->entities[0].speed_X = -5;
+            worker->player.speed_X = -5;
         } else if (key->key() == Qt::Key_D){
-            worker->entities[0].speed_X = 5;
+            worker->player.speed_X = 5;
         }
     }
 }
@@ -69,13 +71,13 @@ void Scene::keyReleaseEvent(QKeyEvent *event){
     if (!isMenu && event->type() == QEvent::KeyRelease){
         QKeyEvent *key = static_cast<QKeyEvent*>(event);
         if (key->key() == Qt::Key_W){
-            worker->entities[0].speed_Y = 0;
+            worker->player.speed_Y = 0;
         } else if (key->key() == Qt::Key_S){
-            worker->entities[0].speed_Y = 0;
+            worker->player.speed_Y = 0;
         } else if (key->key() == Qt::Key_A){
-            worker->entities[0].speed_X = 0;
+            worker->player.speed_X = 0;
         } else if (key->key() == Qt::Key_D){
-            worker->entities[0].speed_X = 0;
+            worker->player.speed_X = 0;
         }
     }
 }
@@ -98,7 +100,7 @@ void Scene::slotGameFinish(){
     qDebug() << "finish";
     workerThread.quit();
     workerThread.wait();
- //   delete worker;
+    //   delete worker;
     ui->startGameButton->show();
     isMenu = true;
 }
