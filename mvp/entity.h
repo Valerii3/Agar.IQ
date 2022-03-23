@@ -14,7 +14,9 @@ struct Entity {
     QColor color;
 
     double get_x_position() const;
+
     double get_y_position() const;
+
     double get_radius() const;
 
     Entity();

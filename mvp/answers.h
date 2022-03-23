@@ -6,7 +6,10 @@
 struct Answer : Entity {
     int n;
 public:
+    Answer() = default;
+
     Answer(int n_);
+
     int get_number();
 };
 

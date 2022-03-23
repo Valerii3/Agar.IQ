@@ -11,20 +11,24 @@ namespace Ui {
     class Scene;
 }
 
-class Scene : public QWidget
-{
+class Scene : public QWidget {
     Q_OBJECT
 
 public:
     explicit Scene(QWidget *parent = nullptr);
+
     ~Scene();
 
-public slots:
+public
+    slots:
             void slotResultReady();
+
     void slotGameFinish();
 
     signals:
-            void signalQuitGame(bool value);
+            void signalQuitGame(bool
+    value);
+
     void startWork();
 
 private:
@@ -34,12 +38,17 @@ private:
     bool isMenu = true;
 
 protected:
-    void paintEvent(QPaintEvent* event) override;
+    void paintEvent(QPaintEvent *event) override;
+
     void keyPressEvent(QKeyEvent *event) override;
+
     void keyReleaseEvent(QKeyEvent *event) override;
 
-private slots:
+private
+    slots:
             void on_startGameButton_clicked();
+
+    void on_settingsButton_clicked();
 };
 
 #endif // SCENE_H
