@@ -2,21 +2,28 @@
 
 Question::Question(int bits, int operandCounts, std::string operands) {
     int p = pow(10, bits);
-    int ans = rand() % p;
-    question = std::to_string(ans) + ' ';
+    int ans = 0;
+    int a = rand() % p;
+    question = std::to_string(a) + ' ';
+    int prevOp = 1;
     for (int i = 0; i < operandCounts; i++) {
         int op = rand() % operands.size();
-        int num = rand() % p;
-        if (operands[op] == '+') {
-            ans += num;
-        } else if (operands[op] == '-') {
-            ans -= num;
-        } else if (operands[op] == '*') {
-            ans *= num;
-        }
+        int b = rand() % p;
         question = question + operands[op] + ' ';
-        question.append(std::to_string(num) + ' ');
+        question.append(std::to_string(b) + ' ');
+        if (operands[op] == '+') {
+            ans += prevOp * a;
+            a = b;
+            prevOp = 1;
+        } else if (operands[op] == '-') {
+            ans += prevOp * a;
+            a = b;
+            prevOp = -1;
+        } else if (operands[op] == '*') {
+            a *= b;
+        }
     }
+    ans += prevOp * a;
     answer = Answer(ans);
     question += "= ";
 }
