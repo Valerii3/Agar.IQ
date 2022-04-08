@@ -9,6 +9,8 @@ struct Entity {
     double y_position;
     double radius;
 
+    std::string type = "entity";
+
     double speed_X;
     double speed_Y;
     QColor color;

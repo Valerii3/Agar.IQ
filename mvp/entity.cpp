@@ -1,7 +1,6 @@
 #include "entity.h"
 
-Entity::Entity()
-{
+Entity::Entity() {
     x_position = 0;
     y_position = 0;
     radius = 0;
@@ -10,18 +9,15 @@ Entity::Entity()
     color = QColor(rand() % 255, rand() % 255, rand() % 255);
 }
 
-double Entity::get_x_position() const
-{
+double Entity::get_x_position() const {
     return x_position;
 }
 
-double Entity::get_y_position() const
-{
+double Entity::get_y_position() const {
     return y_position;
 }
 
-double Entity::get_radius() const
-{
+double Entity::get_radius() const {
     return radius;
 }
 
@@ -46,3 +42,4 @@ Entity::Entity(double r_, QColor color_) {
     color = color_;
     radius = r_;
 }
+

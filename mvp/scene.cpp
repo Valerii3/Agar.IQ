@@ -1,9 +1,10 @@
 #include "scene.h"
 #include "ui_scene.h"
+#include "settingswindow.h"
 
 Scene::Scene(QWidget *parent) :
-        QWidget(parent),
-        ui(new Ui::Scene)
+    QWidget(parent),
+    ui(new Ui::Scene)
 {
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
@@ -48,6 +49,7 @@ void Scene::paintEvent(QPaintEvent *event){
     painter.setFont(fnt);
     painter.drawText(QPoint(1700,40), worker->text);
     painter.drawText(QPoint(1820,40), QString::number(worker->score));
+    painter.drawText(QPoint(1700,80), worker->is_correct);
     painter.drawText(QPoint(800,40), QString::fromLocal8Bit(worker->expr.c_str()));
 
 }
@@ -85,6 +87,7 @@ void Scene::keyReleaseEvent(QKeyEvent *event){
 void Scene::on_startGameButton_clicked()
 {
     ui->startGameButton->hide();
+    ui->settingsButton->hide();
     worker = new Worker;
     worker->moveToThread(&workerThread);
     connect(this, &Scene::signalQuitGame, worker, &Worker::slotQuitGame);
@@ -96,11 +99,17 @@ void Scene::on_startGameButton_clicked()
     isMenu = false;
 }
 
+void Scene::on_settingsButton_clicked() {
+    SettingsWindow *sw = new SettingsWindow();
+    sw->show();
+}
+
 void Scene::slotGameFinish(){
     qDebug() << "finish";
     workerThread.quit();
     workerThread.wait();
-    //   delete worker;
+ //   delete worker;
     ui->startGameButton->show();
+    ui->settingsButton->show();
     isMenu = true;
 }

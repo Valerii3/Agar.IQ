@@ -15,7 +15,9 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
+    question.cpp \
     scene.cpp \
+    settingswindow.cpp \
     worker.cpp
 
 HEADERS += \
@@ -24,12 +26,15 @@ HEADERS += \
     food.h \
     mainwindow.h \
     player.h \
+    question.h \
     scene.h \
+    settingswindow.h \
     worker.h
 
 FORMS += \
     mainwindow.ui \
-    scene.ui
+    scene.ui \
+    settingswindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -7,7 +7,7 @@ struct Answer : Entity {
     int n;
 public:
     Answer(int n_);
-    int get_number();
+    int get_number() const;
 };
 
 #endif // ANSWERS_H

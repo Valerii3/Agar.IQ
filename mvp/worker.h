@@ -11,34 +11,47 @@
 #include "answers.h"
 #include "food.h"
 #include "player.h"
+#include "generator.h"
+#include "question.h"
 
 class Worker : public QObject
 {
     Q_OBJECT
 public:
+    static int bits;
+    static int operandsCount;
+    static std::string operands;
+
     explicit Worker(QObject *parent = nullptr);
     std::vector<Answer> answers;
     std::vector<Food> food;
-    int generator = 5;
+
+    QString is_correct = "";
+
     QString text = "Score: ";
     int score = 0;
-    std::string rndExpr(int &generator);
-    std::string expr = rndExpr(generator);
+
+    int generator = 5;
+
+    std::string expr;
+
+    void generate_answers(int correct);
+    void generate_food();
 
     Player player;
 
 public slots:
-            void doWork();
+    void doWork();
     void slotQuitGame(bool value);
 
-    signals:
-            void signalResultReady();
+signals:
+    void signalResultReady();
     void signalGameFinish();
 
 private:
     bool quitGame = false;
     void update();
-    bool collision(double x1, double y1, double r1, double x2, double y2, double r2);
+    bool collision(Entity a, Entity b);
 };
 
 
