@@ -35,6 +35,7 @@ Worker::Worker(QObject *parent)
     srand(time(0));
 
     Player player;
+
     auto question = Question(bits, operandsCount, operands);
 
     expr = question.getQuestion();
@@ -87,8 +88,8 @@ void Worker::doWork() {
 }
 
 void Worker::update() {
-    player.x_position += player.speed_X;
-    player.y_position += player.speed_Y;
+    player.x_position -= player.speed * cos(player.angle);
+    player.y_position -= player.speed * sin(player.angle);
 
     srand(time(0));
     for (int i = 0; i < answers.size(); i++) {

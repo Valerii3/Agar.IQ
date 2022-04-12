@@ -22,10 +22,12 @@ public:
 public slots:
     void slotResultReady();
     void slotGameFinish();
+    void startGame();
 
 signals:
     void signalQuitGame(bool value);
     void startWork();
+    void first();
 
 private:
     Ui::Scene *ui;
@@ -37,10 +39,13 @@ protected:
     void paintEvent(QPaintEvent* event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
-
+    void mouseMoveEvent(QMouseEvent *event) override;
+/*
 private slots:
     void on_startGameButton_clicked();
-    void on_settingsButton_clicked();
+    void on_settingsButton_clicked(); */
+private slots:
+    void on_pushButton_clicked();
 };
 
 #endif // SCENE_H

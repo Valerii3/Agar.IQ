@@ -11,7 +11,7 @@
 #include "answers.h"
 #include "food.h"
 #include "player.h"
-#include "generator.h"
+//#include "generator.h"
 #include "question.h"
 
 class Worker : public QObject
