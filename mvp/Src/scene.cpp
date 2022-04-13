@@ -1,6 +1,6 @@
-#include "scene.h"
+#include "../Include/scene.h"
 #include "ui_scene.h"
-#include "settingswindow.h"
+#include "../Include/settingswindow.h"
 
 Scene::Scene(QWidget *parent) :
     QWidget(parent),

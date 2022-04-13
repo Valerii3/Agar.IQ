@@ -1,7 +1,7 @@
-#include "settingswindow.h"
+#include "../Include/settingswindow.h"
 #include "ui_settingswindow.h"
-#include "question.h"
-#include "worker.h"
+#include "../Include/question.h"
+#include "../Include/worker.h"
 #include <QLabel>
 
 SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow) {

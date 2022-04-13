@@ -1,4 +1,4 @@
-#include "question.h"
+#include "../Include/question.h"
 
 Question::Question(int bits, int operandCounts, std::string operands) {
     int p = pow(10, bits);

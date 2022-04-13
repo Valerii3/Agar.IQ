@@ -1,4 +1,4 @@
-#include "entity.h"
+#include "../Include/entity.h"
 
 Entity::Entity() {
     x_position = 0;
