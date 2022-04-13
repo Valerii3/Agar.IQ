@@ -5,7 +5,7 @@ Player::Player(std::string name_) : Player() {
 }
 
 Player::Player() : Entity(25) {
-    name = "noname";
+    name = "Илья";
 }
 
 std::string Player::get_name() const {

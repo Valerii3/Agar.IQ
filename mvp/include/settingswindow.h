@@ -19,7 +19,7 @@ public:
 
 private
     slots:
-            void on_saveSettingsButton_clicked();
+           void on_saveSettingsButton_clicked();
 
 private:
     Ui::SettingsWindow *ui;

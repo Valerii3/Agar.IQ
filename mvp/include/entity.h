@@ -11,8 +11,7 @@ struct Entity {
 
     std::string type = "entity";
 
-    double speed_X;
-    double speed_Y;
+
     QColor color;
 
     double get_x_position() const;
