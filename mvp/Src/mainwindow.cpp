@@ -1,16 +1,18 @@
-#include "../Include/mainwindow.h"
+#include "Include/mainwindow.h"
 #include "ui_mainwindow.h"
-#include "../Include/settingswindow.h"
+#include "Include/settingswindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+
+    socket = new QTcpSocket;
+
+    connect(socket, &QTcpSocket::readyRead, this, &MainWindow::slotReadyRead);
+    connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
+
     scene = new Scene;
     connect(scene, &Scene::first, this, &MainWindow::show);
     connect(this, &MainWindow::signalStartGame, scene, &Scene::startGame);
-    //  scene = new Scene;
-    // ui->scene->setParent(scene);
-    //   scene->show();
-    //   this->hide();
 }
 
 MainWindow::~MainWindow() {
@@ -21,6 +23,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::on_startButton_clicked()
 {
+    socket->connectToHost("127.0.0.1", 5555);
     scene->showFullScreen();
     this->close();
     emit signalStartGame();
@@ -82,5 +85,29 @@ void MainWindow::paintEvent(QPaintEvent *event)
 void MainWindow::on_closeButton_clicked()
 {
     this->close();
+}
+
+void MainWindow::sendToServer(QString str)
+{
+    Data.clear();
+    QDataStream out(&Data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_15);
+    out << str;
+    socket->write(Data);
+}
+
+void MainWindow::slotReadyRead()
+{
+    socket = (QTcpSocket*)sender();
+    QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_5_15);
+    if (in.status() == QDataStream::Ok) {
+//        qDebug() << "read...";
+//        QString str;
+//        in >> str;
+//        qDebug() << str;
+    } else {
+//        qDebug() << "error";
+    }
 }
 
