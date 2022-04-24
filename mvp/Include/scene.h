@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QThread>
 #include <QPainter>
+#include <QTcpSocket>
 #include <QPaintEvent>
 #include "worker.h"
 
@@ -19,10 +20,21 @@ public:
     explicit Scene(QWidget *parent = nullptr);
     ~Scene();
 
+private:
+    QTcpSocket* socket;
+    QByteArray Data;
+    QString name = "Alex";
+
+    QString row_str;
+
 public slots:
     void slotResultReady();
     void slotGameFinish();
     void startGame();
+
+private slots:
+    void slotReadyRead();
+    void sendToServer(QString str);
 
 signals:
     void signalQuitGame(bool value);
@@ -40,10 +52,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-/*
-private slots:
-    void on_startGameButton_clicked();
-    void on_settingsButton_clicked(); */
+
 private slots:
     void on_pushButton_clicked();
 };

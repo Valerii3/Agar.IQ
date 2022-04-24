@@ -6,7 +6,6 @@ server::server() {
     } else {
         qDebug() << "Error";
     }
-
 }
 
 server::~server(){}
@@ -16,7 +15,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
     socket->setSocketDescriptor(socketDescriptor);
 
     connect(socket, &QTcpSocket::readyRead, this, &server::slotReadyRead);
-    connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
+    connect(socket, &QTcpSocket::disconnected, this, &server::sockDisc);
 
     sockets.push_back(socket);
     qDebug() << "client connected - " << socketDescriptor;
@@ -50,6 +49,6 @@ void server::sendToClient(QString str) {
 
 void server::sockDisc()
 {
-    qDebug() << "Disconnect";
+    qDebug() << "client disconnected - ";
     socket->deleteLater();
 }

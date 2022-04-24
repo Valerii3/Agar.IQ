@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QTcpSocket>
 #include "scene.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,15 +16,8 @@ public:
 
     ~MainWindow();
 
-    QTcpSocket* socket;
-    QByteArray Data;
-
 signals:
     void signalStartGame();
-
-private slots:
-    void slotReadyRead();
-    void sendToServer(QString str);
 
 private slots:
     void on_startButton_clicked();

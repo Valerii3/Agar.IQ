@@ -6,6 +6,13 @@ Scene::Scene(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Scene)
 {
+    socket = new QTcpSocket;
+
+    connect(socket, &QTcpSocket::readyRead, this, &Scene::slotReadyRead);
+    connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
+
+    socket->connectToHost("127.0.0.1", 5555);
+    emit sendToServer(name);
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
 }
@@ -46,10 +53,22 @@ void Scene::paintEvent(QPaintEvent *event){
 
 
     painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
-    painter.drawEllipse(QPointF(worker->player.get_x_position(), worker->player.get_y_position()), 2*worker->player.get_radius(), 2*worker->player.get_radius());
+
+    QString name = row_str.section('|', 0, 0);
+    double x = row_str.section('|', 1, 1).toDouble();
+    double y = row_str.section('|', 2, 2).toDouble();
+    double rad = row_str.section('|', 3, 3).toDouble();
+    qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
+    painter.drawEllipse(QPointF(x, y), 2*rad, 2*rad);
+
+
+//    painter.drawEllipse(QPointF(worker->player.get_x_position(), worker->player.get_y_position()), 2*worker->player.get_radius(), 2*worker->player.get_radius());
+
+
     fnt.setPixelSize(20);
     painter.setFont(fnt);
-    painter.drawText(worker->player.get_x_position() - worker->player.get_radius(), worker->player.get_y_position() + worker->player.get_radius()/4, QString::fromStdString(worker->player.get_name()));
+    painter.drawText(x - rad, y + rad/4, name);
+//    painter.drawText(worker->player.get_x_position() - worker->player.get_radius(), worker->player.get_y_position() + worker->player.get_radius()/4, QString::fromStdString(worker->player.get_name()));
 
     fnt.setPixelSize(40);
     painter.setFont(fnt);
@@ -57,6 +76,8 @@ void Scene::paintEvent(QPaintEvent *event){
     painter.drawText(QPoint(1820,40), QString::number(worker->score));
     painter.drawText(QPoint(1700,80), worker->is_correct);
     painter.drawText(QPoint(800,40), QString::fromLocal8Bit(worker->expr.c_str()));
+
+    emit sendToServer(name + "|" + QString::number(worker->player.get_x_position()) + "|" + QString::number(worker->player.get_y_position()) + "|" + QString::number(worker->player.get_radius()));
 
 }
 
@@ -124,3 +145,25 @@ void Scene::on_pushButton_clicked()
 
 }
 
+void Scene::sendToServer(QString str)
+{
+    Data.clear();
+    QDataStream out(&Data, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_15);
+    out << str;
+    socket->write(Data);
+}
+
+void Scene::slotReadyRead()
+{
+    socket = (QTcpSocket*)sender();
+    QDataStream in(socket);
+    in.setVersion(QDataStream::Qt_5_15);
+    if (in.status() == QDataStream::Ok) {
+        QString str;
+        in >> str;
+        row_str = str;
+    } else {
+        qDebug() << "error";
+    }
+}

@@ -22,6 +22,7 @@ public slots:
     void incomingConnection(qintptr socketDescriptor);
     void sendToClient(QString str);
     void slotReadyRead();
+//    void sendToClient();
     void sockDisc();
 };
 
