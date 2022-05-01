@@ -6,8 +6,12 @@
 #include <QDataStream>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QJsonParseError>
 #include <player.h>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 class server: public QTcpServer {
     Q_OBJECT
@@ -26,6 +30,7 @@ public:
 
     QTcpSocket* socket;
     QByteArray Data;
+    QJsonArray Data_json;
 
 public slots:
     void incomingConnection(qintptr socketDescriptor);
