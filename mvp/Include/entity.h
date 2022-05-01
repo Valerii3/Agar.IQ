@@ -23,6 +23,10 @@ struct Entity {
     Entity(double r_);
 
     Entity(double r_, QColor color_);
+
+    Entity(double x, double y, double r_);
+
+    Entity(double x, double y, double r_, QColor color_);
 };
 
 #endif // ENTITY_H

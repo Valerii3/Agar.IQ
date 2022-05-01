@@ -6,6 +6,8 @@
 struct Food : Entity {
 public:
     Food();
+
+    Food(double x, double y);
 };
 
 #endif // FOOD_H

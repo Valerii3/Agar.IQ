@@ -5,7 +5,6 @@
 
 struct Player : Entity {
 public:
-    std::string status = "connected";
 
     std::string name;
 

@@ -57,13 +57,13 @@ void server::slotReadyRead()
 
         sendToClient();
     } else {
-        qDebug() << "client is disconneted";
+        qDebug() << "client is disconnected";
     }
 }
 
 void to_json(json& j, const Player& p)
 {
-    j = {{"status", p.status}, {"name", p.name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
+    j = {{"name", p.name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
 }
 
 void to_json(json& j, const Entity& p)
@@ -74,22 +74,17 @@ void to_json(json& j, const Entity& p)
 void server::sendToClient() {
     json toClient;
 
+    toClient.clear();
+
     toClient["players"] = Game_scene.get_players();
     toClient["answers"] = Game_scene.get_answers();
     toClient["foods"] = Game_scene.get_foods();
     toClient["status"] = "connected";
 
-//    for (auto i : Game_scene.players) {
-//        toClient["status"] = "connected";
-//        toClient["name"] = i.name.toStdString();
-//        toClient["x"] = i.x_coordinate;
-//        toClient["y"] = i.y_coordinate;
-//        toClient["rad"] = i.radius;
-//    }
-
     for (int i = 0; i < sockets.size(); i++) {
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
     }
+    toClient.clear();
 }
 
 void server::sockDisc()

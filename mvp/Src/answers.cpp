@@ -8,3 +8,11 @@ Answer::Answer(int n_) : Entity(15, Qt::red) {
 int Answer::get_number() const {
     return n;
 }
+
+Answer::Answer(double x, double y) : Entity(x, y, 15, Qt::red){
+    type = "answer";
+}
+
+void Answer::update_number(int n_) {
+    n = n_;
+}

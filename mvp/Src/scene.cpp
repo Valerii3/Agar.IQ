@@ -141,20 +141,6 @@ void Scene::sendToServer()
     socket->waitForBytesWritten(20000);
 }
 
-/*
-
-{
-    "answers": [ AnswerObject{} ],
-    "players": [ PlayerObject{} ]
-}
-
-json obj;
-
-obj["answers"] = std::vector;
-obj[].push_
-
-*/
-
 void Scene::slotReadyRead()
 {
     socket = (QTcpSocket*)sender();
@@ -166,27 +152,41 @@ void Scene::slotReadyRead()
         qDebug() << e.what() << '\n';
     }
 
-    qDebug() << QString::fromStdString(fromServer.dump(4));
-
     // from client {"status":"connected", "iter":iterator, "name":"player_name", "x":x_coord, "y":y_coord, "rad":radius}
     if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
         qDebug() << "connected to server";
         server_iterator = fromServer["iterator"];
     } else if (fromServer["status"] == "connected") {
 
-        std::vector<Player> players = fromServer["players"];
         players_data.clear();
 
-        for (auto player : players) {
-            QString name = QString::fromStdString(player.get_name());
-            double x = player.get_x_position();
-            double y = player.get_y_position();
-            double rad = player.get_radius();
+        qDebug() << "read players";
+
+        for (auto player : fromServer["players"]) {
+            QString name = QString::fromStdString(player["name"]);
+            double x = player["x"];
+            double y = player["y"];
+            double rad = player["rad"];
 
             players_data.push_back({name, x, y, rad});
             qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
         }
 
+        for (auto answer : fromServer["answers"]) {
+            double x = answer["x"];
+            double y = answer["y"];
+
+            answers_data.push_back({x, y});
+            qDebug() << "answer" << ' ' << x << ' ' << y;
+        }
+
+        for (auto food : fromServer["foods"]) {
+            double x = food["x"];
+            double y = food["y"];
+
+            foods_data.push_back({x, y});
+            qDebug() << "food" << ' ' << x << ' ' << y;
+        }
 
     } else {
         qDebug() << "not connected to server";

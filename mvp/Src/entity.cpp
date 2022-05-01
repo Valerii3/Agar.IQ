@@ -35,3 +35,19 @@ Entity::Entity(double r_, QColor color_) {
     radius = r_;
 }
 
+Entity::Entity(double x, double y, double r_) {
+    x_position = x;
+    y_position = y;
+    radius = r_;
+
+    color  = QColor(rand() % 255, rand() % 255, rand() % 255);
+}
+
+Entity::Entity(double x, double y, double r_, QColor color_) {
+    x_position = x;
+    y_position = y;
+
+    color = color_;
+    radius = r_;
+}
+
