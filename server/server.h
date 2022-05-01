@@ -4,12 +4,21 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QDataStream>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <player.h>
 
 class server: public QTcpServer {
     Q_OBJECT
 
 private:
     QVector <QTcpSocket*> sockets;
+
+    QJsonDocument doc;
+    QJsonParseError docError;
+
+    QVector<Player> players_data;
 
 public:
     server();
@@ -20,7 +29,7 @@ public:
 
 public slots:
     void incomingConnection(qintptr socketDescriptor);
-    void sendToClient(QString str);
+    void sendToClient();
     void slotReadyRead();
 //    void sendToClient();
     void sockDisc();

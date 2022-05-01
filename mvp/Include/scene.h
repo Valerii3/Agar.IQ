@@ -7,6 +7,9 @@
 #include <QTcpSocket>
 #include <QPaintEvent>
 #include "worker.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
 
 namespace Ui {
 class Scene;
@@ -24,8 +27,12 @@ private:
     QTcpSocket* socket;
     QByteArray Data;
     QString name = "Alex";
+    int server_iterator = 0;
 
-    QString row_str;
+    QVector<Player> players_data;
+
+    QJsonDocument doc;
+    QJsonParseError docError;
 
 public slots:
     void slotResultReady();
@@ -34,7 +41,7 @@ public slots:
 
 private slots:
     void slotReadyRead();
-    void sendToServer(QString str);
+    void sendToServer();
 
 signals:
     void signalQuitGame(bool value);
