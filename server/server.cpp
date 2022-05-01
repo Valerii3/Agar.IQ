@@ -18,11 +18,9 @@ void server::incomingConnection(qintptr socketDescriptor) {
     connect(socket, &QTcpSocket::disconnected, this, &server::sockDisc);
 
     sockets.push_back(socket);
-    players_data.push_back({"none", 0, 0, 0});
+    Game_scene.new_player("none");
 
-    int iterator = players_data.size() - 1;
-
-    Data.clear();
+    int iterator = Game_scene.players.size() - 1;
 
     json initializationMessage;
     initializationMessage["status"] = "connected";
@@ -55,7 +53,7 @@ void server::slotReadyRead()
         double y = fromClient["y"];
         double rad = fromClient["rad"];
 
-        players_data[iter] = {name, x, y, rad};
+        Game_scene.update_player(iter, name, x, y, rad);
 
         sendToClient();
     } else {
@@ -63,17 +61,35 @@ void server::slotReadyRead()
     }
 }
 
-void server::sendToClient() {
-    Data.clear();
+struct player {
+    std::string status;
+    std::string name;
+    double x;
+    double y;
+    double rad;
+};
 
+void to_json(json& j, const player& p)
+{
+    j = {{"status", p.status}, {"name", p.name}, {"x", p.x}, {"y", p.y}, {"rad", p.rad}};
+}
+
+void server::sendToClient() {
     json toClient;
-    for (auto i : players_data) {
-        toClient["status"] = "connected";
-        toClient["name"] = i.name.toStdString();
-        toClient["x"] = i.x_coordinate;
-        toClient["y"] = i.y_coordinate;
-        toClient["rad"] = i.radius;
+
+    std::vector<player> players_data;
+
+    for (auto i : Game_scene.players) {
+        player p{"connected", i.name.toStdString(), i.x_coordinate, i.y_coordinate, i.radius};
+//        toClient["status"] = "connected";
+//        toClient["name"] = i.name.toStdString();
+//        toClient["x"] = i.x_coordinate;
+//        toClient["y"] = i.y_coordinate;
+//        toClient["rad"] = i.radius;
+        players_data.push_back(p);
     }
+
+    toClient = players_data;
 
     // https://github.com/nlohmann/json
 

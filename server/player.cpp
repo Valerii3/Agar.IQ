@@ -5,4 +5,6 @@ Player::Player(QString name, double x, double y, double rad) {
     x_coordinate = x;
     y_coordinate = y;
     radius = rad;
+
+    type = "player";
 }

@@ -4,12 +4,8 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QDataStream>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonParseError>
-#include <player.h>
 #include <json.hpp>
+#include <scene.h>
 
 using json = nlohmann::json;
 
@@ -17,20 +13,15 @@ class server: public QTcpServer {
     Q_OBJECT
 
 private:
+    scene Game_scene;
+
     QVector <QTcpSocket*> sockets;
-
-    QJsonDocument doc;
-    QJsonParseError docError;
-
-    QVector<Player> players_data;
 
 public:
     server();
     ~server();
 
     QTcpSocket* socket;
-    QByteArray Data;
-    QJsonArray Data_json;
 
 public slots:
     void incomingConnection(qintptr socketDescriptor);
