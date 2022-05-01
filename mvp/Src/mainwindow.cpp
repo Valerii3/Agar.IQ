@@ -1,16 +1,13 @@
-#include "../Include/mainwindow.h"
+#include "Include/mainwindow.h"
 #include "ui_mainwindow.h"
-#include "../Include/settingswindow.h"
+#include "Include/settingswindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+
     scene = new Scene;
     connect(scene, &Scene::first, this, &MainWindow::show);
     connect(this, &MainWindow::signalStartGame, scene, &Scene::startGame);
-    //  scene = new Scene;
-    // ui->scene->setParent(scene);
-    //   scene->show();
-    //   this->hide();
 }
 
 MainWindow::~MainWindow() {
@@ -21,7 +18,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::on_startButton_clicked()
 {
-    scene->showFullScreen();
+    scene->show();
     this->close();
     emit signalStartGame();
 }
@@ -30,7 +27,7 @@ void MainWindow::on_startButton_clicked()
 void MainWindow::on_settingsButton_clicked()
 {
     SettingsWindow *sw = new SettingsWindow();
-    sw->showFullScreen();
+    sw->show();
 }
 
 

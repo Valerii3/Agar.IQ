@@ -11,6 +11,8 @@ public:
 
     Player();
     Player(std::string name_);
+
+    Player(QString name, double x, double y, double rad);
 };
 
 #endif // PLAYER_H
