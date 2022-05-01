@@ -40,12 +40,12 @@ void Scene::paintEvent(QPaintEvent *event){
     if (isMenu){
         return;
     }
-    for (auto it : worker->answers) {
+    for (auto it : worker->answers_data) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
         painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
         painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
     }
-    for (auto it : worker->food) {
+    for (auto it : worker->foods_data) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
         painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
     }
@@ -53,17 +53,13 @@ void Scene::paintEvent(QPaintEvent *event){
 
     painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
 
-    for (auto player : players_data) {
+    for (auto player : worker->players_data) {
 
         painter.drawEllipse(QPointF(player.get_x_position(), player.get_y_position()), 2*player.get_radius(), 2*player.get_radius());
-
-//    painter.drawEllipse(QPointF(worker->player.get_x_position(), worker->player.get_y_position()), 2*worker->player.get_radius(), 2*worker->player.get_radius());
-
 
         fnt.setPixelSize(20);
         painter.setFont(fnt);
         painter.drawText(player.get_x_position() - player.get_radius(), player.get_y_position() + player.get_radius()/4, QString::fromStdString(player.get_name()));
-//    painter.drawText(worker->player.get_x_position() - worker->player.get_radius(), worker->player.get_y_position() + worker->player.get_radius()/4, QString::fromStdString(worker->player.get_name()));
     }
 
     fnt.setPixelSize(40);
@@ -137,6 +133,12 @@ void Scene::sendToServer()
     toServer["y"] = worker->player.get_y_position();
     toServer["rad"] = worker->player.get_radius();
 
+    toServer["eaten_food"] = worker->eaten_foods;
+    toServer["eaten_answers"] = worker->eaten_answers;
+
+    worker->eaten_answers.clear();
+    worker->eaten_foods.clear();
+
     socket->write(QString::fromStdString(toServer.dump()).toLatin1());
     socket->waitForBytesWritten(20000);
 }
@@ -158,7 +160,9 @@ void Scene::slotReadyRead()
         server_iterator = fromServer["iterator"];
     } else if (fromServer["status"] == "connected") {
 
-        players_data.clear();
+        worker->players_data.clear();
+        worker->answers_data.clear();
+        worker->foods_data.clear();
 
         qDebug() << "read players";
 
@@ -168,7 +172,7 @@ void Scene::slotReadyRead()
             double y = player["y"];
             double rad = player["rad"];
 
-            players_data.push_back({name, x, y, rad});
+            worker->players_data.push_back({name, x, y, rad});
             qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
         }
 
@@ -176,7 +180,7 @@ void Scene::slotReadyRead()
             double x = answer["x"];
             double y = answer["y"];
 
-            answers_data.push_back({x, y});
+            worker->answers_data.push_back({x, y});
             qDebug() << "answer" << ' ' << x << ' ' << y;
         }
 
@@ -184,7 +188,7 @@ void Scene::slotReadyRead()
             double x = food["x"];
             double y = food["y"];
 
-            foods_data.push_back({x, y});
+            worker->foods_data.push_back({x, y});
             qDebug() << "food" << ' ' << x << ' ' << y;
         }
 

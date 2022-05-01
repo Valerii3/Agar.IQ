@@ -28,10 +28,6 @@ private:
     QString name = "Alex";
     int server_iterator = 0;
 
-    QVector<Player> players_data;
-    QVector<Answer> answers_data;
-    QVector<Food> foods_data;
-
 public slots:
     void slotResultReady();
     void slotGameFinish();

@@ -22,8 +22,8 @@ public:
     static std::string operands;
 
     explicit Worker(QObject *parent = nullptr);
-    std::vector<Answer> answers;
-    std::vector<Food> food;
+//    std::vector<Answer> answers;
+//    std::vector<Food> food;
 
     QString is_correct = "";
 
@@ -33,6 +33,13 @@ public:
     int generator = 5;
 
     std::string expr;
+
+    QVector<Player> players_data;
+    QVector<Answer> answers_data;
+    QVector<Food> foods_data;
+
+    QVector<int> eaten_foods;
+    QVector<int> eaten_answers;
 
     void generate_answers(int correct);
     void generate_food();
