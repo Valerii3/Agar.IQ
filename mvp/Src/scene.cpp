@@ -129,10 +129,15 @@ void Scene::on_pushButton_clicked()
 
 void Scene::sendToServer()
 {
-    Data.clear();
-    Data.append("{\"status\":\"connected\", \"name\":\"" + name + "\", \"iterator\":" + QString::number(server_iterator) + ", \"x\":" + QString::number(worker->player.get_x_position())
-            + ", \"y\":" + QString::number(worker->player.get_y_position()) + ", \"rad\":" + QString::number(worker->player.get_radius()) + "}");
-    socket->write(Data);
+    json toServer;
+    toServer["status"] = "connected";
+    toServer["name"] = name.toStdString();
+    toServer["iter"] = server_iterator;
+    toServer["x"] = worker->player.get_x_position();
+    toServer["y"] = worker->player.get_y_position();
+    toServer["rad"] = worker->player.get_radius();
+
+    socket->write(QString::fromStdString(toServer.dump()).toLatin1());
     socket->waitForBytesWritten(20000);
 }
 
@@ -140,34 +145,30 @@ void Scene::slotReadyRead()
 {
     socket = (QTcpSocket*)sender();
 
+    json fromServer;
+    try {
+        fromServer = json::parse(socket->readAll().toStdString());
+    }  catch (json::exception& e) {
+        qDebug() << e.what() << '\n';
+    }
 
-    Data = socket->readAll();
 
-    doc = QJsonDocument::fromJson(Data, &docError);
+    // from client {"status":"connected", "iter":iterator, "name":"player_name", "x":x_coord, "y":y_coord, "rad":radius}
+    if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
+        qDebug() << "connected to server";
+        server_iterator = fromServer["iterator"];
+    } else if (fromServer["status"] == "connected") {
 
-    if (docError.errorString() == "no error occurred") {
-        if (doc.object().value("status").toString() == "connected" && doc.object().value("initialization").toString() == "yes") {
-            qDebug() << "connected to server";
-            server_iterator = doc.object().value("iterator").toInt();
-        } else if (doc.object().value("status").toString() == "connected") {
-            QString name = "stupid";
-            double x = 0;
-            double y = 0;
-            double rad = 0;
+        QString name = QString::fromStdString(fromServer["name"]);
+        double x = fromServer["x"];
+        double y = fromServer["y"];
+        double rad = fromServer["rad"];
 
-            name = doc.object().value("name").toString();
-            x = doc.object().value("x").toDouble();
-            y = doc.object().value("y").toDouble();
-            rad = doc.object().value("rad").toDouble();
+        players_data.clear();
+        players_data.push_back({name, x, y, rad});
 
-            players_data.clear();
-            players_data.push_back({name, x, y, rad});
-
-            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
-        } else {
-            qDebug() << "not connected to server";
-        }
+        qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
     } else {
-        qDebug() << "format error";
+        qDebug() << "not connected to server";
     }
 }

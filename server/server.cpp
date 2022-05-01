@@ -24,9 +24,13 @@ void server::incomingConnection(qintptr socketDescriptor) {
 
     Data.clear();
 
-    Data.append("{\"status\":\"connected\", \"initialization\":\"true\", \"iterator\":" + QString::number(iterator) + "}");
+    json initializationMessage;
+    initializationMessage["status"] = "connected";
+    initializationMessage["initialization"] = "yes";
+    initializationMessage["iterator"] = iterator;
+
     socket->waitForBytesWritten(500);
-    socket->write(Data);
+    socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1());
 
     qDebug() << "client connected - " << socketDescriptor;
 }
@@ -35,26 +39,27 @@ void server::slotReadyRead()
 {
     socket = (QTcpSocket*)sender();
 
-    Data = socket->readAll();
-    doc = QJsonDocument::fromJson(Data, &docError);
+    json fromClient;
+    try {
+        fromClient = json::parse(socket->readAll().toStdString());
+    }  catch (json::exception& e) {
+        qDebug() << e.what() << '\n';
+    }
+
 
     // from client {"status":"connected", "iter":iterator, "name":"player_name", "x":x_coord, "y":y_coord, "rad":radius}
-    if (docError.errorString() == "no error occurred") {
-        if (doc.object().value("status") == "connected") {
-            int iter = doc.object().value("iter").toInt();
-            QString name = doc.object().value("name").toString();
-            double x = doc.object().value("x").toDouble();
-            double y = doc.object().value("y").toDouble();
-            double rad = doc.object().value("rad").toDouble();
+    if (fromClient["status"] == "connected") {
+        int iter = fromClient["iter"];
+        QString name = QString::fromStdString(fromClient["name"]);
+        double x = fromClient["x"];
+        double y = fromClient["y"];
+        double rad = fromClient["rad"];
 
-            players_data[iter] = {name, x, y, rad};
+        players_data[iter] = {name, x, y, rad};
 
-            sendToClient();
-        } else {
-            qDebug() << "client is disconneted";
-        }
+        sendToClient();
     } else {
-        qDebug() << docError.errorString();
+        qDebug() << "client is disconneted";
     }
 }
 
@@ -63,8 +68,6 @@ void server::sendToClient() {
 
     json toClient;
     for (auto i : players_data) {
-//        Data.append("{\"status\":\"connected\", \"name\":\"" + i.name + "\", \"x\":" + QString::number(i.x_coordinate)
-//                    + ", \"y\":" + QString::number(i.y_coordinate) + ", \"rad\":" + QString::number(i.radius) + "}");
         toClient["status"] = "connected";
         toClient["name"] = i.name.toStdString();
         toClient["x"] = i.x_coordinate;

@@ -24,4 +24,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     player.h \
-    server.h
+    server.h \
+    json.hpp

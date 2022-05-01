@@ -10,6 +10,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+#include <json.hpp>
+
+using json = nlohmann::json;
 
 namespace Ui {
 class Scene;

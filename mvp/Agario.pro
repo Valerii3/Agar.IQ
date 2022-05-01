@@ -29,7 +29,8 @@ HEADERS += \
     include/question.h \
     include/scene.h \
     include/settingswindow.h \
-    include/worker.h
+    include/worker.h \
+    json.hpp
 
 FORMS += \
     ui/mainwindow.ui \
