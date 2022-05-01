@@ -11,11 +11,11 @@ class scene
 public:
     scene();
 
-    QVector<Entity> answers;
+    std::vector<Entity> answers;
 
-    QVector<Entity> foods;
+    std::vector<Entity> foods;
 
-    QVector<Player> players;
+    std::vector<Player> players;
 
     void new_food(int i);
 
@@ -30,6 +30,12 @@ public:
     void generate_food();
 
     void update_player(int iter, QString name, double x, double y, double rad);
+
+    std::vector<Entity> get_answers();
+
+    std::vector<Player> get_players();
+
+    std::vector<Entity> get_foods();
 };
 
 #endif // SCENE_H

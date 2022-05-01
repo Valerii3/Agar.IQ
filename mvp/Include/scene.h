@@ -7,9 +7,6 @@
 #include <QTcpSocket>
 #include <QPaintEvent>
 #include "worker.h"
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonParseError>
 #include <json.hpp>
 
 using json = nlohmann::json;
@@ -28,14 +25,10 @@ public:
 
 private:
     QTcpSocket* socket;
-    QByteArray Data;
     QString name = "Alex";
     int server_iterator = 0;
 
     QVector<Player> players_data;
-
-    QJsonDocument doc;
-    QJsonParseError docError;
 
 public slots:
     void slotResultReady();

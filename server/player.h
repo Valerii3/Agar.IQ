@@ -5,7 +5,9 @@
 
 struct Player : Entity {
 public:
-    QString name;
+    std::string status = "connected";
+
+    std::string name;
 
     Player(QString name, double x, double y, double rad);
 };

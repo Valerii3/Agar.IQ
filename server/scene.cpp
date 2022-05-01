@@ -53,7 +53,7 @@ void scene::generate_food() {
 }
 
 void scene::update_player(int iter, QString name, double x, double y, double rad) {
-    players[iter].name = name;
+    players[iter].name = name.toStdString();
     players[iter].radius = rad;
     players[iter].x_coordinate = x;
     players[iter].y_coordinate = y;
@@ -79,4 +79,16 @@ bool scene::collision(Entity a, Entity b) {
         }
         return false;
     }
+}
+
+std::vector<Player> scene::get_players() {
+    return players;
+}
+
+std::vector<Entity> scene::get_answers() {
+    return answers;
+}
+
+std::vector<Entity> scene::get_foods() {
+    return foods;
 }

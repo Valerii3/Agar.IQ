@@ -141,6 +141,20 @@ void Scene::sendToServer()
     socket->waitForBytesWritten(20000);
 }
 
+/*
+
+{
+    "answers": [ AnswerObject{} ],
+    "players": [ PlayerObject{} ]
+}
+
+json obj;
+
+obj["answers"] = std::vector;
+obj[].push_
+
+*/
+
 void Scene::slotReadyRead()
 {
     socket = (QTcpSocket*)sender();
@@ -152,6 +166,7 @@ void Scene::slotReadyRead()
         qDebug() << e.what() << '\n';
     }
 
+    qDebug() << QString::fromStdString(fromServer.dump(4));
 
     // from client {"status":"connected", "iter":iterator, "name":"player_name", "x":x_coord, "y":y_coord, "rad":radius}
     if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
@@ -159,15 +174,20 @@ void Scene::slotReadyRead()
         server_iterator = fromServer["iterator"];
     } else if (fromServer["status"] == "connected") {
 
-        QString name = QString::fromStdString(fromServer["name"]);
-        double x = fromServer["x"];
-        double y = fromServer["y"];
-        double rad = fromServer["rad"];
-
+        std::vector<Player> players = fromServer["players"];
         players_data.clear();
-        players_data.push_back({name, x, y, rad});
 
-        qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
+        for (auto player : players) {
+            QString name = QString::fromStdString(player.get_name());
+            double x = player.get_x_position();
+            double y = player.get_y_position();
+            double rad = player.get_radius();
+
+            players_data.push_back({name, x, y, rad});
+            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
+        }
+
+
     } else {
         qDebug() << "not connected to server";
     }

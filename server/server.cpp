@@ -61,37 +61,31 @@ void server::slotReadyRead()
     }
 }
 
-struct player {
-    std::string status;
-    std::string name;
-    double x;
-    double y;
-    double rad;
-};
-
-void to_json(json& j, const player& p)
+void to_json(json& j, const Player& p)
 {
-    j = {{"status", p.status}, {"name", p.name}, {"x", p.x}, {"y", p.y}, {"rad", p.rad}};
+    j = {{"status", p.status}, {"name", p.name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
+}
+
+void to_json(json& j, const Entity& p)
+{
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}};
 }
 
 void server::sendToClient() {
     json toClient;
 
-    std::vector<player> players_data;
+    toClient["players"] = Game_scene.get_players();
+    toClient["answers"] = Game_scene.get_answers();
+    toClient["foods"] = Game_scene.get_foods();
+    toClient["status"] = "connected";
 
-    for (auto i : Game_scene.players) {
-        player p{"connected", i.name.toStdString(), i.x_coordinate, i.y_coordinate, i.radius};
+//    for (auto i : Game_scene.players) {
 //        toClient["status"] = "connected";
 //        toClient["name"] = i.name.toStdString();
 //        toClient["x"] = i.x_coordinate;
 //        toClient["y"] = i.y_coordinate;
 //        toClient["rad"] = i.radius;
-        players_data.push_back(p);
-    }
-
-    toClient = players_data;
-
-    // https://github.com/nlohmann/json
+//    }
 
     for (int i = 0; i < sockets.size(); i++) {
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
