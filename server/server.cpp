@@ -56,12 +56,16 @@ void server::slotReadyRead()
         QVector<int> eaten_foods = fromClient["eaten_foods"];
         QVector<int> eaten_answers = fromClient["eaten_answers"];
 
-        for (auto i : eaten_foods) {
-            Game_scene.new_food(i);
+        if (!eaten_foods.empty()) {
+            for (auto i : eaten_foods) {
+                Game_scene.new_food(i);
+            }
         }
 
-        for (auto i : eaten_answers) {
-            Game_scene.new_answer(i);
+        if (!eaten_answers.empty()) {
+            for (auto i : eaten_answers) {
+                Game_scene.new_answer(i);
+            }
         }
 
         Game_scene.update_player(iter, name, x, y, rad);

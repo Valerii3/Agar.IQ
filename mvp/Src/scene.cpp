@@ -133,7 +133,7 @@ void Scene::sendToServer()
     toServer["y"] = worker->player.get_y_position();
     toServer["rad"] = worker->player.get_radius();
 
-    toServer["eaten_food"] = worker->eaten_foods;
+    toServer["eaten_foods"] = worker->eaten_foods;
     toServer["eaten_answers"] = worker->eaten_answers;
 
     worker->eaten_answers.clear();
