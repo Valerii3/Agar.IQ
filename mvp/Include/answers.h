@@ -4,15 +4,15 @@
 #include "entity.h"
 
 struct Answer : Entity {
-    int n;
+    int number;
 public:
-    Answer(int n_);
+    Answer(int number_);
 
     Answer(double x, double y);
 
     int get_number() const;
 
-    void update_number(int n_);
+    void update_number(int number_);
 };
 
 #endif // ANSWERS_H

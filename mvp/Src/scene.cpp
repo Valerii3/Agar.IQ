@@ -8,7 +8,7 @@ Scene::Scene(QWidget *parent) :
 {
     socket = new QTcpSocket;
 
-    connect(socket, &QTcpSocket::readyRead, this, &Scene::slotReadyRead);
+    connect(socket, &QTcpSocket::readyRead, this, &Scene::readFromServer);
     connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
 
     socket->connectToHost("127.0.0.1", 5555);
@@ -40,16 +40,16 @@ void Scene::paintEvent(QPaintEvent *event){
     if (isMenu){
         return;
     }
+
     for (auto it : worker->answers_data) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
         painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
         painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
     }
-    for (auto it : worker->foods_data) {
+    for (auto it : worker->food_data) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
         painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
     }
-
 
     painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
 
@@ -76,7 +76,7 @@ void Scene::keyPressEvent(QKeyEvent *event){
     if (!isMenu && event->type() == QEvent::KeyPress){
         QKeyEvent *key = static_cast<QKeyEvent*>(event);
         if (key->key() == Qt::Key_W){
-              worker->player.speed = -5;
+              worker->player.player_speed = -5;
         }
     }
 }
@@ -85,15 +85,14 @@ void Scene::keyReleaseEvent(QKeyEvent *event){
     if (!isMenu && event->type() == QEvent::KeyRelease){
         QKeyEvent *key = static_cast<QKeyEvent*>(event);
         if (key->key() == Qt::Key_W){
-            worker->player.speed = 0;
+            worker->player.player_speed = 0;
         }
     }
 }
 
 void Scene::mouseMoveEvent(QMouseEvent *event)
 {
-    worker->player.angle = atan2(event->y() - worker->player.get_y_position(), event->x() - worker->player.get_x_position());
-    //qDebug() << worker->entities[0].angle;
+    worker->player.player_angle = atan2(event->y() - worker->player.get_y_position(), event->x() - worker->player.get_x_position());
 }
 
 void Scene::startGame()
@@ -126,24 +125,30 @@ void Scene::on_pushButton_clicked()
 void Scene::sendToServer()
 {
     json toServer;
+
+    // every message from client to server is player data:
+    //      { "status":"connected", "name":playerName, "id":clientID,
+    //      "x":x_coorditate, "y":y_coordinate, "rad":radius,
+    //      "eatenFood":[ eaten_food ], "eatenAnswers":[ eatenAnswers ] }
+
     toServer["status"] = "connected";
     toServer["name"] = name.toStdString();
-    toServer["iter"] = server_iterator;
+    toServer["id"] = clientID;
     toServer["x"] = worker->player.get_x_position();
     toServer["y"] = worker->player.get_y_position();
     toServer["rad"] = worker->player.get_radius();
 
-    toServer["eaten_foods"] = worker->eaten_foods;
+    toServer["eaten_food"] = worker->eaten_food;
     toServer["eaten_answers"] = worker->eaten_answers;
 
     worker->eaten_answers.clear();
-    worker->eaten_foods.clear();
+    worker->eaten_food.clear();
 
     socket->write(QString::fromStdString(toServer.dump()).toLatin1());
     socket->waitForBytesWritten(20000);
 }
 
-void Scene::slotReadyRead()
+void Scene::readFromServer()
 {
     socket = (QTcpSocket*)sender();
 
@@ -154,17 +159,26 @@ void Scene::slotReadyRead()
         qDebug() << e.what() << '\n';
     }
 
-    // from client {"status":"connected", "iter":iterator, "name":"player_name", "x":x_coord, "y":y_coord, "rad":radius}
+    // first message from server is reply to connection and
+    //       client's id (his number in players_data):
+    //       {"status":"connected", "initialization":"yes", "id":clientId}
+
+    // every next message is scene data, include players data,
+    //       answer-dots data and dots data:
+    //       {"status":"connected", "players":[ players data ],
+    //        "answers":[ answers data ], "food":[ food data ]}
+
     if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
         qDebug() << "connected to server";
-        server_iterator = fromServer["iterator"];
+        clientID = fromServer["id"];
     } else if (fromServer["status"] == "connected") {
 
         worker->players_data.clear();
         worker->answers_data.clear();
-        worker->foods_data.clear();
+        worker->food_data.clear();
 
         qDebug() << "read players";
+//        qDebug() << QString::fromStdString(fromServer.dump());
 
         for (auto player : fromServer["players"]) {
             QString name = QString::fromStdString(player["name"]);
@@ -173,7 +187,7 @@ void Scene::slotReadyRead()
             double rad = player["rad"];
 
             worker->players_data.push_back({name, x, y, rad});
-            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
+//            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
         }
 
         for (auto answer : fromServer["answers"]) {
@@ -181,14 +195,14 @@ void Scene::slotReadyRead()
             double y = answer["y"];
 
             worker->answers_data.push_back({x, y});
-            qDebug() << "answer" << ' ' << x << ' ' << y;
+//            qDebug() << "answer" << ' ' << x << ' ' << y;
         }
 
         for (auto food : fromServer["foods"]) {
             double x = food["x"];
             double y = food["y"];
 
-            worker->foods_data.push_back({x, y});
+            worker->food_data.push_back({x, y});
             qDebug() << "food" << ' ' << x << ' ' << y;
         }
 

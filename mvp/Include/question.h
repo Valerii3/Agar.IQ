@@ -8,11 +8,11 @@ class Question {
     int correct_answer;
 
 public:
-    Question(int bits, int operandCounts, std::string operands);
+    Question(int bits, int operand_counts, std::string operands);
 
-    std::string getQuestion() const;
+    std::string get_question() const;
 
-   int getAnswer();
+   int get_answer();
 };
 
 #endif // QUESTION_H

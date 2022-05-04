@@ -26,7 +26,7 @@ public:
 private:
     QTcpSocket* socket;
     QString name = "Alex";
-    int server_iterator = 0;
+    int clientID = 0;
 
 public slots:
     void slotResultReady();
@@ -34,7 +34,7 @@ public slots:
     void startGame();
 
 private slots:
-    void slotReadyRead();
+    void readFromServer();
     void sendToServer();
 
 signals:

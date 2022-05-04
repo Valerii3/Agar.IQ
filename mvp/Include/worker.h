@@ -36,9 +36,9 @@ public:
 
     QVector<Player> players_data;
     QVector<Answer> answers_data;
-    QVector<Food> foods_data;
+    QVector<Food> food_data;
 
-    QVector<int> eaten_foods;
+    QVector<int> eaten_food;
     QVector<int> eaten_answers;
 
     void generate_answers(int correct);

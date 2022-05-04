@@ -1,20 +1,20 @@
 #include "../Include/player.h"
 
-Player::Player(std::string name_) : Player() {
-    name = name_;
+Player::Player(std::string name) : Player() {
+    player_name = name;
 }
 
 Player::Player() : Entity(25) {
-    name = "Илья";
+    player_name = "Player";
 }
 
 std::string Player::get_name() const {
-    return name;
+    return player_name;
 }
 
 Player::Player(QString name, double x, double y, double rad) {
-    this->name = name.toStdString();
-    x_position = x;
-    y_position = y;
+    player_name = name.toStdString();
+    x_coordinate = x;
+    y_coordinate = y;
     radius = rad;
 }

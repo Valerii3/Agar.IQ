@@ -5,8 +5,8 @@
 #include <QRandomGenerator>
 
 struct Entity {
-    double x_position;
-    double y_position;
+    double x_coordinate;
+    double y_coordinate;
     double radius;
 
     std::string type = "entity";

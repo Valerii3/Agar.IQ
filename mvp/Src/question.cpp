@@ -1,12 +1,12 @@
 #include "../Include/question.h"
 
-Question::Question(int bits, int operandCounts, std::string operands) {
+Question::Question(int bits, int operand_counts, std::string operands) {
     int p = pow(10, bits);
     int ans = 0;
     int a = rand() % p;
     question = std::to_string(a) + ' ';
     int prevOp = 1;
-    for (int i = 0; i < operandCounts; i++) {
+    for (int i = 0; i < operand_counts; i++) {
         int op = rand() % operands.size();
         int b = rand() % p;
         question = question + operands[op] + ' ';
@@ -28,11 +28,11 @@ Question::Question(int bits, int operandCounts, std::string operands) {
     question += "= ";
 }
 
-std::string Question::getQuestion() const {
+std::string Question::get_question() const {
     return question;
 }
 
-int Question::getAnswer() {
+int Question::get_answer() {
     return correct_answer;
 }
 
