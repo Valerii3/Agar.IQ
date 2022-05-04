@@ -171,11 +171,29 @@ void Scene::readFromServer()
     if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
         qDebug() << "connected to server";
         clientID = fromServer["id"];
+
+//        worker->answers_data.clear();
+//        worker->food_data.clear();
+
+        for (auto answer : fromServer["answers"]) {
+            double x = answer["x"];
+            double y = answer["y"];
+
+            worker->answers_data.push_back(Answer(x, y));
+            qDebug() << "answer" << ' ' << x << ' ' << y;
+        }
+
+        for (auto food : fromServer["food"]) {
+            double x = food["x"];
+            double y = food["y"];
+
+            worker->food_data.push_back({x, y});
+            qDebug() << "food" << ' ' << x << ' ' << y;
+        }
+
     } else if (fromServer["status"] == "connected") {
 
         worker->players_data.clear();
-        worker->answers_data.clear();
-        worker->food_data.clear();
 
         qDebug() << "read players";
 //        qDebug() << QString::fromStdString(fromServer.dump());
@@ -190,20 +208,26 @@ void Scene::readFromServer()
 //            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
         }
 
-        for (auto answer : fromServer["answers"]) {
-            double x = answer["x"];
-            double y = answer["y"];
+        for (auto updated_answer : fromServer["updated_answers"]) {
+            int id = updated_answer["id"];
+            double x = updated_answer["x"];
+            double y = updated_answer["y"];
 
-            worker->answers_data.push_back({x, y});
+            worker->answers_data[id] = {x, y};
+            worker->update_answer(id);
+//            worker->answers_data.push_back({x, y});
 //            qDebug() << "answer" << ' ' << x << ' ' << y;
         }
 
-        for (auto food : fromServer["foods"]) {
-            double x = food["x"];
-            double y = food["y"];
+        for (auto updated_food : fromServer["updated_food"]) {
+            int id = updated_food["id"];
+            double x = updated_food["x"];
+            double y = updated_food["y"];
 
-            worker->food_data.push_back({x, y});
-            qDebug() << "food" << ' ' << x << ' ' << y;
+            worker->food_data[id] = {x, y};
+
+//            worker->answers_data.push_back({x, y});
+//            qDebug() << "answer" << ' ' << x << ' ' << y;
         }
 
     } else {

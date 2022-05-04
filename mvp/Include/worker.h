@@ -43,6 +43,7 @@ public:
 
     void generate_answers(int correct);
     void generate_food();
+    void update_answer(int id);
 
     Player player;
 

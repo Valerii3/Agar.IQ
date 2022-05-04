@@ -6,6 +6,10 @@ int Worker::bits = 1;
 int Worker::operandsCount = 1;
 std::string Worker::operands = "+-*";
 
+void Worker::update_answer(int id) {
+    answers_data[id].update_number(generator + rand() % 10 - 5);
+}
+
 void Worker::generate_answers(int correct) {
     if (!answers_data.empty()) {
         answers_data[0].update_number(correct);
