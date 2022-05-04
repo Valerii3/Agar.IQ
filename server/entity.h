@@ -10,13 +10,19 @@ struct Entity {
 
     QString type = "entity";
 
+    int entity_id;
+
     double get_x_position() const;
     double get_y_position() const;
     double get_radius() const;
 
-    Entity();
+    Entity() = default;
 
-    Entity(double r_);
+    Entity(int id);
+
+    Entity(double r_, int id);
+
+    Entity(double x, double y, double r, int id);
 };
 
 #endif // ENTITY_H

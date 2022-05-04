@@ -7,21 +7,21 @@ scene::scene()
 }
 
 void scene::new_answer(int i) {
-    answers[i] = Entity(25);
+    answers[i] = Entity(25, i);
 }
 
 void scene::new_food(int i) {
-    auto a = Entity(7);
+    auto a = Entity(7, i);
     for (auto player : players) {
         while (collision(player, a)) {
-            a = Entity(7);
+            a = Entity(7, i);
         }
     }
-    foods[i] = a;
+    food[i] = a;
 }
 
 void scene::new_player(QString name) {
-    players.push_back(Player(name, rand(), rand(), 30));
+    players.push_back(Player(name, rand(), rand(), 30, players.size()));
 }
 
 void scene::generate_answers() {
@@ -42,18 +42,18 @@ void scene::generate_answers() {
 
 void scene::generate_food() {
     for (int i = 0; i < 40; i++) {
-        auto a = Entity(7);
+        auto a = Entity(7, i);
         for (auto player : players) {
             while (collision(player, a)) {
-                a = Entity(7);
+                a = Entity(7, i);
             }
         }
-        foods.push_back(a);
+        food.push_back(a);
     }
 }
 
 void scene::update_player(int iter, QString name, double x, double y, double rad) {
-    players[iter].name = name.toStdString();
+    players[iter].player_name = name.toStdString();
     players[iter].radius = rad;
     players[iter].x_coordinate = x;
     players[iter].y_coordinate = y;
@@ -89,6 +89,6 @@ std::vector<Entity> scene::get_answers() {
     return answers;
 }
 
-std::vector<Entity> scene::get_foods() {
-    return foods;
+std::vector<Entity> scene::get_food() {
+    return food;
 }

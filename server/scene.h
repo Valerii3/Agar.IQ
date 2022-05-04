@@ -13,7 +13,7 @@ public:
 
     std::vector<Entity> answers;
 
-    std::vector<Entity> foods;
+    std::vector<Entity> food;
 
     std::vector<Player> players;
 
@@ -35,7 +35,11 @@ public:
 
     std::vector<Player> get_players();
 
-    std::vector<Entity> get_foods();
+    std::vector<Entity> get_food();
+
+    std::vector<Entity> updated_food;
+
+    std::vector<Entity> updated_answers;
 };
 
 #endif // SCENE_H

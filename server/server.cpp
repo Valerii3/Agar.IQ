@@ -86,7 +86,7 @@ void server::readFromClient()
 
 void to_json(json& j, const Player& p)
 {
-    j = {{"name", p.name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
+    j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
 }
 
 void to_json(json& j, const Entity& p)
@@ -104,7 +104,7 @@ void server::sendToClient() {
 
     toClient["players"] = Game_scene.get_players();
     toClient["answers"] = Game_scene.get_answers();
-    toClient["foods"] = Game_scene.get_foods();
+    toClient["foods"] = Game_scene.get_food();
     toClient["status"] = "connected";
 
     for (int i = 0; i < sockets.size(); i++) {
