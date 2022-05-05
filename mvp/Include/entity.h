@@ -11,7 +11,6 @@ struct Entity {
 
     std::string type = "entity";
 
-
     QColor color;
 
     double get_x_position() const;

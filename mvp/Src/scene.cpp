@@ -41,11 +41,25 @@ void Scene::paintEvent(QPaintEvent *event){
         return;
     }
 
+//    if (initialization) {
+//        for (auto it : initialization_answers) {
+//            painter.setBrush(QBrush(it.color, Qt::SolidPattern));
+//            painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
+//            painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
+//        }
+
+//        for (auto it : initialization_food) {
+//            painter.setBrush(QBrush(it.color, Qt::SolidPattern));
+//            painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
+//        }
+//    }
+
     for (auto it : worker->answers_data) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
         painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
         painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
     }
+
     for (auto it : worker->food_data) {
         painter.setBrush(QBrush(it.color, Qt::SolidPattern));
         painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
@@ -175,21 +189,23 @@ void Scene::readFromServer()
 //        worker->answers_data.clear();
 //        worker->food_data.clear();
 
-        for (auto answer : fromServer["answers"]) {
-            double x = answer["x"];
-            double y = answer["y"];
+//        for (auto answer : fromServer["answers"]) {
+//            double x = answer["x"];
+//            double y = answer["y"];
 
-            worker->answers_data.push_back(Answer(x, y));
-            qDebug() << "answer" << ' ' << x << ' ' << y;
-        }
+//            initialization_answers.push_back(Answer(x, y));
+//            qDebug() << "answer" << ' ' << x << ' ' << y;
+//        }
 
-        for (auto food : fromServer["food"]) {
-            double x = food["x"];
-            double y = food["y"];
+//        for (auto food : fromServer["food"]) {
+//            double x = food["x"];
+//            double y = food["y"];
 
-            worker->food_data.push_back({x, y});
-            qDebug() << "food" << ' ' << x << ' ' << y;
-        }
+//            initialization_food.push_back(Food(x, y));
+//            qDebug() << "food" << ' ' << x << ' ' << y;
+//        }
+
+        // ещё не созданы эти объекты, переделать на статик методы
 
     } else if (fromServer["status"] == "connected") {
 

@@ -4,6 +4,9 @@ scene::scene()
 {
     generate_answers();
     generate_food();
+
+    updated_food = food;
+    updated_answers = answers;
 }
 
 void scene::new_answer(int i) {

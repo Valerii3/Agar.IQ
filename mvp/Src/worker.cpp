@@ -20,7 +20,7 @@ void Worker::generate_answers(int correct) {
 }
 
 Worker::Worker(QObject *parent)
-    : QObject{parent}
+    : QObject{parent}, answers_data{10}, food_data{40}
 {
     srand(time(0));
 

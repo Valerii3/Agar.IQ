@@ -42,8 +42,8 @@ void server::incomingConnection(qintptr socketDescriptor) {
     initializationMessage["initialization"] = "yes";
     initializationMessage["id"] = newClientID;
 
-    initializationMessage["answers"] = Game_scene.get_answers();
-    initializationMessage["food"] = Game_scene.get_food();
+//    initializationMessage["answers"] = Game_scene.get_answers();
+//    initializationMessage["food"] = Game_scene.get_food();
 
     socket->waitForBytesWritten(500);
     socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1());

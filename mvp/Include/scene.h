@@ -28,6 +28,10 @@ private:
     QString name = "Alex";
     int clientID = 0;
 
+    bool initialization = true;
+    QVector<Food> initialization_food;
+    QVector<Answer> initialization_answers;
+
 public slots:
     void slotResultReady();
     void slotGameFinish();
