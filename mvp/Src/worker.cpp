@@ -20,7 +20,7 @@ void Worker::generate_answers(int correct) {
 }
 
 Worker::Worker(QObject *parent)
-    : QObject{parent}, answers_data{10}, food_data{40}
+    : QObject{parent}
 {
     srand(time(0));
 
@@ -31,9 +31,9 @@ Worker::Worker(QObject *parent)
     eaten_answers = {};
     eaten_food = {};
 
-    expr = question.get_question();
-    generator = question.get_answer();
-    generate_answers(generator);
+//    expr = question.get_question();
+//    generator = question.get_answer();
+//    generate_answers(generator);
 }
 
 void Worker::doWork() {
@@ -85,9 +85,9 @@ void Worker::update() {
 
                 auto question = Question(bits, operandsCount, operands);
 
-                expr = question.get_question();
-                generator = question.get_answer();
-                generate_answers(generator);
+//                expr = question.get_question();
+//                generator = question.get_answer();
+//                generate_answers(generator);
             } else {
                 score -= 10;
                 is_correct = "Wrong!";
@@ -96,9 +96,9 @@ void Worker::update() {
 
                 auto question = Question(bits, operandsCount, operands);
 
-                expr = question.get_question();
-                generator = question.get_answer();
-                generate_answers(generator);
+//                expr = question.get_question();
+//                generator = question.get_answer();
+//                generate_answers(generator);
             }
         }
     }

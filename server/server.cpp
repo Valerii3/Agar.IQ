@@ -15,9 +15,15 @@ void to_json(json& j, const Player& p)
     j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
 }
 
-void to_json(json& j, const Entity& p)
+void to_json(json& j, const Answer& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"id", p.entity_id}};
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"id", p.entity_id}, {"number", p.get_number()}};
+}
+
+void to_json(json& j, const Food& p)
+{
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"id", p.entity_id}, {"red_color", p.red_color},
+         {"green_color", p.green_color}, {"blue_color", p.blue_color}};
 }
 
 void server::incomingConnection(qintptr socketDescriptor) {
@@ -41,9 +47,6 @@ void server::incomingConnection(qintptr socketDescriptor) {
     initializationMessage["status"] = "connected";
     initializationMessage["initialization"] = "yes";
     initializationMessage["id"] = newClientID;
-
-//    initializationMessage["answers"] = Game_scene.get_answers();
-//    initializationMessage["food"] = Game_scene.get_food();
 
     socket->waitForBytesWritten(500);
     socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1());
@@ -77,20 +80,15 @@ void server::readFromClient()
         QVector<int> eaten_food = fromClient["eaten_food"];
         QVector<int> eaten_answers = fromClient["eaten_answers"];
 
-        Game_scene.updated_answers.clear();
-        Game_scene.updated_food.clear();
-
         if (!eaten_food.empty()) {
             for (auto i : eaten_food) {
                 Game_scene.new_food(i);
-                Game_scene.updated_food.push_back(Game_scene.food[i]);
             }
         }
 
         if (!eaten_answers.empty()) {
             for (auto i : eaten_answers) {
-                Game_scene.new_answer(i);
-                Game_scene.updated_answers.push_back(Game_scene.answers[i]);
+                Game_scene.check_correct(i);
             }
         }
 
@@ -115,12 +113,14 @@ void server::sendToClient() {
     toClient["food"] = Game_scene.get_food();
     toClient["status"] = "connected";
 
-    toClient["updated_food"] = Game_scene.updated_food;
-    toClient["updated_answers"] = Game_scene.updated_answers;
+    toClient["expr"] = Game_scene.expr;
+    toClient["correct"] = Game_scene.generator;
 
     for (int i = 0; i < sockets.size(); i++) {
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
     }
+
+//    qDebug() << QString::fromStdString(toClient.dump()).toLatin1();
 }
 
 void server::sockDisc()

@@ -1,23 +1,37 @@
 #include "scene.h"
 
+int scene::bits = 1;
+int scene::operandsCount = 1;
+std::string scene::operands = "+-*";
+
+void scene::update_numbers(int correct) {
+    answers[0].update_number(correct);
+    for (int i = 1; i < 10; i++) {
+        answers[i].update_number(correct + rand() % 10 - 5);
+    }
+}
+
 scene::scene()
 {
     generate_answers();
     generate_food();
 
-    updated_food = food;
-    updated_answers = answers;
+    auto question = Question(bits, operandsCount, operands);
+
+    expr = question.get_question();
+    generator = question.get_answer();
+    update_numbers(generator);
 }
 
 void scene::new_answer(int i) {
-    answers[i] = Entity(25, i);
+    answers[i] = Answer(i);
 }
 
 void scene::new_food(int i) {
-    auto a = Entity(7, i);
+    auto a = Food(i);
     for (auto player : players) {
         while (collision(player, a)) {
-            a = Entity(7, i);
+            a = Food(i);
         }
     }
     food[i] = a;
@@ -45,10 +59,10 @@ void scene::generate_answers() {
 
 void scene::generate_food() {
     for (int i = 0; i < 40; i++) {
-        auto a = Entity(7, i);
+        auto a = Food(i);
         for (auto player : players) {
             while (collision(player, a)) {
-                a = Entity(7, i);
+                a = Food(i);
             }
         }
         food.push_back(a);
@@ -88,10 +102,23 @@ std::vector<Player> scene::get_players() {
     return players;
 }
 
-std::vector<Entity> scene::get_answers() {
+std::vector<Answer> scene::get_answers() {
     return answers;
 }
 
-std::vector<Entity> scene::get_food() {
+std::vector<Food> scene::get_food() {
     return food;
+}
+
+void scene::check_correct(int i) {
+    if (answers[i].get_number() == generator) {
+        new_answer(i);
+        auto question = Question(bits, operandsCount, operands);
+
+        expr = question.get_question();
+        generator = question.get_answer();
+        update_numbers(generator);
+    } else {
+        new_answer(i);
+    }
 }

@@ -17,3 +17,8 @@ Answer::Answer(double x, double y) : Entity(x, y, 15, Qt::red) {
 void Answer::update_number(int number_) {
     number = number_;
 }
+
+Answer::Answer(double x, double y, int number_) : Entity(x, y, 15, Qt::red) {
+    number = number_;
+    type = "answer";
+}

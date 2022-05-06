@@ -5,7 +5,7 @@
 #include <QTcpSocket>
 #include <QDataStream>
 #include <json.hpp>
-#include <scene.h>
+#include "scene.h"
 
 using json = nlohmann::json;
 

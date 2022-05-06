@@ -8,6 +8,8 @@ public:
 
     std::string player_name;
 
+    Player(QString name, double x, double y, double rad);
+
     Player(QString name, double x, double y, double rad, int id);
 };
 

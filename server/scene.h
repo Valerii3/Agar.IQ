@@ -2,18 +2,29 @@
 #define SCENE_H
 
 #include <QVector>
+#include <QRandomGenerator>
 
-#include "entity.h"
 #include "player.h"
+#include "answer.h"
+#include "food.h"
+#include "question.h"
 
 class scene
 {
 public:
+
+    static int bits;
+    static int operandsCount;
+    static std::string operands;
+
+    int generator = 5;
+    std::string expr;
+
     scene();
 
-    std::vector<Entity> answers;
+    std::vector<Answer> answers;
 
-    std::vector<Entity> food;
+    std::vector<Food> food;
 
     std::vector<Player> players;
 
@@ -31,15 +42,17 @@ public:
 
     void update_player(int iter, QString name, double x, double y, double rad);
 
-    std::vector<Entity> get_answers();
+    void update_answer(int id);
+
+    void update_numbers(int correct);
+
+    std::vector<Answer> get_answers();
 
     std::vector<Player> get_players();
 
-    std::vector<Entity> get_food();
+    std::vector<Food> get_food();
 
-    std::vector<Entity> updated_food;
-
-    std::vector<Entity> updated_answers;
+    void check_correct(int i);
 };
 
 #endif // SCENE_H

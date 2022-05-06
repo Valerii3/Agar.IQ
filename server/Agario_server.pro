@@ -13,9 +13,12 @@ TEMPLATE = app
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        answer.cpp \
         entity.cpp \
+        food.cpp \
         main.cpp \
         player.cpp \
+        question.cpp \
         scene.cpp \
         server.cpp
 
@@ -25,8 +28,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    answer.h \
     entity.h \
+    food.h \
     player.h \
+    question.h \
     scene.h \
     server.h \
     json.hpp
