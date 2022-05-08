@@ -69,8 +69,6 @@ void Scene::paintEvent(QPaintEvent *event){
     painter.drawText(QPoint(1820,40), QString::number(worker->score));
     painter.drawText(QPoint(1700,80), worker->is_correct);
     painter.drawText(QPoint(800,40), QString::fromLocal8Bit(worker->expr.c_str()));
-
-//    emit sendToServer();
 }
 
 void Scene::keyPressEvent(QKeyEvent *event){
@@ -93,7 +91,8 @@ void Scene::keyReleaseEvent(QKeyEvent *event){
 
 void Scene::mouseMoveEvent(QMouseEvent *event)
 {
-    worker->player.player_angle = atan2(event->y() - worker->player.get_y_position(), event->x() - worker->player.get_x_position());
+    worker->player.player_angle = atan2(event->y() - worker->players_data[clientID].get_y_position(),
+                                        event->x() - worker->players_data[clientID].get_x_position());
 }
 
 void Scene::startGame()
@@ -168,8 +167,8 @@ void Scene::readFromServer()
 
     } else if (fromServer["status"] == "connected") {
 
-        qDebug() << "read players";
-        qDebug() << QString::fromStdString(fromServer.dump());
+//        qDebug() << "read players";
+//        qDebug() << QString::fromStdString(fromServer.dump());
 
         worker->answers_data.clear();
         worker->food_data.clear();
@@ -184,7 +183,7 @@ void Scene::readFromServer()
             QString is_correct = QString::fromStdString(player["is_correct"]);
 
             worker->players_data.push_back({name, x, y, rad, score, is_correct});
-            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
+//            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
         }
 
         for (auto answer : fromServer["answers"]) {
@@ -193,7 +192,7 @@ void Scene::readFromServer()
             int number = answer["number"];
 
             worker->answers_data.push_back({x, y, number});
-            qDebug() << "answer" << ' ' << x << ' ' << y << ' ' << number;
+//            qDebug() << "answer" << ' ' << x << ' ' << y << ' ' << number;
         }
 
         for (auto food : fromServer["food"]) {
@@ -204,14 +203,14 @@ void Scene::readFromServer()
             int blue = food["blue_color"];
 
             worker->food_data.push_back({x, y, red, green, blue});
-            qDebug() << "food" << ' ' << x << ' ' << y;
+//            qDebug() << "food" << ' ' << x << ' ' << y;
         }
 
         worker->is_correct = worker->players_data[clientID].is_correct;
         worker->score = worker->players_data[clientID].score;
         worker->expr = fromServer["expr"];
 
-        qDebug() << QString::fromStdString(worker->expr) << ' ' << worker->generator;
+//        qDebug() << QString::fromStdString(worker->expr) << ' ' << worker->generator;
 
         repaint();
     } else {

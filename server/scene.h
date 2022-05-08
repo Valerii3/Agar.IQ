@@ -40,7 +40,7 @@ public:
 
     void generate_food();
 
-    void update_player(int iter, QString name, double x, double y, double rad);
+    void update_player(int iter, QString name, double angle);
 
     void update_answer(int id);
 

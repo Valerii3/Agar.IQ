@@ -76,7 +76,8 @@ void server::readFromClient()
         QString name = QString::fromStdString(fromClient["name"]);
         double player_angle = fromClient["angle"];
 
-        Game_scene.players[clientID].player_angle = player_angle;
+//        Game_scene.players[clientID].player_angle = player_angle;
+        Game_scene.update_player(clientID, name, player_angle);
 
         Game_scene.update(clientID);
 

@@ -12,7 +12,7 @@ public:
 
     int score = 0;
     double player_angle = 0;
-    double player_speed = 0.5;
+    double player_speed = 3.5;
     std::string is_correct = "";
 
     Player(QString name, double x, double y, double rad);

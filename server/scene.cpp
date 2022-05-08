@@ -69,11 +69,9 @@ void scene::generate_food() {
     }
 }
 
-void scene::update_player(int iter, QString name, double x, double y, double rad) {
+void scene::update_player(int iter, QString name, double angle) {
     players[iter].player_name = name.toStdString();
-    players[iter].radius = rad;
-    players[iter].x_coordinate = x;
-    players[iter].y_coordinate = y;
+    players[iter].player_angle = angle;
 }
 
 bool scene::collision(Entity a, Entity b) {
@@ -124,8 +122,8 @@ void scene::check_correct(int i) {
 }
 
 void scene::update(int clientID) {
-    players[clientID].x_coordinate -= players[clientID].player_speed * cos(players[clientID].player_angle);
-    players[clientID].y_coordinate -= players[clientID].player_speed * sin(players[clientID].player_angle);
+    players[clientID].x_coordinate += players[clientID].player_speed * cos(players[clientID].player_angle);
+    players[clientID].y_coordinate += players[clientID].player_speed * sin(players[clientID].player_angle);
 
     for (int i = 0; i < answers.size(); i++) {
         if (collision(answers[i], players[clientID])) {
@@ -134,13 +132,26 @@ void scene::update(int clientID) {
                 players[clientID].is_correct = "Correct!";
                 players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(3 / 3.14), 60.0);
                 generator = 1 + rand() % 19;
+
+                new_answer(i);
+                auto question = Question(bits, operandsCount, operands);
+
+                expr = question.get_question();
+                generator = question.get_answer();
+                update_numbers(generator);
             } else {
                 players[clientID].score -= 10;
                 players[clientID].is_correct = "Wrong!";
                 players[clientID].radius = std::max(players[clientID].get_radius() - sqrt(6 / 3.14), 7.0);
                 generator = 1 + rand() % 19;
+
+                new_answer(i);
+                auto question = Question(bits, operandsCount, operands);
+
+                expr = question.get_question();
+                generator = question.get_answer();
+                update_numbers(generator);
             }
-            check_correct(i);
         }
     }
 
