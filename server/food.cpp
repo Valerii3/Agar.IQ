@@ -8,6 +8,3 @@ Food::Food(double x, double y) : Entity(x, y, 5) {
     type = "food";
 }
 
-Food::Food(int i) : Entity(5) {
-    entity_id = i;
-}

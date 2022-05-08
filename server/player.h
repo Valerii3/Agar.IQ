@@ -8,6 +8,13 @@ public:
 
     std::string player_name;
 
+    int player_id = 0;
+
+    int score = 0;
+    double player_angle = 0;
+    double player_speed = 0.5;
+    std::string is_correct = "";
+
     Player(QString name, double x, double y, double rad);
 
     Player(QString name, double x, double y, double rad, int id);

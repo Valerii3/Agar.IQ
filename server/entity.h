@@ -11,8 +11,6 @@ struct Entity {
 
     QString type = "entity";
 
-    int entity_id;
-
     int red_color;
     int green_color;
     int blue_color;
@@ -25,11 +23,7 @@ struct Entity {
 
     Entity(double r);
 
-    Entity(double r_, int id);
-
     Entity(double x, double y, double r);
-
-    Entity(double x, double y, double r, int id);
 };
 
 #endif // ENTITY_H

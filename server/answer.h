@@ -8,9 +8,7 @@ struct Answer : Entity
 public:
     int number;
 
-    Answer() = default;
-
-    Answer(int i);
+    Answer();
 
     Answer(double x, double y, int number_);
 

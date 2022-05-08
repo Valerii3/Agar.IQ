@@ -53,6 +53,8 @@ public:
     std::vector<Food> get_food();
 
     void check_correct(int i);
+
+    void update(int clientID);
 };
 
 #endif // SCENE_H

@@ -12,17 +12,18 @@ server::~server(){}
 
 void to_json(json& j, const Player& p)
 {
-    j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius}};
+    j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate},
+         {"rad", p.radius}, {"score", p.score}, {"is_correct", p.is_correct}};
 }
 
 void to_json(json& j, const Answer& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"id", p.entity_id}, {"number", p.get_number()}};
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"number", p.get_number()}};
 }
 
 void to_json(json& j, const Food& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"id", p.entity_id}, {"red_color", p.red_color},
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"red_color", p.red_color},
          {"green_color", p.green_color}, {"blue_color", p.blue_color}};
 }
 
@@ -73,26 +74,11 @@ void server::readFromClient()
     if (fromClient["status"] == "connected") {
         int clientID = fromClient["id"];
         QString name = QString::fromStdString(fromClient["name"]);
-        double x = fromClient["x"];
-        double y = fromClient["y"];
-        double rad = fromClient["rad"];
+        double player_angle = fromClient["angle"];
 
-        QVector<int> eaten_food = fromClient["eaten_food"];
-        QVector<int> eaten_answers = fromClient["eaten_answers"];
+        Game_scene.players[clientID].player_angle = player_angle;
 
-        if (!eaten_food.empty()) {
-            for (auto i : eaten_food) {
-                Game_scene.new_food(i);
-            }
-        }
-
-        if (!eaten_answers.empty()) {
-            for (auto i : eaten_answers) {
-                Game_scene.check_correct(i);
-            }
-        }
-
-        Game_scene.update_player(clientID, name, x, y, rad);
+        Game_scene.update(clientID);
 
         sendToClient();
     } else {
@@ -114,7 +100,6 @@ void server::sendToClient() {
     toClient["status"] = "connected";
 
     toClient["expr"] = Game_scene.expr;
-    toClient["correct"] = Game_scene.generator;
 
     for (int i = 0; i < sockets.size(); i++) {
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());

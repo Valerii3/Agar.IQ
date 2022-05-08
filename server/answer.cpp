@@ -13,7 +13,7 @@ int Answer::get_number() const {
     return number;
 }
 
-Answer::Answer(int i) : Entity(15, i) {
+Answer::Answer() : Entity(15) {
     number = 0;
     type = "answer";
 

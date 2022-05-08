@@ -6,19 +6,6 @@ int Worker::bits = 1;
 int Worker::operandsCount = 1;
 std::string Worker::operands = "+-*";
 
-void Worker::update_answer(int id) {
-    answers_data[id].update_number(generator + rand() % 10 - 5);
-}
-
-void Worker::generate_answers(int correct) {
-    if (!answers_data.empty()) {
-        answers_data[0].update_number(correct);
-        for (int i = 1; i < 10; i++) {
-            answers_data[i].update_number(correct);
-        }
-    }
-}
-
 Worker::Worker(QObject *parent)
     : QObject{parent}
 {
@@ -26,14 +13,8 @@ Worker::Worker(QObject *parent)
 
     Player player;
 
-    auto question = Question(bits, operandsCount, operands);
-
     eaten_answers = {};
     eaten_food = {};
-
-//    expr = question.get_question();
-//    generator = question.get_answer();
-//    generate_answers(generator);
 }
 
 void Worker::doWork() {
@@ -46,9 +27,8 @@ void Worker::doWork() {
         auto deltaTime = clock::now() - timeStart;
         timeStart = clock::now();
         lag += std::chrono::duration_cast<std::chrono::nanoseconds>(deltaTime);
-        while (lag >= timeStep){
+        while (lag >= timeStep) {
             lag -= timeStep;
-            update();
             emit signalResultReady();
         }
     }
@@ -82,23 +62,11 @@ void Worker::update() {
                 is_correct = "Correct!";
                 player.radius = std::min(player.get_radius() + sqrt(3 / 3.14), 60.0);
                 generator = 1 + rand() % 19;
-
-                auto question = Question(bits, operandsCount, operands);
-
-//                expr = question.get_question();
-//                generator = question.get_answer();
-//                generate_answers(generator);
             } else {
                 score -= 10;
                 is_correct = "Wrong!";
                 player.radius = std::max(player.get_radius() - sqrt(6 / 3.14), 7.0);
                 generator = 1 + rand() % 19;
-
-                auto question = Question(bits, operandsCount, operands);
-
-//                expr = question.get_question();
-//                generator = question.get_answer();
-//                generate_answers(generator);
             }
         }
     }

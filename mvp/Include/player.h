@@ -10,10 +10,15 @@ public:
     double player_speed = 0;
     double player_angle = 0;
 
+    int score = 0;
+    QString is_correct = "";
+
     Player();
     Player(std::string name);
 
     Player(QString name, double x, double y, double rad);
+
+    Player(QString name, double x, double y, double rad, int score_, QString is_correct_);
 };
 
 #endif // PLAYER_H

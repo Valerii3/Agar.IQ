@@ -18,3 +18,13 @@ Player::Player(QString name, double x, double y, double rad) {
     y_coordinate = y;
     radius = rad;
 }
+
+Player::Player(QString name, double x, double y, double rad, int score_, QString is_correct_) {
+    player_name = name.toStdString();
+    x_coordinate = x;
+    y_coordinate = y;
+    radius = rad;
+
+    score = score_;
+    is_correct = is_correct_;
+}

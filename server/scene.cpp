@@ -24,21 +24,21 @@ scene::scene()
 }
 
 void scene::new_answer(int i) {
-    answers[i] = Answer(i);
+    answers[i] = Answer();
 }
 
 void scene::new_food(int i) {
-    auto a = Food(i);
+    auto a = Food();
     for (auto player : players) {
         while (collision(player, a)) {
-            a = Food(i);
+            a = Food();
         }
     }
     food[i] = a;
 }
 
 void scene::new_player(QString name) {
-    players.push_back(Player(name, rand(), rand(), 30, players.size()));
+    players.push_back(Player(name, 250.0 + rand() % 1400, 100.0 + rand() % 700, 30, players.size()));
 }
 
 void scene::generate_answers() {
@@ -59,10 +59,10 @@ void scene::generate_answers() {
 
 void scene::generate_food() {
     for (int i = 0; i < 40; i++) {
-        auto a = Food(i);
+        auto a = Food();
         for (auto player : players) {
             while (collision(player, a)) {
-                a = Food(i);
+                a = Food();
             }
         }
         food.push_back(a);
@@ -120,5 +120,37 @@ void scene::check_correct(int i) {
         update_numbers(generator);
     } else {
         new_answer(i);
+    }
+}
+
+void scene::update(int clientID) {
+    players[clientID].x_coordinate -= players[clientID].player_speed * cos(players[clientID].player_angle);
+    players[clientID].y_coordinate -= players[clientID].player_speed * sin(players[clientID].player_angle);
+
+    for (int i = 0; i < answers.size(); i++) {
+        if (collision(answers[i], players[clientID])) {
+            if (answers[i].get_number() == generator) {
+                players[clientID].score += 3;
+                players[clientID].is_correct = "Correct!";
+                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(3 / 3.14), 60.0);
+                generator = 1 + rand() % 19;
+            } else {
+                players[clientID].score -= 10;
+                players[clientID].is_correct = "Wrong!";
+                players[clientID].radius = std::max(players[clientID].get_radius() - sqrt(6 / 3.14), 7.0);
+                generator = 1 + rand() % 19;
+            }
+            check_correct(i);
+        }
+    }
+
+    for (int i = 0; i < food.size(); i++) {
+        if (collision(food[i], players[clientID])) {
+            players[clientID].score += 1;
+            players[clientID].is_correct = "";
+            players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(1 / 3.14), 60.0);
+
+            new_food(i);
+        }
     }
 }
