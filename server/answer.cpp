@@ -22,15 +22,6 @@ Answer::Answer() : Entity(15) {
     blue_color = 0;
 }
 
-Answer::Answer(double x, double y) : Entity(x, y, 15) {
-    number = 0;
-    type = "answer";
-
-    red_color = 254;
-    green_color = 0;
-    blue_color = 0;
-}
-
 void Answer::update_number(int number_) {
     number = number_;
 }

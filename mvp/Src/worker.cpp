@@ -10,11 +10,6 @@ Worker::Worker(QObject *parent)
     : QObject{parent}
 {
     srand(time(0));
-
-    Player player;
-
-    eaten_answers = {};
-    eaten_food = {};
 }
 
 void Worker::doWork() {
@@ -30,53 +25,6 @@ void Worker::doWork() {
         while (lag >= timeStep) {
             lag -= timeStep;
             emit signalResultReady();
-        }
-    }
-}
-
-bool Worker::collision(Entity a, Entity b) {
-    auto x1 = a.get_x_position();
-    auto y1 = a.get_y_position();
-    auto r1 = a.get_radius();
-
-    auto x2 = b.get_x_position();
-    auto y2 = b.get_y_position();
-    auto r2 = b.get_radius();
-
-    if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
-        return true;
-    }
-    return false;
-}
-
-void Worker::update() {
-    player.x_coordinate -= player.player_speed * cos(player.player_angle);
-    player.y_coordinate -= player.player_speed * sin(player.player_angle);
-
-    srand(time(0));
-    for (int i = 0; i < answers_data.size(); i++) {
-        if (collision(answers_data[i], player)) {
-            eaten_answers.push_back(i);
-            if (answers_data[i].get_number() == generator) {
-                score += 3;
-                is_correct = "Correct!";
-                player.radius = std::min(player.get_radius() + sqrt(3 / 3.14), 60.0);
-                generator = 1 + rand() % 19;
-            } else {
-                score -= 10;
-                is_correct = "Wrong!";
-                player.radius = std::max(player.get_radius() - sqrt(6 / 3.14), 7.0);
-                generator = 1 + rand() % 19;
-            }
-        }
-    }
-
-    for (int i = 0; i < food_data.size(); i++) {
-        if (collision(food_data[i], player)) {
-            eaten_food.push_back(i);
-            score += 1;
-            is_correct = "";
-            player.radius = std::min(player.get_radius() + sqrt(1 / 3.14), 60.0);
         }
     }
 }

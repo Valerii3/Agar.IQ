@@ -71,24 +71,6 @@ void Scene::paintEvent(QPaintEvent *event){
     painter.drawText(QPoint(800,40), QString::fromLocal8Bit(worker->expr.c_str()));
 }
 
-void Scene::keyPressEvent(QKeyEvent *event){
-    if (!isMenu && event->type() == QEvent::KeyPress){
-        QKeyEvent *key = static_cast<QKeyEvent*>(event);
-        if (key->key() == Qt::Key_W){
-              worker->player.player_speed = -5;
-        }
-    }
-}
-
-void Scene::keyReleaseEvent(QKeyEvent *event){
-    if (!isMenu && event->type() == QEvent::KeyRelease){
-        QKeyEvent *key = static_cast<QKeyEvent*>(event);
-        if (key->key() == Qt::Key_W){
-            worker->player.player_speed = 0;
-        }
-    }
-}
-
 void Scene::mouseMoveEvent(QMouseEvent *event)
 {
     worker->player.player_angle = atan2(event->y() - worker->players_data[clientID].get_y_position(),
@@ -119,22 +101,25 @@ void Scene::slotGameFinish(){
 void Scene::on_pushButton_clicked()
 {
     this->close();
-
 }
 
 void Scene::sendToServer()
 {
     json toServer;
 
-    // every message from client to server is player data:
-    //      { "status":"connected", "name":playerName, "id":clientID,
-    //      "x":x_coorditate, "y":y_coordinate, "rad":radius,
-    //      "eatenFood":[ eaten_food ], "eatenAnswers":[ eatenAnswers ] }
+    // every message from client to server is player data and settings:
+    //      { "status":"connected", "name":player_name,
+    //       "id":clientID, "angle":player_angle, "bits":bits,
+    //       "operandsCount":operandsCount, "operands" }
 
     toServer["status"] = "connected";
     toServer["name"] = name.toStdString();
     toServer["id"] = clientID;
     toServer["angle"] = worker->player.player_angle;
+
+    toServer["bits"] = worker->bits;
+    toServer["operandsCount"] = worker->operandsCount;
+    toServer["operands"] = worker->operands;
 
     socket->write(QString::fromStdString(toServer.dump()).toLatin1());
     socket->waitForBytesWritten(20000);
@@ -153,12 +138,13 @@ void Scene::readFromServer()
 
     // first message from server is reply to connection and
     //       client's id (his number in players_data):
-    //       {"status":"connected", "initialization":"yes", "id":clientId}
+    //       {"status":"connected", "initialization":"yes", "id":clientID}
 
-    // every next message is scene data, include players data,
-    //       answer-dots data and dots data:
+    // every next message is all scene data, include players, answers
+    //       and dots datas, and example:
     //       {"status":"connected", "players":[ players data ],
-    //        "answers":[ answers data ], "food":[ food data ]}
+    //        "answers":[ answers data ], "food":[ food data ],
+    //        "expr":example }
 
     if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
         qDebug() << "connected to server";
@@ -166,9 +152,6 @@ void Scene::readFromServer()
         clientID = fromServer["id"];
 
     } else if (fromServer["status"] == "connected") {
-
-//        qDebug() << "read players";
-//        qDebug() << QString::fromStdString(fromServer.dump());
 
         worker->answers_data.clear();
         worker->food_data.clear();
@@ -183,7 +166,6 @@ void Scene::readFromServer()
             QString is_correct = QString::fromStdString(player["is_correct"]);
 
             worker->players_data.push_back({name, x, y, rad, score, is_correct});
-//            qDebug() << name << ' ' << x << ' ' << y << ' ' << rad;
         }
 
         for (auto answer : fromServer["answers"]) {
@@ -192,7 +174,6 @@ void Scene::readFromServer()
             int number = answer["number"];
 
             worker->answers_data.push_back({x, y, number});
-//            qDebug() << "answer" << ' ' << x << ' ' << y << ' ' << number;
         }
 
         for (auto food : fromServer["food"]) {
@@ -203,14 +184,11 @@ void Scene::readFromServer()
             int blue = food["blue_color"];
 
             worker->food_data.push_back({x, y, red, green, blue});
-//            qDebug() << "food" << ' ' << x << ' ' << y;
         }
 
         worker->is_correct = worker->players_data[clientID].is_correct;
         worker->score = worker->players_data[clientID].score;
         worker->expr = fromServer["expr"];
-
-//        qDebug() << QString::fromStdString(worker->expr) << ' ' << worker->generator;
 
         repaint();
     } else {

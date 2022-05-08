@@ -10,9 +10,7 @@ public:
 
     Answer();
 
-    Answer(double x, double y, int number_);
-
-    Answer(double x, double y);
+    Answer(double x, double y, int number_ = 0);
 
     int get_number() const;
 

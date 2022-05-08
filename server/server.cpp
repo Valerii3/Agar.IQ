@@ -67,16 +67,23 @@ void server::readFromClient()
     }
 
     // every message from client to server is player data:
-    //      { "status":"connected", "name":playerName, "id":clientID,
-    //      "x":x_coorditate, "y":y_coordinate, "rad":radius,
-    //      "eatenFood":[ eaten_food ], "eatenAnswers":[ eatenAnswers ] }
+    //      { "status":"connected", "name":player_name, "id":clientID,
+    //       "angle":player_angle }
+
+    // if client is first additionally get settings:
+    //       "bits":bits, "operandsCount":operandsCount, "operands":operands
 
     if (fromClient["status"] == "connected") {
         int clientID = fromClient["id"];
         QString name = QString::fromStdString(fromClient["name"]);
         double player_angle = fromClient["angle"];
 
-//        Game_scene.players[clientID].player_angle = player_angle;
+        if (clientID == 0) {
+            Game_scene.bits = fromClient["bits"];
+            Game_scene.operandsCount = fromClient["operandsCount"];
+            Game_scene.operands = fromClient["operands"];
+        }
+
         Game_scene.update_player(clientID, name, player_angle);
 
         Game_scene.update(clientID);
@@ -90,10 +97,11 @@ void server::readFromClient()
 void server::sendToClient() {
     json toClient;
 
-    // every next message is scene data, include players data,
-    //       answer-dots data and dots data:
+    // every next message is all scene data, include players, answers
+    //       and dots datas, and example:
     //       {"status":"connected", "players":[ players data ],
-    //        "answers":[ answers data ], "food":[ food data ]}
+    //        "answers":[ answers data ], "food":[ food data ],
+    //        "expr":example }
 
     toClient["players"] = Game_scene.get_players();
     toClient["answers"] = Game_scene.get_answers();
@@ -105,8 +113,6 @@ void server::sendToClient() {
     for (int i = 0; i < sockets.size(); i++) {
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
     }
-
-//    qDebug() << QString::fromStdString(toClient.dump()).toLatin1();
 }
 
 void server::sockDisc()

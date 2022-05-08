@@ -22,8 +22,6 @@ public:
     static std::string operands;
 
     explicit Worker(QObject *parent = nullptr);
-//    std::vector<Answer> answers;
-//    std::vector<Food> food;
 
     QString is_correct = "";
 
@@ -38,13 +36,6 @@ public:
     QVector<Answer> answers_data;
     QVector<Food> food_data;
 
-    QVector<int> eaten_food;
-    QVector<int> eaten_answers;
-
-    void generate_answers(int correct);
-    void generate_food();
-    void update_answer(int id);
-
     Player player;
 
 public slots:
@@ -57,8 +48,6 @@ signals:
 
 private:
     bool quitGame = false;
-    void update();
-    bool collision(Entity a, Entity b);
 };
 
 

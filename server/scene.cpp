@@ -24,13 +24,23 @@ scene::scene()
 }
 
 void scene::new_answer(int i) {
-    answers[i] = Answer();
+    auto a = Answer();
+    for (int k = 0; k < players.size(); k++) {
+        for (int j = 0; j < i; j++) {
+            if (collision(a, answers[j]) || collision(a, players[k])) {
+                a = Answer();
+                i--;
+                j = 0;
+            }
+        }
+    }
+    answers[i] = a;
 }
 
 void scene::new_food(int i) {
     auto a = Food();
     for (auto player : players) {
-        while (collision(player, a)) {
+        while (collision(a, player)) {
             a = Food();
         }
     }
@@ -45,27 +55,13 @@ void scene::generate_answers() {
     answers.resize(10);
     for (int i = 0; i < 10; i++) {
         new_answer(i);
-        for (int k = 0; k < players.size(); k++) {
-            for (int j = 0; j < i; j++) {
-                if (collision(answers[i], answers[j]) || collision(players[k], answers[i])) {
-                    new_answer(i);
-                    i--;
-                    j = 0;
-                }
-            }
-        }
     }
 }
 
 void scene::generate_food() {
+    food.resize(40);
     for (int i = 0; i < 40; i++) {
-        auto a = Food();
-        for (auto player : players) {
-            while (collision(player, a)) {
-                a = Food();
-            }
-        }
-        food.push_back(a);
+        new_food(i);
     }
 }
 
