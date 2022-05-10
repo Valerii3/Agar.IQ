@@ -29,6 +29,23 @@ void Scene::slotResultReady(){
     sendToServer();
 }
 
+//x_coordinate = 250.0 + rand() % 1400;
+//y_coordinate = 100.0 + rand() % 700;
+
+// center in (825.0, 400.0)
+
+bool Scene::in_bounds(Entity dot) {
+    if (abs(worker->player.get_x_position() - dot.get_x_position()) > 575) {
+        return false;
+    }
+
+    if (abs(worker->player.get_y_position() - dot.get_y_position()) > 300) {
+        return false;
+    }
+
+    return true;
+}
+
 void Scene::paintEvent(QPaintEvent *event){
     Q_UNUSED(event);
     QPainter painter(this);
@@ -42,14 +59,24 @@ void Scene::paintEvent(QPaintEvent *event){
     }
 
     for (auto it : worker->answers_data) {
-        painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-        painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
-        painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
+        if (in_bounds(it)) {
+
+            painter.setBrush(QBrush(it.color, Qt::SolidPattern));
+//            painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
+//            painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
+            double new_x = 825.0 + it.get_x_position() - worker->player.get_x_position();
+            double new_y = 400.0 + it.get_y_position() - worker->player.get_y_position();
+
+            painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
+            painter.drawText(QPoint(new_x - it.get_radius(), new_y + it.get_radius()/2), QString::number(it.get_number()));
+        }
     }
 
     for (auto it : worker->food_data) {
-        painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-        painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
+        if (in_bounds(it)) {
+            painter.setBrush(QBrush(it.color, Qt::SolidPattern));
+            painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
+        if (in_bounds(it)) {
     }
 
     painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color

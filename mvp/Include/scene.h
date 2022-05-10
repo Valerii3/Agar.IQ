@@ -24,6 +24,9 @@ public:
     ~Scene();
 
 private:
+
+    bool in_bounds(Entity dot);
+
     QTcpSocket* socket;
     QString name = "Alex";
     int clientID = 0;
