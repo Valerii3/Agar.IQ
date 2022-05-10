@@ -148,6 +148,8 @@ void scene::update(int clientID) {
                 generator = question.get_answer();
                 update_numbers(generator);
             }
+
+            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 2.5;
         }
     }
 
@@ -158,6 +160,8 @@ void scene::update(int clientID) {
             players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(1 / 3.14), 60.0);
 
             new_food(i);
+
+            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 2.5;
         }
     }
 }
