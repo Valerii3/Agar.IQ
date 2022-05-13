@@ -46,7 +46,7 @@ bool Scene::in_bounds(Entity dot) {
     return true;
 }
 
-void Scene::paintEvent(QPaintEvent *event){
+void Scene::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
     QPainter painter(this);
     QFont fnt;
@@ -62,10 +62,8 @@ void Scene::paintEvent(QPaintEvent *event){
         if (in_bounds(it)) {
 
             painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-//            painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
-//            painter.drawText(QPoint(it.get_x_position() - it.get_radius(),it.get_y_position() + it.get_radius()/2), QString::number(it.get_number()));   // some changes with radius
-            double new_x = 825.0 + it.get_x_position() - worker->player.get_x_position();
-            double new_y = 400.0 + it.get_y_position() - worker->player.get_y_position();
+            double new_x = 825.0 + it.get_x_position() - worker->players_data[clientID].get_x_position();
+            double new_y = 400.0 - it.get_y_position() + worker->players_data[clientID].get_y_position();
 
             painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
             painter.drawText(QPoint(new_x - it.get_radius(), new_y + it.get_radius()/2), QString::number(it.get_number()));
@@ -75,19 +73,33 @@ void Scene::paintEvent(QPaintEvent *event){
     for (auto it : worker->food_data) {
         if (in_bounds(it)) {
             painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-            painter.drawEllipse(QPointF(it.get_x_position(), it.get_y_position()), 2*it.get_radius(), 2*it.get_radius());
-        if (in_bounds(it)) {
+
+            double new_x = 825.0 + it.get_x_position() - worker->players_data[clientID].get_x_position();
+            double new_y = 400.0 - it.get_y_position() + worker->players_data[clientID].get_y_position();
+
+            painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
+        }
     }
 
     painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
 
-    for (auto player : worker->players_data) {
+    for (int i = 0; i < worker->players_data.size(); i++) {
+        if (i == clientID) {
+            painter.drawEllipse(QPointF(825.0, 400.0), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
-        painter.drawEllipse(QPointF(player.get_x_position(), player.get_y_position()), 2*player.get_radius(), 2*player.get_radius());
+            fnt.setPixelSize(20);
+            painter.setFont(fnt);
+            painter.drawText(825.0 - worker->players_data[i].get_radius(), 400.0 + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+        } else {
+            double new_x = 825.0 + worker->players_data[i].get_x_position() - worker->player.get_x_position();
+            double new_y = 400.0 + worker->players_data[i].get_y_position() - worker->player.get_y_position();
 
-        fnt.setPixelSize(20);
-        painter.setFont(fnt);
-        painter.drawText(player.get_x_position() - player.get_radius(), player.get_y_position() + player.get_radius()/4, QString::fromStdString(player.get_name()));
+            painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
+
+            fnt.setPixelSize(20);
+            painter.setFont(fnt);
+            painter.drawText(825.0 - worker->players_data[i].get_radius(), 400.0 + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+        }
     }
 
     fnt.setPixelSize(40);
@@ -100,8 +112,8 @@ void Scene::paintEvent(QPaintEvent *event){
 
 void Scene::mouseMoveEvent(QMouseEvent *event)
 {
-    worker->player.player_angle = atan2(event->y() - worker->players_data[clientID].get_y_position(),
-                                        event->x() - worker->players_data[clientID].get_x_position());
+    worker->player.player_angle = atan2(event->y() - worker->player/*s_data[clientID]*/.get_y_position(),
+                                        event->x() - worker->player/*s_data[clientID]*/.get_x_position());
 }
 
 void Scene::startGame()
