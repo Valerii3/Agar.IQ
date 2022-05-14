@@ -35,11 +35,11 @@ void Scene::slotResultReady(){
 // center in (825.0, 400.0)
 
 bool Scene::in_bounds(Entity dot) {
-    if (abs(worker->player.get_x_position() - dot.get_x_position()) > 575) {
+    if (abs(worker->players_data[clientID].get_x_position() - dot.get_x_position()) > 575) {
         return false;
     }
 
-    if (abs(worker->player.get_y_position() - dot.get_y_position()) > 300) {
+    if (abs(worker->players_data[clientID].get_y_position() - dot.get_y_position()) > 300) {
         return false;
     }
 
@@ -112,8 +112,8 @@ void Scene::paintEvent(QPaintEvent *event) {
 
 void Scene::mouseMoveEvent(QMouseEvent *event)
 {
-    worker->player.player_angle = atan2(event->y() - worker->player/*s_data[clientID]*/.get_y_position(),
-                                        event->x() - worker->player/*s_data[clientID]*/.get_x_position());
+    worker->player.player_angle = atan2( - event->y() + 400.0,
+                                         event->x() - 825.0);
 }
 
 void Scene::startGame()
