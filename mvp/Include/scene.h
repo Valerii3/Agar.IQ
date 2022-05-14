@@ -24,6 +24,8 @@ public:
     ~Scene();
 
 private:
+    const double center_x = 950.0;
+    const double center_y = 450.0;
 
     bool in_bounds(Entity dot);
 

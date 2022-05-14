@@ -34,12 +34,15 @@ void Scene::slotResultReady(){
 
 // center in (825.0, 400.0)
 
+const double center_x = 950.0;
+const double center_y = 450.0;
+
 bool Scene::in_bounds(Entity dot) {
-    if (abs(worker->players_data[clientID].get_x_position() - dot.get_x_position()) > 575) {
+    if (abs(worker->players_data[clientID].get_x_position() - dot.get_x_position()) > 950) {
         return false;
     }
 
-    if (abs(worker->players_data[clientID].get_y_position() - dot.get_y_position()) > 300) {
+    if (abs(worker->players_data[clientID].get_y_position() - dot.get_y_position()) > 450) {
         return false;
     }
 
@@ -62,8 +65,8 @@ void Scene::paintEvent(QPaintEvent *event) {
         if (in_bounds(it)) {
 
             painter.setBrush(QBrush(it.color, Qt::SolidPattern));
-            double new_x = 825.0 + it.get_x_position() - worker->players_data[clientID].get_x_position();
-            double new_y = 400.0 - it.get_y_position() + worker->players_data[clientID].get_y_position();
+            double new_x = center_x + it.get_x_position() - worker->players_data[clientID].get_x_position();
+            double new_y = center_y - it.get_y_position() + worker->players_data[clientID].get_y_position();
 
             painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
             painter.drawText(QPoint(new_x - it.get_radius(), new_y + it.get_radius()/2), QString::number(it.get_number()));
@@ -74,8 +77,8 @@ void Scene::paintEvent(QPaintEvent *event) {
         if (in_bounds(it)) {
             painter.setBrush(QBrush(it.color, Qt::SolidPattern));
 
-            double new_x = 825.0 + it.get_x_position() - worker->players_data[clientID].get_x_position();
-            double new_y = 400.0 - it.get_y_position() + worker->players_data[clientID].get_y_position();
+            double new_x = center_x + it.get_x_position() - worker->players_data[clientID].get_x_position();
+            double new_y = center_y - it.get_y_position() + worker->players_data[clientID].get_y_position();
 
             painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
         }
@@ -85,20 +88,20 @@ void Scene::paintEvent(QPaintEvent *event) {
 
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (i == clientID) {
-            painter.drawEllipse(QPointF(825.0, 400.0), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
+            painter.drawEllipse(QPointF(center_x, center_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
             painter.setFont(fnt);
-            painter.drawText(825.0 - worker->players_data[i].get_radius(), 400.0 + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
         } else {
-            double new_x = 825.0 + worker->players_data[i].get_x_position() - worker->player.get_x_position();
-            double new_y = 400.0 + worker->players_data[i].get_y_position() - worker->player.get_y_position();
+            double new_x = center_x + worker->players_data[i].get_x_position() - worker->player.get_x_position();
+            double new_y = center_y + worker->players_data[i].get_y_position() - worker->player.get_y_position();
 
             painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
             painter.setFont(fnt);
-            painter.drawText(825.0 - worker->players_data[i].get_radius(), 400.0 + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
         }
     }
 

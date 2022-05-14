@@ -13,8 +13,8 @@ double Entity::get_radius() const {
 }
 
 Entity::Entity(double r) {
-    x_coordinate = 250.0 + rand() % 1400;
-    y_coordinate = 100.0 + rand() % 700;
+    x_coordinate = -500.0 + rand() % 3000;
+    y_coordinate = -300.0 + rand() % 1500;
 
     radius = r;
 

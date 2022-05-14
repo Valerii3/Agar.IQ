@@ -59,8 +59,8 @@ void scene::generate_answers() {
 }
 
 void scene::generate_food() {
-    food.resize(40);
-    for (int i = 0; i < 40; i++) {
+    food.resize(160);
+    for (int i = 0; i < 160; i++) {
         new_food(i);
     }
 }
