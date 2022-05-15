@@ -7,8 +7,6 @@ struct Food : Entity {
 public:
     Food();
 
-    Food(int i);
-
     Food(double x, double y);
 };
 

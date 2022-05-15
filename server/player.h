@@ -10,6 +10,8 @@ public:
 
     int player_id = 0;
 
+    std::string player_initialization = "yes";
+
     int score = 0;
     double player_angle = 0;
     double player_speed = 3.5;

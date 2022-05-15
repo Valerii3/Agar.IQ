@@ -29,14 +29,6 @@ void Scene::slotResultReady(){
     sendToServer();
 }
 
-//x_coordinate = 250.0 + rand() % 1400;
-//y_coordinate = 100.0 + rand() % 700;
-
-// center in (825.0, 400.0)
-
-const double center_x = 950.0;
-const double center_y = 450.0;
-
 bool Scene::in_bounds(Entity dot) {
     if (abs(worker->players_data[clientID].get_x_position() - dot.get_x_position()) > 950) {
         return false;
@@ -84,10 +76,9 @@ void Scene::paintEvent(QPaintEvent *event) {
         }
     }
 
-    painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
-
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (i == clientID) {
+            painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
             painter.drawEllipse(QPointF(center_x, center_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
@@ -97,6 +88,7 @@ void Scene::paintEvent(QPaintEvent *event) {
             double new_x = center_x + worker->players_data[i].get_x_position() - worker->player.get_x_position();
             double new_y = center_y + worker->players_data[i].get_y_position() - worker->player.get_y_position();
 
+            painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
             painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
@@ -115,8 +107,8 @@ void Scene::paintEvent(QPaintEvent *event) {
 
 void Scene::mouseMoveEvent(QMouseEvent *event)
 {
-    worker->player.player_angle = atan2( - event->y() + 400.0,
-                                         event->x() - 825.0);
+    worker->player.player_angle = atan2( - event->y() + center_y,
+                                         event->x() - center_x);
 }
 
 void Scene::startGame()
@@ -196,7 +188,6 @@ void Scene::readFromServer()
     } else if (fromServer["status"] == "connected") {
 
         worker->answers_data.clear();
-        worker->food_data.clear();
         worker->players_data.clear();
 
         for (auto player : fromServer["players"]) {
@@ -218,14 +209,27 @@ void Scene::readFromServer()
             worker->answers_data.push_back({x, y, number});
         }
 
-        for (auto food : fromServer["food"]) {
-            double x = food["x"];
-            double y = food["y"];
-            int red = food["red_color"];
-            int green = food["green_color"];
-            int blue = food["blue_color"];
+        if (fromServer["food_status"] == "full") {
+            for (auto food : fromServer["food"]) {
+                double x = food["x"];
+                double y = food["y"];
+                int red = food["red_color"];
+                int green = food["green_color"];
+                int blue = food["blue_color"];
 
-            worker->food_data.push_back({x, y, red, green, blue});
+                worker->food_data.push_back({x, y, red, green, blue});
+            }
+        } else {
+            for (auto food : fromServer["food"]) {
+                int food_iter = food["food_iter"];
+                double x = food["x"];
+                double y = food["y"];
+                int red = food["red_color"];
+                int green = food["green_color"];
+                int blue = food["blue_color"];
+
+                worker->food_data[food_iter] = {x, y, red, green, blue};
+            }
         }
 
         worker->is_correct = worker->players_data[clientID].is_correct;

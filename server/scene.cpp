@@ -149,7 +149,7 @@ void scene::update(int clientID) {
                 update_numbers(generator);
             }
 
-            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 2.5;
+            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
         }
     }
 
@@ -161,7 +161,13 @@ void scene::update(int clientID) {
 
             new_food(i);
 
-            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 2.5;
+            updated_food.push_back(i);
+
+            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
         }
     }
+}
+
+std::vector<int> scene::get_updated_food() {
+    return updated_food;
 }

@@ -27,6 +27,11 @@ void to_json(json& j, const Food& p)
          {"green_color", p.green_color}, {"blue_color", p.blue_color}};
 }
 
+void to_json(json& j, const std::pair<int, Food> p) {
+    j = {{"food_iter", p.first}, {"x", p.second.x_coordinate}, {"y", p.second.y_coordinate}, {"red_color", p.second.red_color},
+         {"green_color", p.second.green_color}, {"blue_color", p.second.blue_color}};
+}
+
 void server::incomingConnection(qintptr socketDescriptor) {
     socket = new QTcpSocket;
     socket->setSocketDescriptor(socketDescriptor);
@@ -110,8 +115,26 @@ void server::sendToClient() {
 
     toClient["expr"] = Game_scene.expr;
 
+    std::vector<std::pair<int, Food>> sended_food;
+    for (auto food_iter : Game_scene.get_updated_food()) {
+        sended_food.push_back({food_iter, Game_scene.food[food_iter]});
+    }
+
+    Game_scene.updated_food.clear();
+
     for (int i = 0; i < sockets.size(); i++) {
+
+        if (Game_scene.players[i].player_initialization == "yes") {
+            Game_scene.players[i].player_initialization = "no";
+            toClient["food_status"] = "full";
+            toClient["food"] = Game_scene.get_food();
+        } else {
+            toClient["food_status"] = "updated";
+            toClient["food"] = sended_food;
+        }
+
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
+
     }
 }
 

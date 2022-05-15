@@ -52,6 +52,10 @@ public:
 
     std::vector<Food> get_food();
 
+    std::vector<int> updated_food;
+
+    std::vector<int> get_updated_food();
+
     void check_correct(int i);
 
     void update(int clientID);
