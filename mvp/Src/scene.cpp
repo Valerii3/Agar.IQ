@@ -78,22 +78,26 @@ void Scene::paintEvent(QPaintEvent *event) {
 
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (i == clientID) {
-            painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
+            painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
             painter.drawEllipse(QPointF(center_x, center_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
             painter.setFont(fnt);
-            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4,
+                             QString::fromStdString(worker->players_data[i].get_name()));
         } else {
-            double new_x = center_x + worker->players_data[i].get_x_position() - worker->player.get_x_position();
-            double new_y = center_y + worker->players_data[i].get_y_position() - worker->player.get_y_position();
+            if (in_bounds(worker->players_data[i])) {
+                double new_x = center_x + worker->players_data[i].get_x_position() - worker->players_data[clientID].get_x_position();
+                double new_y = center_y + worker->players_data[i].get_y_position() - worker->players_data[clientID].get_y_position();
 
-            painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
-            painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
+                painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
+                painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
-            fnt.setPixelSize(20);
-            painter.setFont(fnt);
-            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+                fnt.setPixelSize(20);
+                painter.setFont(fnt);
+                painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4,
+                                 QString::fromStdString(worker->players_data[i].get_name()));
+            }
         }
     }
 
@@ -151,6 +155,10 @@ void Scene::sendToServer()
     toServer["id"] = clientID;
     toServer["angle"] = worker->player.player_angle;
 
+    toServer["blue_color"] = (int) (worker->player.color.blueF() * 255.0);
+    toServer["green_color"] = (int) (worker->player.color.greenF() * 255.0);
+    toServer["red_color"] = (int) (worker->player.color.redF() * 255.0);
+
     toServer["bits"] = worker->bits;
     toServer["operandsCount"] = worker->operandsCount;
     toServer["operands"] = worker->operands;
@@ -190,15 +198,26 @@ void Scene::readFromServer()
         worker->answers_data.clear();
         worker->players_data.clear();
 
+        int player_iter = 0;
+
         for (auto player : fromServer["players"]) {
             QString name = QString::fromStdString(player["name"]);
             double x = player["x"];
             double y = player["y"];
             double rad = player["rad"];
             int score = player["score"];
+
+            int blue_color = player["blue_color"];
+            int green_color = player["green_color"];
+            int red_color = player["red_color"];
+
             QString is_correct = QString::fromStdString(player["is_correct"]);
 
             worker->players_data.push_back({name, x, y, rad, score, is_correct});
+
+            worker->players_data[player_iter].color = QColor(red_color, green_color, blue_color);
+
+            player_iter++;
         }
 
         for (auto answer : fromServer["answers"]) {

@@ -13,7 +13,8 @@ server::~server(){}
 void to_json(json& j, const Player& p)
 {
     j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate},
-         {"rad", p.radius}, {"score", p.score}, {"is_correct", p.is_correct}};
+         {"rad", p.radius}, {"score", p.score}, {"is_correct", p.is_correct}, {"red_color", p.red_color},
+         {"blue_color", p.blue_color}, {"green_color", p.green_color} };
 }
 
 void to_json(json& j, const Answer& p)
@@ -82,6 +83,9 @@ void server::readFromClient()
         int clientID = fromClient["id"];
         QString name = QString::fromStdString(fromClient["name"]);
         double player_angle = fromClient["angle"];
+        int red_color = fromClient["red_color"];
+        int green_color = fromClient["green_color"];
+        int blue_color = fromClient["blue_color"];
 
         if (clientID == 0) {
             Game_scene.bits = fromClient["bits"];
@@ -89,7 +93,7 @@ void server::readFromClient()
             Game_scene.operands = fromClient["operands"];
         }
 
-        Game_scene.update_player(clientID, name, player_angle);
+        Game_scene.update_player(clientID, name, player_angle, red_color, green_color, blue_color);
 
         Game_scene.update(clientID);
 

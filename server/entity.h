@@ -11,9 +11,9 @@ struct Entity {
 
     QString type = "entity";
 
-    int red_color;
-    int green_color;
-    int blue_color;
+    int red_color = 0;
+    int green_color = 0;
+    int blue_color = 0;
 
     double get_x_position() const;
     double get_y_position() const;

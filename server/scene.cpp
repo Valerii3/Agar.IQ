@@ -65,9 +65,13 @@ void scene::generate_food() {
     }
 }
 
-void scene::update_player(int iter, QString name, double angle) {
+void scene::update_player(int iter, QString name, double angle, int red_color, int green_color, int blue_color) {
     players[iter].player_name = name.toStdString();
     players[iter].player_angle = angle;
+
+    players[iter].blue_color = blue_color;
+    players[iter].green_color = green_color;
+    players[iter].red_color = red_color;
 }
 
 bool scene::collision(Entity a, Entity b) {
