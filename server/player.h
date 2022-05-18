@@ -10,6 +10,8 @@ public:
 
     int player_id = 0;
 
+    bool is_online = 1;
+
     std::string player_initialization = "yes";
 
     int score = 0;
@@ -20,6 +22,8 @@ public:
     Player(QString name, double x, double y, double rad);
 
     Player(QString name, double x, double y, double rad, int id);
+
+    void eaten();
 };
 
 #endif // PLAYER_H

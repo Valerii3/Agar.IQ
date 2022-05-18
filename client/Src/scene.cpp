@@ -20,6 +20,7 @@ Scene::~Scene()
 {
     delete ui;
     emit signalQuitGame(true);
+    emit sendDisconnection();
     workerThread.quit();
     workerThread.wait();
     delete worker;
@@ -162,6 +163,21 @@ void Scene::sendToServer()
     toServer["bits"] = worker->bits;
     toServer["operandsCount"] = worker->operandsCount;
     toServer["operands"] = worker->operands;
+
+    socket->write(QString::fromStdString(toServer.dump()).toLatin1());
+    socket->waitForBytesWritten(20000);
+}
+
+void Scene::sendDisconnection() {
+    json toServer;
+
+    // every message from client to server is player data and settings:
+    //      { "status":"connected", "name":player_name,
+    //       "id":clientID, "angle":player_angle, "bits":bits,
+    //       "operandsCount":operandsCount, "operands" }
+
+    toServer["status"] = "disconnected";
+    toServer["id"] = clientID;
 
     socket->write(QString::fromStdString(toServer.dump()).toLatin1());
     socket->waitForBytesWritten(20000);

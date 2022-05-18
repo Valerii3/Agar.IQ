@@ -45,6 +45,7 @@ public slots:
 private slots:
     void readFromServer();
     void sendToServer();
+    void sendDisconnection();
 
 signals:
     void signalQuitGame(bool value);

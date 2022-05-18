@@ -58,7 +58,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
     socket->waitForBytesWritten(500);
     socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1());
 
-    qDebug() << "client connected - " << socketDescriptor;
+    qDebug() << "new player " << newClientID << "is connected on socket " << socketDescriptor;
 }
 
 void server::readFromClient()
@@ -99,7 +99,10 @@ void server::readFromClient()
 
         sendToClient();
     } else {
-        qDebug() << "client is disconnected";
+        int clientID = fromClient["id"];
+
+        Game_scene.disconnected_player(clientID);
+        qDebug() << clientID << " player is disconnected";
     }
 }
 
@@ -144,5 +147,5 @@ void server::sendToClient() {
 
 void server::sockDisc()
 {
-    qDebug() << "client disconnected - ";
+
 }

@@ -36,6 +36,8 @@ public:
 
     bool collision(Entity a, Entity b);
 
+    bool collision(Player a, Player b);
+
     void generate_answers();
 
     void generate_food();
@@ -59,6 +61,8 @@ public:
     void check_correct(int i);
 
     void update(int clientID);
+
+    void disconnected_player(int clientID);
 };
 
 #endif // SCENE_H

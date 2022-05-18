@@ -83,7 +83,7 @@ bool scene::collision(Entity a, Entity b) {
     auto y2 = b.get_y_position();
     auto r2 = b.get_radius();
 
-    if (b.type == "player") {
+    if (b.type == "player" || a.type == "player") {
         if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
             return true;
         }
@@ -94,6 +94,24 @@ bool scene::collision(Entity a, Entity b) {
         }
         return false;
     }
+}
+
+bool scene::collision(Player a, Player b) {
+    auto x1 = a.get_x_position();
+    auto y1 = a.get_y_position();
+    auto r1 = a.get_radius();
+
+    auto x2 = b.get_x_position();
+    auto y2 = b.get_y_position();
+    auto r2 = b.get_radius();
+
+    if (!a.is_online && !b.is_online) {
+        return false;
+    }
+    if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
+        return true;
+    }
+    return false;
 }
 
 std::vector<Player> scene::get_players() {
@@ -170,8 +188,39 @@ void scene::update(int clientID) {
             players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
         }
     }
+
+    for (int i = 0; i < players.size(); i++) {
+        if (i == clientID) {
+            continue;
+        }
+        if (collision(players[i], players[clientID])) {
+            if (players[clientID].score > players[i].score) {
+                players[clientID].score += players[i].score;
+                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(players[i].score / 3.14), 60.0);
+
+                players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
+                players[clientID].is_correct = "";
+
+                players[i].eaten();
+            }
+
+            if (players[clientID].score < players[i].score) {
+                players[i].score += players[clientID].score;
+                players[i].radius = std::min(players[i].get_radius() + sqrt(players[clientID].score / 3.14), 60.0);
+
+                players[i].player_speed = (9.5 / players[i].get_radius()) + 3.5;
+                players[i].is_correct = "";
+
+                players[clientID].eaten();
+            }
+        }
+    }
 }
 
 std::vector<int> scene::get_updated_food() {
     return updated_food;
+}
+
+void scene::disconnected_player(int clientID) {
+    players[clientID].is_online = 0;
 }
