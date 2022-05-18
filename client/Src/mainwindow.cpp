@@ -14,12 +14,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
     db = QSqlDatabase::addDatabase("QSQLITE");                         // insert (maybe send it to another file)
-    db.setDatabaseName("C:/Project_C++/Agar.IQ/mvp/db.sqlite");  // здесь свой путь поставь где находится
+    db.setDatabaseName("C:/ProjectDB/Agar.IQ/client/db.sqlite");  // здесь свой путь поставь где находится
     if (!db.open()){
         qDebug() << "Error";
     } else {
         qDebug() << "Success";
     }
+
+/*    //  =====IT WAS JUST FOR CREATE TABLES=====
+    QString query1 = "CREATE TABLE users ("
+             "Login VarChar(20),"
+             "Password VarChar(64));";
+
+    QSqlQuery qry1;
+    if (!qry1.exec(query1)){
+        qDebug() << "query crash1";
+    } else {
+        qDebug() << "query succeed1";
+    } */
+
+
+
+   /* QString query2 = "CREATE TABLE record ("
+            "Nickname VarChar(20),"
+            "Points Integer);";
+    QSqlQuery qry1;
+    if (!qry1.exec(query2)){
+        qDebug() << "query crash1";
+    } else {
+        qDebug() << "query succeed1";
+    } */
 
     model = new QSqlTableModel(this,db);   // табличка рекордов
     model->setTable("record");

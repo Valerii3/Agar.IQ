@@ -19,9 +19,12 @@ void Login::on_logButton_clicked()
 {
     QString login = ui->logName->text();
     QString pswd = ui->logPswd->text();
+    QCryptographicHash calcl256(QCryptographicHash::Sha256);
+    calcl256.addData(pswd.toLatin1());
+    hash = calcl256.result().toHex().data();
     QSqlQuery qry;
     if (qry.exec("SELECT Login, Password from users WHERE Login=\'" + login +
-                 "\' AND Password=\'" + pswd + "\'")){
+                 "\' AND Password=\'" + hash + "\'")){
         if (qry.next()){
             qDebug() << "user exists";
             emit signalNameLog(login);
@@ -42,13 +45,15 @@ void Login::on_regButton_clicked()
     QString _pswd = ui->regPswd2->text();
     if (pswd == _pswd){
         QSqlQuery qry;
-
+        QCryptographicHash calcl256(QCryptographicHash::Sha256);
+        calcl256.addData(pswd.toLatin1());
+        hash = calcl256.result().toHex().data();
         qry.prepare("INSERT INTO users ("
                     "Login,"
                     "Password)"
                     "VALUES (?,?);");
         qry.addBindValue(name);
-        qry.addBindValue(pswd);
+        qry.addBindValue(hash);
 
 
         if (!qry.exec()){

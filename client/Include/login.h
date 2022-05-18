@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMessageBox>
+#include <QCryptographicHash>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -30,6 +31,7 @@ signals:
 private:
     Ui::Login *ui;
     MainWindow *w;
+    QString hash;
 };
 
 #endif // LOGIN_H
