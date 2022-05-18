@@ -78,22 +78,22 @@ void Scene::paintEvent(QPaintEvent *event) {
 
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (i == clientID) {
-            painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
+            painter.setBrush(QBrush(color, Qt::SolidPattern));  // instead green player.color
             painter.drawEllipse(QPointF(center_x, center_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
             painter.setFont(fnt);
-            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, username);
         } else {
             double new_x = center_x + worker->players_data[i].get_x_position() - worker->player.get_x_position();
             double new_y = center_y + worker->players_data[i].get_y_position() - worker->player.get_y_position();
 
-            painter.setBrush(QBrush(Qt::green, Qt::SolidPattern));  // instead green player.color
+            painter.setBrush(QBrush(color, Qt::SolidPattern));  // instead green player.color
             painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
             fnt.setPixelSize(20);
             painter.setFont(fnt);
-            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, QString::fromStdString(worker->players_data[i].get_name()));
+            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4, username);   // здесь добавил имя пользователя
         }
     }
 
@@ -132,9 +132,18 @@ void Scene::slotGameFinish(){
     isMenu = true;
 }
 
+void Scene::slotGetColor(QColor _color){
+    color = _color;
+}
+
+void Scene::slotGetName(QString _name){
+    username = _name;
+}
+
 void Scene::on_pushButton_clicked()
 {
     this->close();
+    emit signalSendToDB(maxScore);
 }
 
 void Scene::sendToServer()
@@ -196,6 +205,9 @@ void Scene::readFromServer()
             double y = player["y"];
             double rad = player["rad"];
             int score = player["score"];
+            if (score > maxScore){   // просто чтобы потом отправить в базу данных
+                maxScore = score;
+            }
             QString is_correct = QString::fromStdString(player["is_correct"]);
 
             worker->players_data.push_back({name, x, y, rad, score, is_correct});

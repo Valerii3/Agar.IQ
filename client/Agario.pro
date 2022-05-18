@@ -1,4 +1,4 @@
-QT       += core gui network
+QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/login.cpp \
     src/answers.cpp \
     src/entity.cpp \
     src/food.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
     src/worker.cpp
 
 HEADERS += \
+    include/login.h \
     include/answers.h \
     include/entity.h \
     include/food.h \
@@ -30,9 +32,12 @@ HEADERS += \
     include/scene.h \
     include/settingswindow.h \
     include/worker.h \
-    json.hpp
+    json.hpp \
+
+
 
 FORMS += \
+    ui/login.ui \
     ui/mainwindow.ui \
     ui/scene.ui \
     ui/settingswindow.ui

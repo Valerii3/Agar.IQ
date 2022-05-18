@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include "scene.h"
+#include <QtSql>
+#include <QSqlTableModel>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +21,12 @@ public:
 
 signals:
     void signalStartGame();
+    void signalSendColor(QColor _color);
+    void signalSendName(QString _name);
+
+public slots:
+    void slotNameLog(QString _name);
+    void slotMaxScore(int _score);
 
 private slots:
     void on_startButton_clicked();
@@ -35,6 +44,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Scene *scene = nullptr;
+    QSqlDatabase db;
+    QSqlTableModel *model;
+    QString username;
+    QColor color = Qt::white;
+
 
 protected:
     void paintEvent(QPaintEvent *event);

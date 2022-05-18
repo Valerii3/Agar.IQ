@@ -17,9 +17,8 @@ public:
 
     signals:
 
-private
-    slots:
-           void on_saveSettingsButton_clicked();
+private slots:
+     void on_saveSettingsButton_clicked();
 
 private:
     Ui::SettingsWindow *ui;

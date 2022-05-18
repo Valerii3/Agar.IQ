@@ -41,6 +41,9 @@ public slots:
     void slotResultReady();
     void slotGameFinish();
     void startGame();
+    void slotGetColor(QColor _color);
+    void slotGetName(QString _name);
+
 
 private slots:
     void readFromServer();
@@ -50,12 +53,16 @@ signals:
     void signalQuitGame(bool value);
     void startWork();
     void first();
+    void signalSendToDB(int _score);
 
 private:
     Ui::Scene *ui;
     QThread workerThread;
     Worker *worker = nullptr;
     bool isMenu = true;
+    QColor color;
+    QString username;
+    int maxScore = 0;
 
 protected:
     void paintEvent(QPaintEvent* event) override;
