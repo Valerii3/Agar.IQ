@@ -19,17 +19,24 @@ void Login::on_logButton_clicked()
 {
     QString login = ui->logName->text();
     QString pswd = ui->logPswd->text();
-    QCryptographicHash calcl256(QCryptographicHash::Sha256);
-    calcl256.addData(pswd.toLatin1());
-    hash = calcl256.result().toHex().data();
+    ;
     QSqlQuery qry;
-    if (qry.exec("SELECT Login, Password from users WHERE Login=\'" + login +
-                 "\' AND Password=\'" + hash + "\'")){
+    if (qry.exec("SELECT Login, Password, Salt from users WHERE Login=\'" + login +
+                 "\' ")){
         if (qry.next()){
-            qDebug() << "user exists";
-            emit signalNameLog(login);
-            this->hide();
-            w->show();
+            QString hashDB = qry.value(1).toString();
+            salt = qry.value(2).toString();
+
+            QCryptographicHash calcl256(QCryptographicHash::Sha256);
+            calcl256.addData(salt.toLatin1() + pswd.toLatin1());
+            hash = calcl256.result().toHex().data();
+            if (hash == hashDB){
+                qDebug() << "user exists";
+                emit signalNameLog(login);
+                this->hide();
+                w->show();
+            }
+
         } else {
             QMessageBox::about(this, "error", "user doesnt exists");
         }
@@ -46,15 +53,17 @@ void Login::on_regButton_clicked()
     if (pswd == _pswd){
         QSqlQuery qry;
         QCryptographicHash calcl256(QCryptographicHash::Sha256);
-        calcl256.addData(pswd.toLatin1());
+        salt = generateSalt();
+        calcl256.addData(salt.toLatin1() + pswd.toLatin1());
         hash = calcl256.result().toHex().data();
         qry.prepare("INSERT INTO users ("
                     "Login,"
-                    "Password)"
-                    "VALUES (?,?);");
+                    "Password,"
+                    "Salt)"
+                    "VALUES (?,?,?);");
         qry.addBindValue(name);
         qry.addBindValue(hash);
-
+        qry.addBindValue(salt);
 
         if (!qry.exec()){
             qDebug() << "error add";
@@ -75,3 +84,15 @@ void Login::on_guestButton_clicked()
     this->close();
 }
 
+QString Login::generateSalt(){
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const int randomStringLength = 16;
+    QString randomString;
+
+    for(int i=0; i<randomStringLength; ++i){
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        randomString.append(nextChar);
+    }
+    return randomString;
+}

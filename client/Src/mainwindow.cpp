@@ -21,25 +21,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         qDebug() << "Success";
     }
 
-/*    //  =====IT WAS JUST FOR CREATE TABLES=====
+ /*   //  =====IT WAS JUST FOR CREATE TABLES=====
     QString query1 = "CREATE TABLE users ("
              "Login VarChar(20),"
-             "Password VarChar(64));";
+             "Password VarChar(64),"
+             "Salt VarChar(16));";
 
     QSqlQuery qry1;
     if (!qry1.exec(query1)){
         qDebug() << "query crash1";
     } else {
         qDebug() << "query succeed1";
-    } */
+    }
 
 
 
-   /* QString query2 = "CREATE TABLE record ("
+    QString query2 = "CREATE TABLE record ("
             "Nickname VarChar(20),"
             "Points Integer);";
-    QSqlQuery qry1;
-    if (!qry1.exec(query2)){
+    QSqlQuery qry2;
+    if (!qry2.exec(query2)){
         qDebug() << "query crash1";
     } else {
         qDebug() << "query succeed1";

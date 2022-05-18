@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QCryptographicHash>
+#include <QRandomGenerator>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -16,6 +17,7 @@ class Login : public QWidget
 
 public:
     explicit Login(QWidget *parent = nullptr);
+    QString generateSalt();
     ~Login();
 
 private slots:
@@ -32,6 +34,9 @@ private:
     Ui::Login *ui;
     MainWindow *w;
     QString hash;
+    QString salt;
 };
+
+
 
 #endif // LOGIN_H
