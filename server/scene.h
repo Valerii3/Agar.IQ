@@ -36,7 +36,7 @@ public:
 
     bool collision(Entity a, Entity b);
 
-    bool collision(Player a, Player b);
+//    bool collision(Player a, Player b);
 
     void generate_answers();
 
