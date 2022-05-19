@@ -180,7 +180,6 @@ void Scene::sendDisconnection() {
     toServer["id"] = clientID;
 
     socket->write(QString::fromStdString(toServer.dump()).toLatin1());
-    socket->waitForBytesWritten(20000);
 }
 
 void Scene::readFromServer()

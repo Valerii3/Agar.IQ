@@ -14,5 +14,5 @@ Player::Player(QString name, double x, double y, double rad) : Entity(x, y, rad)
 }
 
 void Player::eaten() {
-
+    is_eaten = true;
 }

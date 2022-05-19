@@ -96,23 +96,23 @@ bool scene::collision(Entity a, Entity b) {
     }
 }
 
-//bool scene::collision(Player a, Player b) {
-//    auto x1 = a.get_x_position();
-//    auto y1 = a.get_y_position();
-//    auto r1 = a.get_radius();
+bool scene::collision_players(Player a, Player b) {
+    auto x1 = a.get_x_position();
+    auto y1 = a.get_y_position();
+    auto r1 = a.get_radius();
 
-//    auto x2 = b.get_x_position();
-//    auto y2 = b.get_y_position();
-//    auto r2 = b.get_radius();
+    auto x2 = b.get_x_position();
+    auto y2 = b.get_y_position();
+    auto r2 = b.get_radius();
 
-//    if (!a.is_online && !b.is_online) {
-//        return false;
-//    }
-//    if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
-//        return true;
-//    }
-//    return false;
-//}
+    if (!a.is_online && !b.is_online) {
+        return false;
+    }
+    if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
+        return true;
+    }
+    return false;
+}
 
 std::vector<Player> scene::get_players() {
     return players;
@@ -194,7 +194,7 @@ void scene::update(int clientID) {
             continue;
         }
 
-        if (collision(players[i], players[clientID])) {
+        if (collision_players(players[i], players[clientID])) {
             if (players[clientID].score > players[i].score) {
                 players[clientID].score += players[i].score;
                 players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(players[i].score / 3.14), 60.0);

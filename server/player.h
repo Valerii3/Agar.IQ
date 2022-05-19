@@ -10,7 +10,8 @@ public:
 
     int player_id = 0;
 
-    bool is_online = 1;
+    bool is_online = true;
+    bool is_eaten = false;
 
     std::string player_initialization = "yes";
 

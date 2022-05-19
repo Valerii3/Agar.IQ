@@ -107,6 +107,19 @@ void server::readFromClient()
 }
 
 void server::sendToClient() {
+//    std::vector<int> online_players;
+//    std::vector<Player> online_players_list;
+//    std::vector<int> eaten_players;
+
+//    for (int i = 0; i < Game_scene.players.size(); i++) {
+//        if (Game_scene.players[i].is_eaten) {
+//            eaten_players.push_back(i);
+//        } else if (Game_scene.players[i].is_online) {
+//            online_players.push_back(i);
+//            online_players_list.push_back(Game_scene.players[i]);
+//        }
+//    }
+
     json toClient;
 
     // every next message is all scene data, include players, answers
@@ -130,7 +143,6 @@ void server::sendToClient() {
     Game_scene.updated_food.clear();
 
     for (int i = 0; i < sockets.size(); i++) {
-
         if (Game_scene.players[i].player_initialization == "yes") {
             Game_scene.players[i].player_initialization = "no";
             toClient["food_status"] = "full";
@@ -141,8 +153,14 @@ void server::sendToClient() {
         }
 
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
-
     }
+
+//    json toEatenClient;
+//    toEatenClient["status"] = "eaten";
+
+//    for (int i : eaten_players) {
+//        sockets[i]->write(QString::fromStdString(toEatenClient.dump()).toLatin1());
+//    }
 }
 
 void server::sockDisc()
