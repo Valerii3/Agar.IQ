@@ -46,3 +46,14 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+
+
+
+##### OPENSSL #####
+
+
+INCLUDEPATH += C:/ProjectDB/Agar.IQ/client/openssl
+
+LIBS += C:/ProjectDB/Agar.IQ/client/openssl/libcrypto.lib
+LIBS += C:/ProjectDB/Agar.IQ/client/openssl/libssl.lib
