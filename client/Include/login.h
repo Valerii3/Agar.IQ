@@ -3,8 +3,15 @@
 
 #include <QWidget>
 #include <QMessageBox>
-#include <QCryptographicHash>
 #include <QRandomGenerator>
+#include <openssl/sha.h>
+#include <openssl/crypto.h>
+#include <openssl/conf.h>
+#include <openssl/evp.h>
+#include <openssl/err.h>
+#include <sstream>
+#include <iomanip>
+#include <string>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -18,6 +25,8 @@ class Login : public QWidget
 public:
     explicit Login(QWidget *parent = nullptr);
     QString generateSalt();
+   // QString sha256(const std::string str);
+  //  QString sha256(const std::string str);
     ~Login();
 
 private slots:

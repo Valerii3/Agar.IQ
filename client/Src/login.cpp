@@ -1,6 +1,22 @@
 #include "../Include/login.h"
 #include "ui_login.h"
 
+QString sha256(const std::string str)
+{
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, str.c_str(), str.size());
+    SHA256_Final(hash, &sha256);
+    std::stringstream ss;
+    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+    }
+    return QString::fromStdString(ss.str());
+}
+
+
 Login::Login(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Login)
@@ -18,18 +34,15 @@ Login::~Login()
 void Login::on_logButton_clicked()
 {
     QString login = ui->logName->text();
-    QString pswd = ui->logPswd->text();
-    ;
+    QString pswd = ui->logPswd->text();    
     QSqlQuery qry;
     if (qry.exec("SELECT Login, Password, Salt from users WHERE Login=\'" + login +
                  "\' ")){
         if (qry.next()){
             QString hashDB = qry.value(1).toString();
             salt = qry.value(2).toString();
-
-            QCryptographicHash calcl256(QCryptographicHash::Sha256);
-            calcl256.addData(salt.toLatin1() + pswd.toLatin1());
-            hash = calcl256.result().toHex().data();
+            hash = sha256(salt.toStdString() + pswd.toStdString());
+            qDebug() << hash;
             if (hash == hashDB){
                 qDebug() << "user exists";
                 emit signalNameLog(login);
@@ -52,10 +65,8 @@ void Login::on_regButton_clicked()
     QString _pswd = ui->regPswd2->text();
     if (pswd == _pswd){
         QSqlQuery qry;
-        QCryptographicHash calcl256(QCryptographicHash::Sha256);
         salt = generateSalt();
-        calcl256.addData(salt.toLatin1() + pswd.toLatin1());
-        hash = calcl256.result().toHex().data();
+        hash = sha256(salt.toStdString() + pswd.toStdString());
         qry.prepare("INSERT INTO users ("
                     "Login,"
                     "Password,"
@@ -96,3 +107,8 @@ QString Login::generateSalt(){
     }
     return randomString;
 }
+
+
+
+
+
