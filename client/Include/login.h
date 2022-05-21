@@ -36,6 +36,8 @@ private slots:
 
     void on_guestButton_clicked();
 
+    void on_autoLogin_clicked();
+
 signals:
     void signalNameLog(QString _name);
 
@@ -44,6 +46,7 @@ private:
     MainWindow *w;
     QString hash;
     QString salt;
+    bool autoLog = false;
 };
 
 

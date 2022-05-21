@@ -6,7 +6,11 @@ int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Login l;
     l.show();
- //   MainWindow w;
- //   w.show();
+    QSettings set("C:/ProjectDB/Agar.IQ/settings", QSettings::IniFormat);
+    bool type = set.value("type").toBool();
+    if (type){
+        l.hide();
+    }
+
     return a.exec();
 }

@@ -24,6 +24,15 @@ Login::Login(QWidget *parent) :
     ui->setupUi(this);
     w = new MainWindow;
     connect(this, &Login::signalNameLog, w, &MainWindow::slotNameLog);
+    QSettings set("C:/ProjectDB/Agar.IQ/settings", QSettings::IniFormat);   // свой путь
+    bool type = set.value("type").toBool();
+    if (type){
+        QString lgn = set.value("login").toString();
+        emit signalNameLog(lgn);
+        this->hide();
+        w->show();
+
+    }
 }
 
 Login::~Login()
@@ -42,12 +51,24 @@ void Login::on_logButton_clicked()
             QString hashDB = qry.value(1).toString();
             salt = qry.value(2).toString();
             hash = sha256(salt.toStdString() + pswd.toStdString());
-            qDebug() << hash;
+            QSettings set("C:/ProjectDB/Agar.IQ/settings", QSettings::IniFormat);     // свой путь
             if (hash == hashDB){
-                qDebug() << "user exists";
-                emit signalNameLog(login);
-                this->hide();
-                w->show();
+                if (autoLog){
+                    set.setValue("type", true);
+                    set.setValue("login", login);
+                    set.setValue("password", hash);
+                    qDebug() << "user exists";
+                    emit signalNameLog(login);
+                    this->hide();
+                    w->show();
+                } else {
+                    set.setValue("type", false);
+                    qDebug() << "user exists";
+                    emit signalNameLog(login);
+                    this->hide();
+                    w->show();
+                }
+
             }
 
         } else {
@@ -111,4 +132,10 @@ QString Login::generateSalt(){
 
 
 
+
+
+void Login::on_autoLogin_clicked()
+{
+    autoLog = true;
+}
 
