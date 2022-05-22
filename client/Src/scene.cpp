@@ -20,7 +20,6 @@ Scene::~Scene()
 {
     delete ui;
     emit signalQuitGame(true);
-    emit sendDisconnection();
     workerThread.quit();
     workerThread.wait();
     delete worker;
@@ -78,6 +77,9 @@ void Scene::paintEvent(QPaintEvent *event) {
     }
 
     for (int i = 0; i < worker->players_data.size(); i++) {
+        if (worker->players_data[i].is_eaten) {
+            continue;
+        }
         if (i == clientID) {
             painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
             painter.drawEllipse(QPointF(center_x, center_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
@@ -89,7 +91,7 @@ void Scene::paintEvent(QPaintEvent *event) {
         } else {
             if (in_bounds(worker->players_data[i])) {
                 double new_x = center_x + worker->players_data[i].get_x_position() - worker->players_data[clientID].get_x_position();
-                double new_y = center_y + worker->players_data[i].get_y_position() - worker->players_data[clientID].get_y_position();
+                double new_y = center_y - worker->players_data[i].get_y_position() + worker->players_data[clientID].get_y_position();
 
                 painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
                 painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
@@ -133,12 +135,15 @@ void Scene::startGame()
 void Scene::slotGameFinish(){
     qDebug() << "finish";
     workerThread.quit();
-    workerThread.wait();
+//    workerThread.wait();
+    emit sendDisconnection();
+
     isMenu = true;
 }
 
 void Scene::on_pushButton_clicked()
 {
+    emit slotGameFinish();
     this->close();
 }
 
@@ -156,9 +161,11 @@ void Scene::sendToServer()
     toServer["id"] = clientID;
     toServer["angle"] = worker->player.player_angle;
 
-    toServer["blue_color"] = (int) (worker->player.color.blueF() * 255.0);
-    toServer["green_color"] = (int) (worker->player.color.greenF() * 255.0);
-    toServer["red_color"] = (int) (worker->player.color.redF() * 255.0);
+    qDebug() << QString::fromStdString(toServer.dump());
+
+    toServer["blue"] = (int) (worker->player.color.blueF() * 255.0);
+    toServer["green"] = (int) (worker->player.color.greenF() * 255.0);
+    toServer["red"] = (int) (worker->player.color.redF() * 255.0);
 
     toServer["bits"] = worker->bits;
     toServer["operandsCount"] = worker->operandsCount;
@@ -178,6 +185,8 @@ void Scene::sendDisconnection() {
 
     toServer["status"] = "disconnected";
     toServer["id"] = clientID;
+
+    qDebug() << QString::fromStdString(toServer.dump());
 
     socket->write(QString::fromStdString(toServer.dump()).toLatin1());
 }
@@ -203,6 +212,12 @@ void Scene::readFromServer()
     //        "answers":[ answers data ], "food":[ food data ],
     //        "expr":example }
 
+//    qDebug() << QString::fromStdString(fromServer.dump());
+
+    if (fromServer["status"] == "eaten") {
+        emit on_pushButton_clicked();
+    }
+
     if (fromServer["status"] == "connected" && fromServer["initialization"] == "yes") {
         qDebug() << "connected to server";
 
@@ -222,13 +237,14 @@ void Scene::readFromServer()
             double rad = player["rad"];
             int score = player["score"];
 
-            int blue_color = player["blue_color"];
-            int green_color = player["green_color"];
-            int red_color = player["red_color"];
+            int blue_color = player["blue"];
+            int green_color = player["green"];
+            int red_color = player["red"];
+            bool is_eaten = player["status"];
 
             QString is_correct = QString::fromStdString(player["is_correct"]);
 
-            worker->players_data.push_back({name, x, y, rad, score, is_correct});
+            worker->players_data.push_back({name, x, y, rad, score, is_correct, is_eaten});
 
             worker->players_data[player_iter].color = QColor(red_color, green_color, blue_color);
 
@@ -247,20 +263,20 @@ void Scene::readFromServer()
             for (auto food : fromServer["food"]) {
                 double x = food["x"];
                 double y = food["y"];
-                int red = food["red_color"];
-                int green = food["green_color"];
-                int blue = food["blue_color"];
+                int red = food["red"];
+                int green = food["green"];
+                int blue = food["blue"];
 
                 worker->food_data.push_back({x, y, red, green, blue});
             }
         } else {
             for (auto food : fromServer["food"]) {
-                int food_iter = food["food_iter"];
+                int food_iter = food["iter"];
                 double x = food["x"];
                 double y = food["y"];
-                int red = food["red_color"];
-                int green = food["green_color"];
-                int blue = food["blue_color"];
+                int red = food["red"];
+                int green = food["green"];
+                int blue = food["blue"];
 
                 worker->food_data[food_iter] = {x, y, red, green, blue};
             }

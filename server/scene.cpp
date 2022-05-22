@@ -194,6 +194,10 @@ void scene::update(int clientID) {
             continue;
         }
 
+        if (players[i].is_eaten || !players[i].is_online) {
+            continue;
+        }
+
         if (collision_players(players[i], players[clientID])) {
             if (players[clientID].score > players[i].score) {
                 players[clientID].score += players[i].score;
@@ -202,7 +206,7 @@ void scene::update(int clientID) {
                 players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
                 players[clientID].is_correct = "";
 
-//                players[i].eaten();
+                players[i].eaten();
             }
 
             if (players[clientID].score < players[i].score) {
@@ -212,7 +216,7 @@ void scene::update(int clientID) {
                 players[i].player_speed = (9.5 / players[i].get_radius()) + 3.5;
                 players[i].is_correct = "";
 
-//                players[clientID].eaten();
+                players[clientID].eaten();
             }
         }
     }
@@ -224,4 +228,5 @@ std::vector<int> scene::get_updated_food() {
 
 void scene::disconnected_player(int clientID) {
     players[clientID].is_online = 0;
+    players[clientID].is_eaten = 1;
 }

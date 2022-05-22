@@ -13,8 +13,8 @@ server::~server(){}
 void to_json(json& j, const Player& p)
 {
     j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate},
-         {"rad", p.radius}, {"score", p.score}, {"is_correct", p.is_correct}, {"red_color", p.red_color},
-         {"blue_color", p.blue_color}, {"green_color", p.green_color} };
+         {"rad", p.radius}, {"score", p.score}, {"is_correct", p.is_correct}, {"red", p.red_color},
+         {"blue", p.blue_color}, {"green", p.green_color}, {"status", p.is_eaten} };
 }
 
 void to_json(json& j, const Answer& p)
@@ -24,13 +24,13 @@ void to_json(json& j, const Answer& p)
 
 void to_json(json& j, const Food& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"red_color", p.red_color},
-         {"green_color", p.green_color}, {"blue_color", p.blue_color}};
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"red", p.red_color},
+         {"green", p.green_color}, {"blue", p.blue_color}};
 }
 
 void to_json(json& j, const std::pair<int, Food> p) {
-    j = {{"food_iter", p.first}, {"x", p.second.x_coordinate}, {"y", p.second.y_coordinate}, {"red_color", p.second.red_color},
-         {"green_color", p.second.green_color}, {"blue_color", p.second.blue_color}};
+    j = {{"iter", p.first}, {"x", p.second.x_coordinate}, {"y", p.second.y_coordinate}, {"red", p.second.red_color},
+         {"green", p.second.green_color}, {"blue", p.second.blue_color}};
 }
 
 void server::incomingConnection(qintptr socketDescriptor) {
@@ -72,6 +72,7 @@ void server::readFromClient()
         qDebug() << e.what() << '\n';
     }
 
+    qDebug() << QString::fromStdString(fromClient.dump());
     // every message from client to server is player data:
     //      { "status":"connected", "name":player_name, "id":clientID,
     //       "angle":player_angle }
@@ -83,9 +84,9 @@ void server::readFromClient()
         int clientID = fromClient["id"];
         QString name = QString::fromStdString(fromClient["name"]);
         double player_angle = fromClient["angle"];
-        int red_color = fromClient["red_color"];
-        int green_color = fromClient["green_color"];
-        int blue_color = fromClient["blue_color"];
+        int red_color = fromClient["red"];
+        int green_color = fromClient["green"];
+        int blue_color = fromClient["blue"];
 
         if (clientID == 0) {
             Game_scene.bits = fromClient["bits"];
@@ -107,18 +108,18 @@ void server::readFromClient()
 }
 
 void server::sendToClient() {
-//    std::vector<int> online_players;
-//    std::vector<Player> online_players_list;
-//    std::vector<int> eaten_players;
+    std::vector<int> online_players;
+    std::vector<Player> online_players_list;
+    std::vector<int> eaten_players;
 
-//    for (int i = 0; i < Game_scene.players.size(); i++) {
-//        if (Game_scene.players[i].is_eaten) {
-//            eaten_players.push_back(i);
-//        } else if (Game_scene.players[i].is_online) {
-//            online_players.push_back(i);
-//            online_players_list.push_back(Game_scene.players[i]);
-//        }
-//    }
+    for (int i = 0; i < Game_scene.players.size(); i++) {
+        if (Game_scene.players[i].is_eaten) {
+            eaten_players.push_back(i);
+        } else if (Game_scene.players[i].is_online) {
+            online_players.push_back(i);
+            online_players_list.push_back(Game_scene.players[i]);
+        }
+    }
 
     json toClient;
 
@@ -142,7 +143,8 @@ void server::sendToClient() {
 
     Game_scene.updated_food.clear();
 
-    for (int i = 0; i < sockets.size(); i++) {
+//    for (int i = 0; i < sockets.size(); i++) {
+    for (auto i : online_players) {
         if (Game_scene.players[i].player_initialization == "yes") {
             Game_scene.players[i].player_initialization = "no";
             toClient["food_status"] = "full";
@@ -155,12 +157,12 @@ void server::sendToClient() {
         sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
     }
 
-//    json toEatenClient;
-//    toEatenClient["status"] = "eaten";
+    json toEatenClient;
+    toEatenClient["status"] = "eaten";
 
-//    for (int i : eaten_players) {
-//        sockets[i]->write(QString::fromStdString(toEatenClient.dump()).toLatin1());
-//    }
+    for (int i : eaten_players) {
+        sockets[i]->write(QString::fromStdString(toEatenClient.dump()).toLatin1());
+    }
 }
 
 void server::sockDisc()
