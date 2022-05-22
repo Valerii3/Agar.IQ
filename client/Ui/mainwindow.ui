@@ -115,6 +115,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="switchUser">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>970</y>
+      <width>191</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Выйти из пользователя</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

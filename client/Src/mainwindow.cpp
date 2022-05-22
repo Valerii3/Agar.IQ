@@ -1,6 +1,7 @@
 #include "Include/mainwindow.h"
 #include "ui_mainwindow.h"
 #include "Include/settingswindow.h"
+#include "../Include/login.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -137,3 +138,15 @@ void MainWindow::slotMaxScore(int _score){
     }
 
 }
+
+void MainWindow::on_switchUser_clicked()
+{
+    Login *r;
+    r = new Login;
+    this->close();
+    QSettings set("C:/ProjectDB/Agar.IQ/settings", QSettings::IniFormat);
+    set.setValue("type", false);
+   // registration = new Login;
+    r->showFullScreen();
+}
+

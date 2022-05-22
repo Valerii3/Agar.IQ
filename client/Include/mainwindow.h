@@ -41,9 +41,12 @@ private slots:
 
     void on_closeButton_clicked();
 
+    void on_switchUser_clicked();
+
 private:
     Ui::MainWindow *ui;
     Scene *scene = nullptr;
+
     QSqlDatabase db;
     QSqlTableModel *model;
     QString username;

@@ -1,6 +1,7 @@
 #include "../Include/login.h"
 #include "ui_login.h"
 
+
 QString sha256(const std::string str)
 {
     unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -29,7 +30,7 @@ Login::Login(QWidget *parent) :
     if (type){
         QString lgn = set.value("login").toString();
         emit signalNameLog(lgn);
-        this->hide();
+        this->close();
         w->show();
 
     }
@@ -59,13 +60,13 @@ void Login::on_logButton_clicked()
                     set.setValue("password", hash);
                     qDebug() << "user exists";
                     emit signalNameLog(login);
-                    this->hide();
+                    this->close();
                     w->show();
                 } else {
                     set.setValue("type", false);
                     qDebug() << "user exists";
                     emit signalNameLog(login);
-                    this->hide();
+                    this->close();
                     w->show();
                 }
 
