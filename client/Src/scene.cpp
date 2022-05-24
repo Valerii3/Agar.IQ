@@ -161,8 +161,6 @@ void Scene::sendToServer()
     toServer["id"] = clientID;
     toServer["angle"] = worker->player.player_angle;
 
-    qDebug() << QString::fromStdString(toServer.dump());
-
     toServer["blue"] = (int) (worker->player.color.blueF() * 255.0);
     toServer["green"] = (int) (worker->player.color.greenF() * 255.0);
     toServer["red"] = (int) (worker->player.color.redF() * 255.0);
@@ -171,7 +169,9 @@ void Scene::sendToServer()
     toServer["operandsCount"] = worker->operandsCount;
     toServer["operands"] = worker->operands;
 
-    socket->write(QString::fromStdString(toServer.dump()).toLatin1());
+    //    qDebug() << QString::fromStdString(toServer.dump());
+
+    socket->write(QString::fromStdString(toServer.dump()).toLatin1() + '$');
     socket->waitForBytesWritten(20000);
 }
 
@@ -186,9 +186,7 @@ void Scene::sendDisconnection() {
     toServer["status"] = "disconnected";
     toServer["id"] = clientID;
 
-    qDebug() << QString::fromStdString(toServer.dump());
-
-    socket->write(QString::fromStdString(toServer.dump()).toLatin1());
+    socket->write(QString::fromStdString(toServer.dump()).toLatin1() + '$');
 }
 
 void Scene::readFromServer()
@@ -196,11 +194,20 @@ void Scene::readFromServer()
     socket = (QTcpSocket*)sender();
 
     json fromServer;
-    try {
-        fromServer = json::parse(socket->readAll().toStdString());
-    }  catch (json::exception& e) {
-        qDebug() << e.what() << '\n';
+
+    QByteArray array;
+
+    while(!array.contains('$')) {
+        array += socket->readAll();
     }
+
+    int bytes = array.indexOf('$') + 1;
+    QByteArray message = array.left(bytes);
+    array = array.mid(bytes);
+
+    std::string ans = message.toStdString();
+    ans.pop_back();
+    fromServer = json::parse(ans);
 
     // first message from server is reply to connection and
     //       client's id (his number in players_data):
@@ -211,8 +218,6 @@ void Scene::readFromServer()
     //       {"status":"connected", "players":[ players data ],
     //        "answers":[ answers data ], "food":[ food data ],
     //        "expr":example }
-
-//    qDebug() << QString::fromStdString(fromServer.dump());
 
     if (fromServer["status"] == "eaten") {
         emit on_pushButton_clicked();

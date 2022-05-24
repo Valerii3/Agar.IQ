@@ -56,7 +56,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
     initializationMessage["id"] = newClientID;
 
     socket->waitForBytesWritten(500);
-    socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1());
+    socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1() + '$');
 
     qDebug() << "new player " << newClientID << "is connected on socket " << socketDescriptor;
 }
@@ -66,13 +66,22 @@ void server::readFromClient()
     socket = (QTcpSocket*)sender();
 
     json fromClient;
-    try {
-        fromClient = json::parse(socket->readAll().toStdString());
-    }  catch (json::exception& e) {
-        qDebug() << e.what() << '\n';
+
+    QByteArray array;
+
+    while(!array.contains('$')) {
+        array += socket->readAll();
     }
 
-    qDebug() << QString::fromStdString(fromClient.dump());
+    int bytes = array.indexOf('$') + 1;     // Find the end of message
+    QByteArray message = array.left(bytes);  // Cut the message
+    array = array.mid(bytes);                // Keep the data read too early
+
+    std::string ans = message.toStdString();
+    ans.pop_back();
+    fromClient = json::parse(ans);
+
+//    qDebug() << QString::fromStdString(fromClient.dump());
     // every message from client to server is player data:
     //      { "status":"connected", "name":player_name, "id":clientID,
     //       "angle":player_angle }
@@ -154,14 +163,14 @@ void server::sendToClient() {
             toClient["food"] = sended_food;
         }
 
-        sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1());
+        sockets[i]->write(QString::fromStdString(toClient.dump()).toLatin1() + '$');
     }
 
     json toEatenClient;
     toEatenClient["status"] = "eaten";
 
     for (int i : eaten_players) {
-        sockets[i]->write(QString::fromStdString(toEatenClient.dump()).toLatin1());
+        sockets[i]->write(QString::fromStdString(toEatenClient.dump()).toLatin1() + '$');
     }
 }
 
