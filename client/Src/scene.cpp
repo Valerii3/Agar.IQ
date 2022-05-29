@@ -143,6 +143,7 @@ void Scene::slotGetName(QString _name){
 void Scene::on_pushButton_clicked()
 {
     this->close();
+    qDebug() << maxScore << "WTF";
     emit signalSendToDB(maxScore);
 }
 
@@ -207,6 +208,7 @@ void Scene::readFromServer()
             int score = player["score"];
             if (score > maxScore){   // просто чтобы потом отправить в базу данных
                 maxScore = score;
+
             }
             QString is_correct = QString::fromStdString(player["is_correct"]);
 

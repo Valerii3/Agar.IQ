@@ -44,16 +44,21 @@ Login::~Login()
 void Login::on_logButton_clicked()
 {
     QString login = ui->logName->text();
-    QString pswd = ui->logPswd->text();    
+    QString pswd = ui->logPswd->text();
+
     QSqlQuery qry;
     if (qry.exec("SELECT Login, Password, Salt from users WHERE Login=\'" + login +
                  "\' ")){
+
         if (qry.next()){
+
             QString hashDB = qry.value(1).toString();
             salt = qry.value(2).toString();
             hash = sha256(salt.toStdString() + pswd.toStdString());
+
             QSettings set("C:/ProjectDB/Agar.IQ/settings", QSettings::IniFormat);     // свой путь
             if (hash == hashDB){
+                qDebug() << "HASH TRUE";
                 if (autoLog){
                     set.setValue("type", true);
                     set.setValue("login", login);
@@ -131,12 +136,8 @@ QString Login::generateSalt(){
 }
 
 
-
-
-
-
-void Login::on_autoLogin_clicked()
-{
+void Login::on_aut_clicked(){
     autoLog = true;
+
 }
 

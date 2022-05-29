@@ -47,10 +47,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         qDebug() << "query succeed1";
     } */
 
-    model = new QSqlTableModel(this,db);   // табличка рекордов
+    QSqlQueryModel *modal = new QSqlQueryModel();
+    QSqlQuery *qry = new QSqlQuery();
+    qry->prepare("Select * FROM record ORDER BY Points DESC");
+    qry->exec();
+    modal->setQuery(*qry);
+    ui->tableView->setModel(modal);
+ /*   ui->tableView->setSortingEnabled(true);
+    ui->tableView->horizontalHeader()->setSectionsClickable(1);
+    ui->tableView->show(); */
+ /*   model = new QSqlTableModel(this,db);   // табличка рекордов
     model->setTable("record");
     model->select();
-    ui->tableView->setModel(model);
+    ui->tableView->setModel(model); */
 
 }
 
@@ -63,6 +72,7 @@ MainWindow::~MainWindow() {
 void MainWindow::on_startButton_clicked()
 {
     scene->show();
+
     this->close();
     emit signalStartGame();
     emit signalSendColor(color);
@@ -124,18 +134,18 @@ void MainWindow::slotMaxScore(int _score){
     QSqlQuery qry;
 
     qry.prepare("INSERT INTO record ("
-                "Nickname,"
-                "Points)"
-                "VALUES (?,?);");
-    qry.addBindValue(username);
-    qry.addBindValue(_score);
+                  "Nickname,"
+                  "Points)"
+                  "VALUES (?,?);");
+      qry.addBindValue(username);
+      qry.addBindValue(_score);
 
 
-    if (!qry.exec()){
-        qDebug() << "error add";
-    } else {
-        qDebug() << "succeed adding";
-    }
+      if (!qry.exec()){
+          qDebug() << "error add";
+      } else {
+          qDebug() << "succeed adding" << _score;
+      }
 
 }
 
