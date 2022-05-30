@@ -6,7 +6,7 @@ std::string scene::operands = "+-*";
 
 void scene::update_numbers(int correct) {
     answers[0].update_number(correct);
-    for (int i = 1; i < 10; i++) {
+    for (int i = 1; i < 20; i++) {
         answers[i].update_number(correct + rand() % 10 - 5);
     }
 }
@@ -52,15 +52,15 @@ void scene::new_player(QString name) {
 }
 
 void scene::generate_answers() {
-    answers.resize(10);
-    for (int i = 0; i < 10; i++) {
+    answers.resize(20);
+    for (int i = 0; i < 20; i++) {
         new_answer(i);
     }
 }
 
 void scene::generate_food() {
-    food.resize(160);
-    for (int i = 0; i < 160; i++) {
+    food.resize(150);
+    for (int i = 0; i < 150; i++) {
         new_food(i);
     }
 }
@@ -84,12 +84,12 @@ bool scene::collision(Entity a, Entity b) {
     auto r2 = b.get_radius();
 
     if (b.type == "player" || a.type == "player") {
-        if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
+        if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 + r1, 2)) {
             return true;
         }
         return false;
     } else {
-        if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 + r1 + 5, 2) ){
+        if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 + r1 + 15, 2) ){
             return true;
         }
         return false;
@@ -141,14 +141,21 @@ void scene::check_correct(int i) {
 
 void scene::update(int clientID) {
     players[clientID].x_coordinate += players[clientID].player_speed * cos(players[clientID].player_angle);
+
+    players[clientID].x_coordinate = std::min(players[clientID].x_coordinate, 2505.0 - players[clientID].get_radius());
+    players[clientID].x_coordinate = std::max(players[clientID].x_coordinate, -505.0 + players[clientID].get_radius());
+
     players[clientID].y_coordinate += players[clientID].player_speed * sin(players[clientID].player_angle);
+
+    players[clientID].y_coordinate = std::min(players[clientID].y_coordinate, 1205.0 - players[clientID].get_radius());
+    players[clientID].y_coordinate = std::max(players[clientID].y_coordinate, -305.0 + players[clientID].get_radius());
 
     for (int i = 0; i < answers.size(); i++) {
         if (collision(answers[i], players[clientID])) {
             if (answers[i].get_number() == generator) {
                 players[clientID].score += 3;
                 players[clientID].is_correct = "Correct!";
-                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(3 / 3.14), 60.0);
+                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(3 / 3.14), 90.0);
                 generator = 1 + rand() % 19;
 
                 new_answer(i);
@@ -179,7 +186,7 @@ void scene::update(int clientID) {
         if (collision(food[i], players[clientID])) {
             players[clientID].score += 1;
             players[clientID].is_correct = "";
-            players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(1 / 3.14), 60.0);
+            players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(1 / 3.14), 90.0);
 
             new_food(i);
 
@@ -201,7 +208,7 @@ void scene::update(int clientID) {
         if (collision_players(players[i], players[clientID])) {
             if (players[clientID].score > players[i].score) {
                 players[clientID].score += players[i].score;
-                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(players[i].score / 3.14), 60.0);
+                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(players[i].score / 3.14), 90.0);
 
                 players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
                 players[clientID].is_correct = "";
@@ -211,7 +218,7 @@ void scene::update(int clientID) {
 
             if (players[clientID].score < players[i].score) {
                 players[i].score += players[clientID].score;
-                players[i].radius = std::min(players[i].get_radius() + sqrt(players[clientID].score / 3.14), 60.0);
+                players[i].radius = std::min(players[i].get_radius() + sqrt(players[clientID].score / 3.14), 90.0);
 
                 players[i].player_speed = (9.5 / players[i].get_radius()) + 3.5;
                 players[i].is_correct = "";

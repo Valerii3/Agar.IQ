@@ -11,7 +11,11 @@ Scene::Scene(QWidget *parent) :
     connect(socket, &QTcpSocket::readyRead, this, &Scene::readFromServer);
     connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
 
-    socket->connectToHost("127.0.0.1", 5555);
+//    socket->connectToHost("srv13.yeputons.net", 8418);
+//    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    socket->connectToHost("127.0.0.1", 80);
+
+    qDebug() << "start";
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
 }
@@ -25,7 +29,7 @@ Scene::~Scene()
     delete worker;
 }
 
-void Scene::slotResultReady(){
+void Scene::slotResultReady() {
     sendToServer();
 }
 
@@ -34,7 +38,7 @@ bool Scene::in_bounds(Entity dot) {
         return false;
     }
 
-    if (abs(worker->players_data[clientID].get_y_position() - dot.get_y_position()) > 450) {
+    if (abs(worker->players_data[clientID].get_y_position() - dot.get_y_position()) > 550) {
         return false;
     }
 
@@ -53,6 +57,35 @@ void Scene::paintEvent(QPaintEvent *event) {
         return;
     }
 
+//    x_coordinate = -500.0 + rand() % 3000;
+//    y_coordinate = -300.0 + rand() % 1500;
+//    int delta = (int)worker->players_data[clientID].get_x_position() % 30;
+//    qDebug() << delta;
+
+    if (!worker->players_data.empty()) {
+        fnt.setPixelSize(1);
+        painter.setFont(fnt);
+        painter.setPen(QPen(Qt::gray,1,Qt::SolidLine,Qt::FlatCap));
+
+        for (int x = -1500; x <= 3500; x += 50) {
+            if (abs(worker->players_data[clientID].get_x_position() - x) <= 950) {
+                double new_x = center_x + x - worker->players_data[clientID].get_x_position();
+                painter.drawLine(new_x, 0, new_x, 1100);
+            }
+        }
+
+        for (int y = -900; y <= 2000; y += 50) {
+            if (abs(worker->players_data[clientID].get_y_position() - y) <= 550) {
+                double new_y = center_y - y + worker->players_data[clientID].get_y_position();
+                painter.drawLine(0, new_y, 1900, new_y);
+            }
+        }
+
+        fnt.setPixelSize(35);
+        painter.setFont(fnt);
+        painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+    }
+
     for (auto it : worker->answers_data) {
         if (in_bounds(it)) {
 
@@ -61,7 +94,10 @@ void Scene::paintEvent(QPaintEvent *event) {
             double new_y = center_y - it.get_y_position() + worker->players_data[clientID].get_y_position();
 
             painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
-            painter.drawText(QPoint(new_x - it.get_radius(), new_y + it.get_radius()/2), QString::number(it.get_number()));
+
+            const QRect rectangle = QRect(new_x - 50 * it.get_radius(), new_y - 50 * it.get_radius(), 100 * it.get_radius(), 100 * it.get_radius());
+            QRect boundingRect;
+            painter.drawText(rectangle, Qt::AlignCenter, QString::number(it.get_number()), &boundingRect);
         }
     }
 
@@ -86,10 +122,11 @@ void Scene::paintEvent(QPaintEvent *event) {
 
             fnt.setPixelSize(20);
             painter.setFont(fnt);
-            painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4,
-                             QString::fromStdString(worker->players_data[i].get_name()));
-        } else {
-            if (in_bounds(worker->players_data[i])) {
+            const QRect rectangle = QRect(center_x - 500, center_y - 500, 1000, 1000);
+            QRect boundingRect;
+            painter.drawText(rectangle, Qt::AlignCenter,
+                             QString::fromStdString(worker->players_data[i].get_name()), &boundingRect);
+        } else if (in_bounds(worker->players_data[i])) {
                 double new_x = center_x + worker->players_data[i].get_x_position() - worker->players_data[clientID].get_x_position();
                 double new_y = center_y - worker->players_data[i].get_y_position() + worker->players_data[clientID].get_y_position();
 
@@ -98,9 +135,9 @@ void Scene::paintEvent(QPaintEvent *event) {
 
                 fnt.setPixelSize(20);
                 painter.setFont(fnt);
-                painter.drawText(center_x - worker->players_data[i].get_radius(), center_y + worker->players_data[i].get_radius()/4,
-                                 QString::fromStdString(worker->players_data[i].get_name()));
-            }
+                const QRect rectangle = QRect(new_x - 500, new_y - 500, 1000, 1000);
+                QRect boundingRect;
+                painter.drawText(rectangle, Qt::AlignCenter, QString::fromStdString(worker->players_data[i].get_name()), &boundingRect);
         }
     }
 
@@ -172,7 +209,7 @@ void Scene::sendToServer()
     //    qDebug() << QString::fromStdString(toServer.dump());
 
     socket->write(QString::fromStdString(toServer.dump()).toLatin1() + '$');
-    socket->waitForBytesWritten(20000);
+//    socket->waitForBytesWritten(20000);
 }
 
 void Scene::sendDisconnection() {

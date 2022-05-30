@@ -1,7 +1,7 @@
 #include "server.h"
 
 server::server() {
-    if(this->listen(QHostAddress::Any, 5555)) {
+    if (this->listen(QHostAddress::LocalHost, 80)) {
         qDebug() << "Listening";
     } else {
         qDebug() << "Error";
@@ -55,7 +55,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
     initializationMessage["initialization"] = "yes";
     initializationMessage["id"] = newClientID;
 
-    socket->waitForBytesWritten(500);
+//    socket->waitForBytesWritten(500);
     socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1() + '$');
 
     qDebug() << "new player " << newClientID << "is connected on socket " << socketDescriptor;
@@ -72,6 +72,7 @@ void server::readFromClient()
     while(!array.contains('$')) {
         array += socket->readAll();
     }
+//    qDebug() << array;
 
     int bytes = array.indexOf('$') + 1;     // Find the end of message
     QByteArray message = array.left(bytes);  // Cut the message
@@ -81,7 +82,6 @@ void server::readFromClient()
     ans.pop_back();
     fromClient = json::parse(ans);
 
-//    qDebug() << QString::fromStdString(fromClient.dump());
     // every message from client to server is player data:
     //      { "status":"connected", "name":player_name, "id":clientID,
     //       "angle":player_angle }
