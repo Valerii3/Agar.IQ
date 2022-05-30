@@ -53,13 +53,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     qry->exec();
     modal->setQuery(*qry);
     ui->tableView->setModel(modal);
- /*   ui->tableView->setSortingEnabled(true);
-    ui->tableView->horizontalHeader()->setSectionsClickable(1);
-    ui->tableView->show(); */
- /*   model = new QSqlTableModel(this,db);   // табличка рекордов
-    model->setTable("record");
-    model->select();
-    ui->tableView->setModel(model); */
+
 
 }
 
@@ -132,20 +126,50 @@ void MainWindow::slotNameLog(QString _name){
 
 void MainWindow::slotMaxScore(int _score){
     QSqlQuery qry;
+    bool flag = true;
+    bool go = false;
+    if (qry.exec("SELECT Nickname, Points from record WHERE Nickname='"+username+"' ")){
+        if (qry.next()){
 
-    qry.prepare("INSERT INTO record ("
-                  "Nickname,"
-                  "Points)"
-                  "VALUES (?,?);");
-      qry.addBindValue(username);
-      qry.addBindValue(_score);
+            if (_score > qry.value(1).toInt()){
 
+                qDebug() << "workit bitch";
+                qry.prepare("DELETE from record WHERE Nickname='"+username+"'");
+                if (!qry.exec()){
+                    qDebug() << "error del";
+                } else {
+                    qDebug() << "succeed del";
+                }
+            /*    qry.prepare("INSERT INTO record ("
+                              "Nickname,"
+                              "Points)"
+                              "VALUES (?,?);");
+                  qry.addBindValue(username);
+                  qry.addBindValue(_score); */
+            } else {
+                flag = false;
+            }
+        } else {
+            go = true;
+        }
+    }
 
-      if (!qry.exec()){
-          qDebug() << "error add";
-      } else {
-          qDebug() << "succeed adding" << _score;
-      }
+    QSqlQuery qury;
+    if (flag || go){
+
+        qury.prepare("INSERT INTO record ("
+                     "Nickname,"
+                     "Points)"
+                     "VALUES (?,?);");
+        qury.addBindValue(username);
+        qury.addBindValue(_score);
+    }
+
+    if (!qury.exec()){
+        qDebug() << "error add";
+    } else {
+        qDebug() << "succeed adding" << _score;
+    }
 
 }
 
