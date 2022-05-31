@@ -132,8 +132,6 @@ void MainWindow::slotMaxScore(int _score){
         if (qry.next()){
 
             if (_score > qry.value(1).toInt()){
-
-                qDebug() << "workit bitch";
                 qry.prepare("DELETE from record WHERE Nickname='"+username+"'");
                 if (!qry.exec()){
                     qDebug() << "error del";

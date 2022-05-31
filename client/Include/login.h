@@ -36,7 +36,7 @@ private slots:
 
     void on_guestButton_clicked();
 
-    void on_autoLogin_clicked();
+    void on_aut_clicked();
 
 signals:
     void signalNameLog(QString _name);
