@@ -178,7 +178,7 @@ void scene::update(int clientID) {
                 update_numbers(generator);
             }
 
-            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
+            players[clientID].player_speed = (54.0 / players[clientID].get_radius()) + 2.6;
         }
     }
 
@@ -192,7 +192,7 @@ void scene::update(int clientID) {
 
             updated_food.push_back(i);
 
-            players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
+            players[clientID].player_speed = (54.0 / players[clientID].get_radius()) + 2.6;
         }
     }
 
@@ -210,7 +210,7 @@ void scene::update(int clientID) {
                 players[clientID].score += players[i].score;
                 players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(players[i].score / 3.14), 90.0);
 
-                players[clientID].player_speed = (9.5 / players[clientID].get_radius()) + 3.5;
+                players[clientID].player_speed = (54.0 / players[clientID].get_radius()) + 2.6;
                 players[clientID].is_correct = "";
 
                 players[i].eaten();
@@ -220,7 +220,7 @@ void scene::update(int clientID) {
                 players[i].score += players[clientID].score;
                 players[i].radius = std::min(players[i].get_radius() + sqrt(players[clientID].score / 3.14), 90.0);
 
-                players[i].player_speed = (9.5 / players[i].get_radius()) + 3.5;
+                players[i].player_speed = (54.0 / players[i].get_radius()) + 2.6;
                 players[i].is_correct = "";
 
                 players[clientID].eaten();

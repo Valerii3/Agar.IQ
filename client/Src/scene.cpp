@@ -57,11 +57,6 @@ void Scene::paintEvent(QPaintEvent *event) {
         return;
     }
 
-//    x_coordinate = -500.0 + rand() % 3000;
-//    y_coordinate = -300.0 + rand() % 1500;
-//    int delta = (int)worker->players_data[clientID].get_x_position() % 30;
-//    qDebug() << delta;
-
     if (!worker->players_data.empty()) {
         fnt.setPixelSize(1);
         painter.setFont(fnt);
@@ -70,7 +65,7 @@ void Scene::paintEvent(QPaintEvent *event) {
         for (int x = -1500; x <= 3500; x += 50) {
             if (abs(worker->players_data[clientID].get_x_position() - x) <= 950) {
                 double new_x = center_x + x - worker->players_data[clientID].get_x_position();
-                painter.drawLine(new_x, 0, new_x, 1100);
+                painter.drawLine(new_x, 0, new_x, 1200);
             }
         }
 
@@ -93,16 +88,20 @@ void Scene::paintEvent(QPaintEvent *event) {
             double new_x = center_x + it.get_x_position() - worker->players_data[clientID].get_x_position();
             double new_y = center_y - it.get_y_position() + worker->players_data[clientID].get_y_position();
 
+            painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::FlatCap));
             painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
 
             const QRect rectangle = QRect(new_x - 50 * it.get_radius(), new_y - 50 * it.get_radius(), 100 * it.get_radius(), 100 * it.get_radius());
             QRect boundingRect;
+
+            painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
             painter.drawText(rectangle, Qt::AlignCenter, QString::number(it.get_number()), &boundingRect);
         }
     }
 
     for (auto it : worker->food_data) {
         if (in_bounds(it)) {
+            painter.setPen(QPen(it.color, 1, Qt::SolidLine, Qt::FlatCap));
             painter.setBrush(QBrush(it.color, Qt::SolidPattern));
 
             double new_x = center_x + it.get_x_position() - worker->players_data[clientID].get_x_position();
@@ -116,12 +115,17 @@ void Scene::paintEvent(QPaintEvent *event) {
         if (worker->players_data[i].is_eaten) {
             continue;
         }
+
         if (i == clientID) {
             painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
+            painter.setPen(QPen(worker->players_data[i].color, 1, Qt::SolidLine, Qt::FlatCap));
+
             painter.drawEllipse(QPointF(center_x, center_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
-            fnt.setPixelSize(20);
+            fnt.setPixelSize(35);
             painter.setFont(fnt);
+            painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+
             const QRect rectangle = QRect(center_x - 500, center_y - 500, 1000, 1000);
             QRect boundingRect;
             painter.drawText(rectangle, Qt::AlignCenter,
@@ -131,10 +135,14 @@ void Scene::paintEvent(QPaintEvent *event) {
                 double new_y = center_y - worker->players_data[i].get_y_position() + worker->players_data[clientID].get_y_position();
 
                 painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
+                painter.setPen(QPen(worker->players_data[i].color, 1, Qt::SolidLine, Qt::FlatCap));
+
                 painter.drawEllipse(QPointF(new_x, new_y), 2*worker->players_data[i].get_radius(), 2*worker->players_data[i].get_radius());
 
-                fnt.setPixelSize(20);
+                fnt.setPixelSize(35);
                 painter.setFont(fnt);
+                painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+
                 const QRect rectangle = QRect(new_x - 500, new_y - 500, 1000, 1000);
                 QRect boundingRect;
                 painter.drawText(rectangle, Qt::AlignCenter, QString::fromStdString(worker->players_data[i].get_name()), &boundingRect);
