@@ -11,9 +11,9 @@ Scene::Scene(QWidget *parent) :
     connect(socket, &QTcpSocket::readyRead, this, &Scene::readFromServer);
     connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
 
-//    socket->connectToHost("srv13.yeputons.net", 8418);
+    socket->connectToHost("srv13.yeputons.net", 8418);
 //    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-    socket->connectToHost("127.0.0.1", 80);
+//    socket->connectToHost("127.0.0.1", 80);
 
     qDebug() << "start";
     ui->setupUi(this);
