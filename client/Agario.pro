@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Src/bot.cpp \
     src/answers.cpp \
     src/entity.cpp \
     src/food.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
     src/worker.cpp
 
 HEADERS += \
+    Include/bot.h \
     include/answers.h \
     include/entity.h \
     include/food.h \

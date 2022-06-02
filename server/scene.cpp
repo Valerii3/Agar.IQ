@@ -15,6 +15,7 @@ scene::scene()
 {
     generate_answers();
     generate_food();
+    generate_bots();
 
     auto question = Question(bits, operandsCount, operands);
 
@@ -47,6 +48,16 @@ void scene::new_food(int i) {
     food[i] = a;
 }
 
+void scene::new_bot(int i) {
+    auto a = Bot();
+    for (auto player : players) {
+        while (collision(a, player)) {
+            a = Bot();
+        }
+    }
+    bots[i] = a;
+}
+
 void scene::new_player(QString name) {
     players.push_back(Player(name, 250.0 + rand() % 1400, 100.0 + rand() % 700, 30, players.size()));
 }
@@ -62,6 +73,13 @@ void scene::generate_food() {
     food.resize(150);
     for (int i = 0; i < 150; i++) {
         new_food(i);
+    }
+}
+
+void scene::generate_bots() {
+    bots.resize(4);
+    for (int i = 0; i < 4; i++) {
+        new_bot(i);
     }
 }
 
@@ -124,6 +142,10 @@ std::vector<Answer> scene::get_answers() {
 
 std::vector<Food> scene::get_food() {
     return food;
+}
+
+std::vector<Bot> scene::get_bots() {
+    return bots;
 }
 
 void scene::check_correct(int i) {
@@ -225,6 +247,86 @@ void scene::update(int clientID) {
 
                 players[clientID].eaten();
             }
+        }
+    }
+
+    for (int i = 0; i < bots.size(); i++) {
+        if (collision(bots[i], players[clientID])) {
+            if (players[clientID].score > bots[i].score) {
+                players[clientID].score += bots[i].score;
+                players[clientID].radius = std::min(players[clientID].get_radius() + sqrt(bots[i].score / 3.14), 90.0);
+
+                players[clientID].player_speed = (54.0 / players[clientID].get_radius()) + 2.6;
+                players[clientID].is_correct = "";
+
+                new_bot(i);
+            }
+
+            if (players[clientID].score < bots[i].score) {
+                bots[i].score += players[clientID].score;
+                bots[i].radius = std::min(bots[i].get_radius() + sqrt(players[clientID].score / 3.14), 90.0);
+
+                bots[i].bot_speed = (54.0 / bots[i].get_radius()) + 2.6;
+
+                players[clientID].eaten();
+            }
+        }
+    }
+
+    if (clientID == 0) {
+        update_bots();
+    }
+}
+
+void scene::update_bots() {
+    for (int i = 0; i < bots.size(); i++) {
+        bots[i].x_coordinate += bots[i].bot_speed * cos(bots[i].bot_angle);
+
+        bots[i].x_coordinate = std::min(bots[i].x_coordinate, 2505.0 - bots[i].get_radius());
+        bots[i].x_coordinate = std::max(bots[i].x_coordinate, -505.0 + bots[i].get_radius());
+
+        bots[i].y_coordinate += bots[i].bot_speed * sin(bots[i].bot_angle);
+
+        bots[i].y_coordinate = std::min(bots[i].y_coordinate, 1205.0 - bots[i].get_radius());
+        bots[i].y_coordinate = std::max(bots[i].y_coordinate, -305.0 + bots[i].get_radius());
+
+        for (int j = 0; j < food.size(); j++) {
+            if (collision(food[j], bots[i])) {
+                bots[i].score += 1;
+                bots[i].radius = std::min(bots[i].get_radius() + sqrt(1 / 3.14), 90.0);
+
+                new_food(j);
+
+                updated_food.push_back(j);
+
+                bots[i].bot_speed = (54.0 / bots[i].get_radius()) + 2.6;
+            }
+        }
+
+        for (int j = i; j < bots.size(); j++) {
+            if (collision(bots[j], bots[i])) {
+                if (bots[j].score > bots[i].score) {
+                    bots[j].score += bots[i].score;
+                    bots[j].radius = std::min(bots[j].get_radius() + sqrt(bots[i].score / 3.14), 90.0);
+
+                    bots[j].bot_speed = (54.0 / bots[j].get_radius()) + 2.6;
+
+                    new_bot(i);
+                }
+
+                if (bots[j].score < bots[i].score) {
+                    bots[i].score += bots[j].score;
+                    bots[i].radius = std::min(bots[i].get_radius() + sqrt(bots[j].score / 3.14), 90.0);
+
+                    bots[i].bot_speed = (54.0 / bots[i].get_radius()) + 2.6;
+
+                    new_bot(j);
+                }
+            }
+        }
+
+        if (rand() % 200 == 0) {
+            bots[i].bot_angle = rand();
         }
     }
 }

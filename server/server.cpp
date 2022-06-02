@@ -28,6 +28,12 @@ void to_json(json& j, const Food& p)
          {"green", p.green_color}, {"blue", p.blue_color}};
 }
 
+void to_json(json& j, const Bot& p)
+{
+    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius},
+         {"red", p.red_color}, {"green", p.green_color}, {"blue", p.blue_color}};
+}
+
 void to_json(json& j, const std::pair<int, Food> p) {
     j = {{"iter", p.first}, {"x", p.second.x_coordinate}, {"y", p.second.y_coordinate}, {"red", p.second.red_color},
          {"green", p.second.green_color}, {"blue", p.second.blue_color}};
@@ -141,6 +147,7 @@ void server::sendToClient() {
     toClient["players"] = Game_scene.get_players();
     toClient["answers"] = Game_scene.get_answers();
     toClient["food"] = Game_scene.get_food();
+    toClient["bots"] = Game_scene.get_bots();
     toClient["status"] = "connected";
 
     toClient["expr"] = Game_scene.expr;

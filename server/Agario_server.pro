@@ -14,6 +14,7 @@ TEMPLATE = app
 
 SOURCES += \
         answer.cpp \
+        bot.cpp \
         entity.cpp \
         food.cpp \
         main.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 
 HEADERS += \
     answer.h \
+    bot.h \
     entity.h \
     food.h \
     player.h \

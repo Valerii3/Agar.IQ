@@ -8,6 +8,7 @@
 #include "answer.h"
 #include "food.h"
 #include "question.h"
+#include "bot.h"
 
 class scene
 {
@@ -28,11 +29,15 @@ public:
 
     std::vector<Player> players;
 
+    std::vector<Bot> bots;
+
     void new_food(int i);
 
     void new_answer(int i);
 
     void new_player(QString name);
+
+    void new_bot(int i);
 
     bool collision(Entity a, Entity b);
 
@@ -42,9 +47,13 @@ public:
 
     void generate_food();
 
+    void generate_bots();
+
     void update_player(int iter, QString name, double angle, int red_color = 0, int green_color = 255, int blue_color = 0);
 
     void update_answer(int id);
+
+    void update_bots();
 
     void update_numbers(int correct);
 
@@ -53,6 +62,8 @@ public:
     std::vector<Player> get_players();
 
     std::vector<Food> get_food();
+
+    std::vector<Bot> get_bots();
 
     std::vector<int> updated_food;
 

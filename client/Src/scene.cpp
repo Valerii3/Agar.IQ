@@ -11,9 +11,9 @@ Scene::Scene(QWidget *parent) :
     connect(socket, &QTcpSocket::readyRead, this, &Scene::readFromServer);
     connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
 
-    socket->connectToHost("srv13.yeputons.net", 8418);
+//    socket->connectToHost("srv13.yeputons.net", 8418);
 //    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-//    socket->connectToHost("127.0.0.1", 80);
+    socket->connectToHost("127.0.0.1", 80);
 
     qDebug() << "start";
     ui->setupUi(this);
@@ -111,6 +111,16 @@ void Scene::paintEvent(QPaintEvent *event) {
         }
     }
 
+    for (int i = 0; i < worker->bots_data.size(); i++) {
+        double new_x = center_x + worker->bots_data[i].get_x_position() - worker->players_data[clientID].get_x_position();
+        double new_y = center_y - worker->bots_data[i].get_y_position() + worker->players_data[clientID].get_y_position();
+
+        painter.setBrush(QBrush(worker->bots_data[i].color, Qt::SolidPattern));
+        painter.setPen(QPen(worker->bots_data[i].color, 1, Qt::SolidLine, Qt::FlatCap));
+
+        painter.drawEllipse(QPointF(new_x, new_y), 2*worker->bots_data[i].get_radius(), 2*worker->bots_data[i].get_radius());
+    }
+
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (worker->players_data[i].is_eaten) {
             continue;
@@ -151,6 +161,8 @@ void Scene::paintEvent(QPaintEvent *event) {
 
     fnt.setPixelSize(40);
     painter.setFont(fnt);
+    painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+
     painter.drawText(QPoint(1700,40), worker->text);
     painter.drawText(QPoint(1820,40), QString::number(worker->score));
     painter.drawText(QPoint(1700,80), worker->is_correct);
@@ -277,8 +289,10 @@ void Scene::readFromServer()
 
         worker->answers_data.clear();
         worker->players_data.clear();
+        worker->bots_data.clear();
 
         int player_iter = 0;
+        int bot_iter = 0;
 
         for (auto player : fromServer["players"]) {
             QString name = QString::fromStdString(player["name"]);
@@ -299,6 +313,22 @@ void Scene::readFromServer()
             worker->players_data[player_iter].color = QColor(red_color, green_color, blue_color);
 
             player_iter++;
+        }
+
+        for (auto bot : fromServer["bots"]) {
+            double x = bot["x"];
+            double y = bot["y"];
+            double rad = bot["rad"];
+
+            int blue_color = bot["blue"];
+            int green_color = bot["green"];
+            int red_color = bot["red"];
+
+            worker->bots_data.push_back({x, y, rad});
+
+            worker->bots_data[bot_iter].color = QColor(red_color, green_color, blue_color);
+
+            bot_iter++;
         }
 
         for (auto answer : fromServer["answers"]) {
