@@ -127,7 +127,8 @@ bool scene::collision_players(Player a, Player b) {
     if (!a.is_online && !b.is_online) {
         return false;
     }
-    if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 - r1, 2)) {
+
+    if (pow(x1 - x2, 2) + pow(y1 - y2, 2) <= pow(r2 + r1 + 15, 2)) {
         return true;
     }
     return false;
@@ -237,6 +238,10 @@ void scene::update(int clientID) {
 
         if (collision_players(players[i], players[clientID])) {
             if (players[clientID].score > players[i].score) {
+                if (i == minimal_online_player) {
+                    minimal_online_player = 1e6;
+                }
+
                 players[clientID].score += players[i].score;
                 players[clientID].update_radius(std::min(players[clientID].get_radius() + sqrt(players[i].score / 3.14), 90.0));
 
@@ -247,6 +252,10 @@ void scene::update(int clientID) {
             }
 
             if (players[clientID].score < players[i].score) {
+                if (clientID == minimal_online_player) {
+                    minimal_online_player = 1e6;
+                }
+
                 players[i].score += players[clientID].score;
                 players[i].update_radius(std::min(players[i].get_radius() + sqrt(players[clientID].score / 3.14), 90.0));
 
@@ -271,6 +280,10 @@ void scene::update(int clientID) {
             }
 
             if (players[clientID].score < bots[i].score) {
+                if (clientID == minimal_online_player) {
+                    minimal_online_player = 1e6;
+                }
+
                 bots[i].score += players[clientID].score;
                 bots[i].update_radius(std::min(bots[i].get_radius() + sqrt(players[clientID].score / 3.14), 90.0));
 
@@ -302,7 +315,7 @@ void scene::update_bots() {
 
         for (int j = 0; j < food.size(); j++) {
             if (collision(food[j], bots[i])) {
-                bots[i].score = std::max(bots[i].score + 1, 40);
+                bots[i].score = std::min(bots[i].score + 1, 40);
                 bots[i].update_radius(std::min(bots[i].get_radius() + one_point, 20.0 + 40 * one_point));
 
                 new_food(j);

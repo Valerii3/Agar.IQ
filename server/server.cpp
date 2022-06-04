@@ -50,7 +50,6 @@ void server::incomingConnection(qintptr socketDescriptor) {
     Game_scene.new_player("none");
 
     int newClientID = Game_scene.get_players().size() - 1;
-
     // first message from server to client is reply to connection and
     //       client's id (his number in players_data):
     //       {"status":"connected", "initialization":"yes",

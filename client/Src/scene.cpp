@@ -250,6 +250,8 @@ void Scene::readFromServer() {
     QByteArray message = array.left(bytes);
     array = array.mid(bytes);
 
+    qDebug() << message;
+
     std::string ans = message.toStdString();
     ans.pop_back();
     fromServer = json::parse(ans);
