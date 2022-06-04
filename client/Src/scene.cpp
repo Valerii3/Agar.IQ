@@ -226,10 +226,8 @@ void Scene::sendToServer() {
 void Scene::sendDisconnection() {
     json toServer;
 
-    // every message from client to server is player data and settings:
-    //      { "status":"connected", "name":player_name,
-    //       "id":clientID, "angle":player_angle, "bits":bits,
-    //       "operandsCount":operandsCount, "operands" }
+    // disconnected message from client to server is player ID and new status:
+    //      { "status":"disconnected", "id":clientID" }
 
     toServer["status"] = "disconnected";
     toServer["id"] = clientID;
@@ -260,11 +258,20 @@ void Scene::readFromServer() {
     //       client's id (his number in players_data):
     //       {"status":"connected", "initialization":"yes", "id":clientID}
 
-    // every next message is all scene data, include players, answers
-    //       and dots datas, and example:
+    // second message from server to client is all scene data, include
+    //       players, answers, bots and dots datas, and example:
     //       {"status":"connected", "players":[ players data ],
     //        "answers":[ answers data ], "food":[ food data ],
-    //        "expr":example }
+    //        "bots":[ bots data ], "expr":example }
+
+    // every next message from server to online client is all changed
+    //       scene data, include players, answers, bots and changed
+    //       dots datas, and example:
+    //       {"status":"connected", "players":[ players data ],
+    //        "answers":[ answers data ], "food":[ changed food data ],
+    //        "bots":[ bots data ], "expr":example }
+
+    // message to eaten client is {"status":"eaten"}
 
     if (fromServer["status"] == "eaten") {
         emit on_pushButton_clicked();

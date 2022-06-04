@@ -163,6 +163,11 @@ void scene::check_correct(int i) {
 }
 
 void scene::update(int clientID) {
+
+    if (clientID < minimal_online_player) {
+        minimal_online_player = clientID;
+    }
+
     double new_x_coordinate = players[clientID].get_x_position() + players[clientID].player_speed * cos(players[clientID].player_angle);
 
     new_x_coordinate = std::min(new_x_coordinate, 2505.0 - players[clientID].get_radius());
@@ -180,7 +185,7 @@ void scene::update(int clientID) {
             if (answers[i].get_number() == generator) {
                 players[clientID].score += 3;
                 players[clientID].is_correct = "Correct!";
-                players[clientID].update_radius(std::min(players[clientID].get_radius() + sqrt(3 / 3.14), 90.0));
+                players[clientID].update_radius(std::min(players[clientID].get_radius() + one_point * 1.5, 90.0));
                 generator = 1 + rand() % 19;
 
                 new_answer(i);
@@ -192,7 +197,7 @@ void scene::update(int clientID) {
             } else {
                 players[clientID].score -= 10;
                 players[clientID].is_correct = "Wrong!";
-                players[clientID].update_radius(std::max(players[clientID].get_radius() - sqrt(6 / 3.14), 7.0));
+                players[clientID].update_radius(std::max(players[clientID].get_radius() - one_point * 2.5, 7.0));
                 generator = 1 + rand() % 19;
 
                 new_answer(i);
@@ -211,7 +216,7 @@ void scene::update(int clientID) {
         if (collision(food[i], players[clientID])) {
             players[clientID].score += 1;
             players[clientID].is_correct = "";
-            players[clientID].update_radius(std::min(players[clientID].get_radius() + sqrt(1 / 3.14), 90.0));
+            players[clientID].update_radius(std::min(players[clientID].get_radius() + one_point, 90.0));
 
             new_food(i);
 
@@ -276,7 +281,7 @@ void scene::update(int clientID) {
         }
     }
 
-    if (clientID == 0) {
+    if (clientID == minimal_online_player) {
         update_bots();
     }
 }
@@ -297,8 +302,8 @@ void scene::update_bots() {
 
         for (int j = 0; j < food.size(); j++) {
             if (collision(food[j], bots[i])) {
-                bots[i].score += 1;
-                bots[i].update_radius(std::min(bots[i].get_radius() + sqrt(1 / 3.14), 90.0));
+                bots[i].score = std::max(bots[i].score + 1, 40);
+                bots[i].update_radius(std::min(bots[i].get_radius() + one_point, 20.0 + 40 * one_point));
 
                 new_food(j);
 
@@ -312,7 +317,7 @@ void scene::update_bots() {
             if (collision(bots[j], bots[i])) {
                 if (bots[j].score > bots[i].score) {
                     bots[j].score += bots[i].score;
-                    bots[j].update_radius(std::min(bots[j].get_radius() + sqrt(bots[i].score / 3.14), 90.0));
+                    bots[j].update_radius(std::min(bots[j].get_radius() + sqrt(bots[i].score / 3.14), 20.0 + 40 * one_point));
 
                     bots[j].bot_speed = (54.0 / bots[j].get_radius()) + 2.6;
 
@@ -321,7 +326,7 @@ void scene::update_bots() {
 
                 if (bots[j].score < bots[i].score) {
                     bots[i].score += bots[j].score;
-                    bots[i].update_radius(std::min(bots[i].get_radius() + sqrt(bots[j].score / 3.14), 90.0));
+                    bots[i].update_radius(std::min(bots[i].get_radius() + sqrt(bots[j].score / 3.14), 20.0 + 40 * one_point));
 
                     bots[i].bot_speed = (54.0 / bots[i].get_radius()) + 2.6;
 
@@ -333,8 +338,6 @@ void scene::update_bots() {
         if (rand() % 200 == 0) {
             bots[i].bot_angle = rand();
         }
-
-        // check that bot is not too big
     }
 }
 
@@ -349,4 +352,8 @@ void scene::clear_updated_food() {
 void scene::disconnected_player(int clientID) {
     players[clientID].is_online = 0;
     players[clientID].is_eaten = 1;
+
+    if (clientID == minimal_online_player) {
+        minimal_online_player = 1e6;
+    }
 }

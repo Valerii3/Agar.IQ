@@ -51,7 +51,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
 
     int newClientID = Game_scene.get_players().size() - 1;
 
-    // first message from server is reply to connection and
+    // first message from server to client is reply to connection and
     //       client's id (his number in players_data):
     //       {"status":"connected", "initialization":"yes",
     //       "id":newClientID}
@@ -137,11 +137,20 @@ void server::sendToClient() {
 
     json toClient;
 
-    // every next message is all scene data, include players, answers
-    //       and dots datas, and example:
+    // second message from server to client is all scene data, include
+    //       players, answers, bots and dots datas, and example:
     //       {"status":"connected", "players":[ players data ],
     //        "answers":[ answers data ], "food":[ food data ],
-    //        "expr":example }
+    //        "bots":[ bots data ], "expr":example }
+
+    // every next message from server to online client is all changed
+    //       scene data, include players, answers, bots and changed
+    //       dots datas, and example:
+    //       {"status":"connected", "players":[ players data ],
+    //        "answers":[ answers data ], "food":[ changed food data ],
+    //        "bots":[ bots data ], "expr":example }
+
+    // message to eaten client is {"status":"eaten"}
 
     toClient["players"] = Game_scene.get_players();
     toClient["answers"] = Game_scene.get_answers();

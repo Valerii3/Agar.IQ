@@ -24,6 +24,8 @@ public:
     scene();
 
 private:
+    const double one_point = sqrt(1 / 3.14);
+
     std::vector<Answer> answers;
 
     std::vector<Food> food;
@@ -57,6 +59,8 @@ private:
     void update_numbers(int correct);
 
     std::vector<int> updated_food;
+
+    int minimal_online_player = 1e6;
 
 public:
     void update_player(int iter, QString name, double angle, int red_color = 0, int green_color = 255, int blue_color = 0);
