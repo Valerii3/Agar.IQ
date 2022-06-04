@@ -6,150 +6,394 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1232</width>
+    <width>1578</width>
     <height>655</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>410</y>
+     <width>541</width>
+     <height>371</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: white;
+border-radius: 22px</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>460</y>
+     <width>289</width>
+     <height>153</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_3"/>
+    </item>
+   </layout>
+  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>230</y>
-     <width>241</width>
+     <x>350</x>
+     <y>410</y>
+     <width>541</width>
      <height>61</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Вход</string>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(66, 253, 37);
+border-radius: 20px;</string>
    </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
+   <property name="text">
+    <string/>
    </property>
   </widget>
   <widget class="QRadioButton" name="aut">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>360</y>
-     <width>151</width>
-     <height>24</height>
+     <x>500</x>
+     <y>610</y>
+     <width>161</width>
+     <height>26</height>
     </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QRadioButton {
+	font-size: 16px;
+	color: black;
+	text-decoration: underline;
+}</string>
    </property>
    <property name="text">
     <string>Запомнить меня</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>840</x>
-     <y>220</y>
-     <width>191</width>
-     <height>31</height>
+     <x>510</x>
+     <y>420</y>
+     <width>221</width>
+     <height>41</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font-size: 25px;
+font: bold;
+color: white;</string>
+   </property>
    <property name="text">
-    <string>Регистрация</string>
+    <string>Войти в аккаунт</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QLineEdit" name="logName">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>520</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit {
+	color: grey;
+	border: 0px;
+	border-bottom: 2px solid rgb(0, 170, 0);
+	padding-left: 10px;	
+	
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string>Имя пользователя</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="logPswd">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>570</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit {
+	color: grey;	
+	border: 0px;
+	border-bottom: 2px solid rgb(0, 170, 0);
+	padding-left: 10px;	
+	
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string>Пароль</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="logButton">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>650</y>
+     <width>221</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <italic>false</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+	background-color: qlineargradient(spread:pad, x1:0.970308, y1:1, x2:1, y2:1, stop:0 rgba(22, 231, 29, 255), stop:1 rgba(255, 255, 255, 255));
+	font-size: 20px;
+	color: white;
+	border-radius: 10px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Войти</string>
+   </property>
+  </widget>
   <widget class="QPushButton" name="guestButton">
    <property name="geometry">
     <rect>
-     <x>1475</x>
-     <y>375</y>
-     <width>280</width>
-     <height>29</height>
+     <x>490</x>
+     <y>700</y>
+     <width>221</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+	background-color: qlineargradient(spread:pad, x1:0.970308, y1:1, x2:1, y2:1, stop:0 rgba(22, 231, 29, 255), stop:1 rgba(255, 255, 255, 255));
+	font-size: 20px;
+	color: white;
+	border-radius: 10px;
+}</string>
    </property>
    <property name="text">
     <string>Играть за гостя</string>
    </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>192</x>
-     <y>300</y>
-     <width>241</width>
-     <height>151</height>
+     <x>1140</x>
+     <y>410</y>
+     <width>541</width>
+     <height>371</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLineEdit" name="logName">
-      <property name="placeholderText">
-       <string>Имя пользователя</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="logPswd">
-      <property name="placeholderText">
-       <string>Пароль</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="logButton">
-      <property name="text">
-       <string>Войти</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="styleSheet">
+    <string notr="true">background-color: white;
+border-radius: 22px</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>790</x>
-     <y>290</y>
-     <width>291</width>
-     <height>191</height>
+     <x>1140</x>
+     <y>410</y>
+     <width>541</width>
+     <height>61</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLineEdit" name="regName">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="placeholderText">
-         <string>Имя пользователя</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="regPswd1">
-        <property name="placeholderText">
-         <string>Пароль</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="regPswd2">
-        <property name="placeholderText">
-         <string>Повторите пароль</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QPushButton" name="regButton">
-      <property name="text">
-       <string>Зарегистрироваться</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(66, 253, 37);
+border-radius: 20px;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>1270</x>
+     <y>420</y>
+     <width>301</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font-size: 25px;
+font: bold;
+color: white;</string>
+   </property>
+   <property name="text">
+    <string>Зарегистрироваться</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="regPswd1">
+   <property name="geometry">
+    <rect>
+     <x>1240</x>
+     <y>570</y>
+     <width>287</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit {
+	color: grey;
+	border: 0px;
+	border-bottom: 2px solid rgb(0, 170, 0);
+	padding-left: 10px;	
+	
+}</string>
+   </property>
+   <property name="placeholderText">
+    <string>Пароль</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="regName">
+   <property name="geometry">
+    <rect>
+     <x>1240</x>
+     <y>520</y>
+     <width>285</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit {
+	color: grey;
+	border: 0px;
+	border-bottom: 2px solid rgb(0, 170, 0);
+	padding-left: 10px;	
+	
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string>Имя пользователя</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="regPswd2">
+   <property name="geometry">
+    <rect>
+     <x>1240</x>
+     <y>620</y>
+     <width>287</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit {
+	color: grey;
+	border: 0px;
+	border-bottom: 2px solid rgb(0, 170, 0);
+	padding-left: 10px;	
+	
+}</string>
+   </property>
+   <property name="placeholderText">
+    <string>Повторите пароль</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="regButton">
+   <property name="geometry">
+    <rect>
+     <x>1240</x>
+     <y>670</y>
+     <width>285</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+	background-color: qlineargradient(spread:pad, x1:0.970308, y1:1, x2:1, y2:1, stop:0 rgba(22, 231, 29, 255), stop:1 rgba(255, 255, 255, 255));
+	font-size: 20px;
+	color: white;
+	border-radius: 10px;
+}</string>
+   </property>
+   <property name="text">
+    <string>Зарегистрироваться</string>
+   </property>
   </widget>
  </widget>
  <resources/>

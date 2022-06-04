@@ -38,6 +38,8 @@ private slots:
 
     void on_aut_clicked();
 
+
+
 signals:
     void signalNameLog(QString _name);
 

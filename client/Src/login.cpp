@@ -23,6 +23,12 @@ Login::Login(QWidget *parent) :
     ui(new Ui::Login)
 {
     ui->setupUi(this);
+    QPixmap bkgnd("C:/MERGE/Agar.IQ/client/Data/Screenshot_103.jpg");
+  //  bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, bkgnd);
+    this->setPalette(palette);
+
     w = new MainWindow;
     connect(this, &Login::signalNameLog, w, &MainWindow::slotNameLog);
     QSettings set("C:/ProjectDB/Agar.IQ/settings", QSettings::IniFormat);   // свой путь
@@ -34,6 +40,10 @@ Login::Login(QWidget *parent) :
         w->show();
 
     }
+
+     ui->logPswd->setEchoMode(QLineEdit::Password);
+     ui->regPswd1->setEchoMode(QLineEdit::Password);
+     ui->regPswd2->setEchoMode(QLineEdit::Password);
 }
 
 Login::~Login()
@@ -43,8 +53,10 @@ Login::~Login()
 
 void Login::on_logButton_clicked()
 {
+
     QString login = ui->logName->text();
     QString pswd = ui->logPswd->text();
+
 
     QSqlQuery qry;
     if (qry.exec("SELECT Login, Password, Salt from users WHERE Login=\'" + login +
@@ -108,6 +120,9 @@ void Login::on_regButton_clicked()
         } else {
             qDebug() << "succeed adding";
             QMessageBox::about(this, "Успешная регистрация", "Пользователь успешно добавлен");
+            ui->regName->clear();
+            ui->regPswd1->clear();
+            ui->regPswd2->clear();
         }
     } else {
         QMessageBox::about(this, "Adding error", "Пароли не совпадают");
@@ -140,4 +155,6 @@ void Login::on_aut_clicked(){
     autoLog = true;
 
 }
+
+
 
