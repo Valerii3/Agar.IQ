@@ -12,31 +12,31 @@ server::~server(){}
 
 void to_json(json& j, const Player& p)
 {
-    j = {{"name", p.player_name}, {"x", p.x_coordinate}, {"y", p.y_coordinate},
-         {"rad", p.radius}, {"score", p.score}, {"is_correct", p.is_correct}, {"red", p.red_color},
+    j = {{"name", p.player_name}, {"x", p.get_x_position()}, {"y", p.get_y_position()},
+         {"rad", p.get_radius()}, {"score", p.score}, {"is_correct", p.is_correct}, {"red", p.red_color},
          {"blue", p.blue_color}, {"green", p.green_color}, {"status", p.is_eaten} };
 }
 
 void to_json(json& j, const Answer& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"number", p.get_number()}};
+    j = {{"x", p.get_x_position()}, {"y", p.get_y_position()}, {"number", p.get_number()}};
 }
 
 void to_json(json& j, const Food& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"red", p.red_color},
+    j = {{"x", p.get_x_position()}, {"y", p.get_y_position()}, {"red", p.red_color},
          {"green", p.green_color}, {"blue", p.blue_color}};
 }
 
 void to_json(json& j, const Bot& p)
 {
-    j = {{"x", p.x_coordinate}, {"y", p.y_coordinate}, {"rad", p.radius},
+    j = {{"x", p.get_x_position()}, {"y", p.get_y_position()}, {"rad", p.get_radius()},
          {"red", p.red_color}, {"green", p.green_color}, {"blue", p.blue_color}};
 }
 
 void to_json(json& j, const std::pair<int, Food> p) {
-    j = {{"iter", p.first}, {"x", p.second.x_coordinate}, {"y", p.second.y_coordinate}, {"red", p.second.red_color},
-         {"green", p.second.green_color}, {"blue", p.second.blue_color}};
+    j = {{"iter", p.first}, {"x", p.second.get_x_position()}, {"y", p.second.get_y_position()},
+         {"red", p.second.red_color}, {"green", p.second.green_color}, {"blue", p.second.blue_color}};
 }
 
 void server::incomingConnection(qintptr socketDescriptor) {
@@ -49,7 +49,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
     sockets.push_back(socket);
     Game_scene.new_player("none");
 
-    int newClientID = Game_scene.players.size() - 1;
+    int newClientID = Game_scene.get_players().size() - 1;
 
     // first message from server is reply to connection and
     //       client's id (his number in players_data):
@@ -61,7 +61,7 @@ void server::incomingConnection(qintptr socketDescriptor) {
     initializationMessage["initialization"] = "yes";
     initializationMessage["id"] = newClientID;
 
-//    socket->waitForBytesWritten(500);
+    socket->waitForBytesWritten(500);
     socket->write(QString::fromStdString(initializationMessage.dump()).toLatin1() + '$');
 
     qDebug() << "new player " << newClientID << "is connected on socket " << socketDescriptor;
@@ -78,11 +78,10 @@ void server::readFromClient()
     while(!array.contains('$')) {
         array += socket->readAll();
     }
-//    qDebug() << array;
 
-    int bytes = array.indexOf('$') + 1;     // Find the end of message
-    QByteArray message = array.left(bytes);  // Cut the message
-    array = array.mid(bytes);                // Keep the data read too early
+    int bytes = array.indexOf('$') + 1;
+    QByteArray message = array.left(bytes);
+    array = array.mid(bytes);
 
     std::string ans = message.toStdString();
     ans.pop_back();
@@ -127,12 +126,12 @@ void server::sendToClient() {
     std::vector<Player> online_players_list;
     std::vector<int> eaten_players;
 
-    for (int i = 0; i < Game_scene.players.size(); i++) {
-        if (Game_scene.players[i].is_eaten) {
+    for (int i = 0; i < Game_scene.get_players().size(); i++) {
+        if (Game_scene.get_players()[i].is_eaten) {
             eaten_players.push_back(i);
-        } else if (Game_scene.players[i].is_online) {
+        } else if (Game_scene.get_players()[i].is_online) {
             online_players.push_back(i);
-            online_players_list.push_back(Game_scene.players[i]);
+            online_players_list.push_back(Game_scene.get_players()[i]);
         }
     }
 
@@ -154,15 +153,14 @@ void server::sendToClient() {
 
     std::vector<std::pair<int, Food>> sended_food;
     for (auto food_iter : Game_scene.get_updated_food()) {
-        sended_food.push_back({food_iter, Game_scene.food[food_iter]});
+        sended_food.push_back({food_iter, Game_scene.get_food()[food_iter]});
     }
 
-    Game_scene.updated_food.clear();
+    Game_scene.clear_updated_food();
 
-//    for (int i = 0; i < sockets.size(); i++) {
     for (auto i : online_players) {
-        if (Game_scene.players[i].player_initialization == "yes") {
-            Game_scene.players[i].player_initialization = "no";
+        if (Game_scene.get_players()[i].player_initialization == "yes") {
+            Game_scene.get_players()[i].player_initialization = "no";
             toClient["food_status"] = "full";
             toClient["food"] = Game_scene.get_food();
         } else {

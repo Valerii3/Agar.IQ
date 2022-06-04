@@ -12,7 +12,7 @@ public:
 
     std::string get_question() const;
 
-   int get_answer();
+    int get_answer();
 };
 
 #endif // QUESTION_H

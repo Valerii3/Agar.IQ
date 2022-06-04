@@ -7,8 +7,7 @@ int Worker::operandsCount = 1;
 std::string Worker::operands = "+-*";
 
 Worker::Worker(QObject *parent)
-    : QObject{parent}
-{
+    : QObject{parent} {
     srand(time(0));
 }
 

@@ -23,6 +23,7 @@ public:
 
     scene();
 
+private:
     std::vector<Answer> answers;
 
     std::vector<Food> food;
@@ -34,8 +35,6 @@ public:
     void new_food(int i);
 
     void new_answer(int i);
-
-    void new_player(QString name);
 
     void new_bot(int i);
 
@@ -49,7 +48,7 @@ public:
 
     void generate_bots();
 
-    void update_player(int iter, QString name, double angle, int red_color = 0, int green_color = 255, int blue_color = 0);
+    void check_correct(int i);
 
     void update_answer(int id);
 
@@ -57,19 +56,24 @@ public:
 
     void update_numbers(int correct);
 
-    std::vector<Answer> get_answers();
-
-    std::vector<Player> get_players();
-
-    std::vector<Food> get_food();
-
-    std::vector<Bot> get_bots();
-
     std::vector<int> updated_food;
 
-    std::vector<int> get_updated_food();
+public:
+    void update_player(int iter, QString name, double angle, int red_color = 0, int green_color = 255, int blue_color = 0);
 
-    void check_correct(int i);
+    void new_player(QString name);
+
+    std::vector<Answer>& get_answers();
+
+    std::vector<Player>& get_players();
+
+    std::vector<Food>& get_food();
+
+    std::vector<Bot>& get_bots();
+
+    std::vector<int>& get_updated_food();
+
+    void clear_updated_food();
 
     void update(int clientID);
 

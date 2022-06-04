@@ -4,15 +4,13 @@
 
 Scene::Scene(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Scene)
-{
+    ui(new Ui::Scene) {
     socket = new QTcpSocket;
 
     connect(socket, &QTcpSocket::readyRead, this, &Scene::readFromServer);
     connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
 
 //    socket->connectToHost("srv13.yeputons.net", 8418);
-//    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     socket->connectToHost("127.0.0.1", 80);
 
     qDebug() << "start";
@@ -20,8 +18,7 @@ Scene::Scene(QWidget *parent) :
     setFocusPolicy(Qt::StrongFocus);
 }
 
-Scene::~Scene()
-{
+Scene::~Scene() {
     delete ui;
     emit signalQuitGame(true);
     workerThread.quit();
@@ -94,7 +91,7 @@ void Scene::paintEvent(QPaintEvent *event) {
             const QRect rectangle = QRect(new_x - 50 * it.get_radius(), new_y - 50 * it.get_radius(), 100 * it.get_radius(), 100 * it.get_radius());
             QRect boundingRect;
 
-            painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
             painter.drawText(rectangle, Qt::AlignCenter, QString::number(it.get_number()), &boundingRect);
         }
     }
@@ -169,14 +166,12 @@ void Scene::paintEvent(QPaintEvent *event) {
     painter.drawText(QPoint(800,40), QString::fromLocal8Bit(worker->expr.c_str()));
 }
 
-void Scene::mouseMoveEvent(QMouseEvent *event)
-{
+void Scene::mouseMoveEvent(QMouseEvent *event) {
     worker->player.player_angle = atan2( - event->y() + center_y,
                                          event->x() - center_x);
 }
 
-void Scene::startGame()
-{
+void Scene::startGame() {
 
     worker = new Worker;
     worker->moveToThread(&workerThread);
@@ -189,7 +184,7 @@ void Scene::startGame()
     isMenu = false;
 }
 
-void Scene::slotGameFinish(){
+void Scene::slotGameFinish() {
     qDebug() << "finish";
     workerThread.quit();
 //    workerThread.wait();
@@ -198,14 +193,12 @@ void Scene::slotGameFinish(){
     isMenu = true;
 }
 
-void Scene::on_pushButton_clicked()
-{
+void Scene::on_pushButton_clicked() {
     emit slotGameFinish();
     this->close();
 }
 
-void Scene::sendToServer()
-{
+void Scene::sendToServer() {
     json toServer;
 
     // every message from client to server is player data and settings:
@@ -226,10 +219,8 @@ void Scene::sendToServer()
     toServer["operandsCount"] = worker->operandsCount;
     toServer["operands"] = worker->operands;
 
-    //    qDebug() << QString::fromStdString(toServer.dump());
-
     socket->write(QString::fromStdString(toServer.dump()).toLatin1() + '$');
-//    socket->waitForBytesWritten(20000);
+    socket->waitForBytesWritten(20000);
 }
 
 void Scene::sendDisconnection() {
@@ -246,8 +237,7 @@ void Scene::sendDisconnection() {
     socket->write(QString::fromStdString(toServer.dump()).toLatin1() + '$');
 }
 
-void Scene::readFromServer()
-{
+void Scene::readFromServer() {
     socket = (QTcpSocket*)sender();
 
     json fromServer;

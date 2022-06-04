@@ -4,7 +4,10 @@
 #include "entity.h"
 
 struct Answer : Entity {
+
+private:
     int number;
+
 public:
     Answer(int number_);
 

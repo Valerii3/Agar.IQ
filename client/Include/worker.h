@@ -25,10 +25,9 @@ public:
     explicit Worker(QObject *parent = nullptr);
 
     QString is_correct = "";
-
     QString text = "Score: ";
-    int score = 0;
 
+    int score = 0;
     int generator = 5;
 
     std::string expr;

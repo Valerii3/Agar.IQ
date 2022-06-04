@@ -32,3 +32,12 @@ Entity::Entity(double x, double y, double r) {
     green_color = rand() % 255;
     blue_color = rand() % 255;
 }
+
+void Entity::update_radius(double new_rad) {
+    radius = new_rad;
+}
+
+void Entity::update_coordinates(double new_x, double new_y) {
+    x_coordinate = new_x;
+    y_coordinate = new_y;
+}
