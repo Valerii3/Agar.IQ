@@ -23,8 +23,7 @@ Login::Login(QWidget *parent) :
     ui(new Ui::Login)
 {
     ui->setupUi(this);
-    QPixmap bkgnd("C:/MERGE/Agar.IQ/client/Data/Screenshot_103.jpg");
-  //  bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPixmap bkgnd(":/data/Data/Screenshot_103.jpg");
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
@@ -53,7 +52,7 @@ Login::~Login()
 
 void Login::soundClick(){
     QMediaPlayer *sound = new QMediaPlayer();
-    sound->setMedia(QUrl("C:/MERGE/Agar.IQ/client/Data/zvuk11.mp3"));
+    sound->setMedia(QUrl(":/data/Data/zvuk11.mp3"));
     sound->play();
 }
 

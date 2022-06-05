@@ -59,3 +59,6 @@ INCLUDEPATH += C:/ProjectDB/Agar.IQ/client/openssl
 
 LIBS += C:/ProjectDB/Agar.IQ/client/openssl/libcrypto.lib
 LIBS += C:/ProjectDB/Agar.IQ/client/openssl/libssl.lib
+
+RESOURCES += \
+    resource.qrc

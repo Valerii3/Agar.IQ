@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/data">
+        <file>Data/false.mp3</file>
+        <file>Data/fone.PNG</file>
+        <file>Data/rama.png</file>
+        <file>Data/Screenshot_103.jpg</file>
+        <file>Data/true.mp3</file>
+        <file>Data/zvuk11.mp3</file>
+    </qresource>
+</RCC>
