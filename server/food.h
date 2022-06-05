@@ -10,5 +10,4 @@ public:
     Food(double x, double y);
 };
 
-
-#endif // FOOD_H
+#endif

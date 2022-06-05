@@ -14,6 +14,8 @@ TEMPLATE = app
 
 SOURCES += \
         answer.cpp \
+        bot.cpp \
+        bot.cpp \
         entity.cpp \
         food.cpp \
         main.cpp \
@@ -22,13 +24,9 @@ SOURCES += \
         scene.cpp \
         server.cpp
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
 HEADERS += \
     answer.h \
+    bot.h \
     entity.h \
     food.h \
     player.h \
@@ -36,3 +34,8 @@ HEADERS += \
     scene.h \
     server.h \
     json.hpp
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
