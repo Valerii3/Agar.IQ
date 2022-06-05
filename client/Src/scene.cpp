@@ -118,10 +118,13 @@ void Scene::paintEvent(QPaintEvent *event) {
         painter.drawEllipse(QPointF(new_x, new_y), 2*worker->bots_data[i].get_radius(), 2*worker->bots_data[i].get_radius());
     }
 
+    std::vector<std::pair<int, std::string>> liderboard;
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (worker->players_data[i].is_eaten) {
             continue;
         }
+
+        liderboard.push_back({worker->players_data[i].score, worker->players_data[i].get_name()});
 
         if (i == clientID) {
             painter.setBrush(QBrush(worker->players_data[i].color, Qt::SolidPattern));
@@ -148,7 +151,7 @@ void Scene::paintEvent(QPaintEvent *event) {
 
                 fnt.setPixelSize(35);
                 painter.setFont(fnt);
-                painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+                painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
 
                 const QRect rectangle = QRect(new_x - 500, new_y - 500, 1000, 1000);
                 QRect boundingRect;
@@ -156,14 +159,26 @@ void Scene::paintEvent(QPaintEvent *event) {
         }
     }
 
+    std::sort(liderboard.begin(), liderboard.end());
+    std::reverse(liderboard.begin(), liderboard.end());
+
+    fnt.setPixelSize(25);
+    painter.setFont(fnt);
+    painter.setPen(QPen(Qt::black, 1.5, Qt::SolidLine, Qt::FlatCap));
+
+    painter.drawText(QPoint(1700, 800 - 25), "LIDERBOARD:");
+    for (int i = 0; i < 10 && i < liderboard.size(); i++) {
+        painter.drawText(QPoint(1700, 800 + 25 * i), QString::fromStdString(std::to_string(i + 1) + ". " + liderboard[i].second));
+    }
+
     fnt.setPixelSize(40);
     painter.setFont(fnt);
-    painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+    painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
 
-    painter.drawText(QPoint(1700,40), worker->text);
-    painter.drawText(QPoint(1820,40), QString::number(worker->score));
-    painter.drawText(QPoint(1700,80), worker->is_correct);
-    painter.drawText(QPoint(800,40), QString::fromLocal8Bit(worker->expr.c_str()));
+    painter.drawText(QPoint(1700, 40), worker->text);
+    painter.drawText(QPoint(1820, 40), QString::number(worker->score));
+    painter.drawText(QPoint(1700, 80), worker->is_correct);
+    painter.drawText(QPoint(800, 40), QString::fromLocal8Bit(worker->expr.c_str()));
 }
 
 void Scene::mouseMoveEvent(QMouseEvent *event) {
