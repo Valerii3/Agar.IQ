@@ -87,6 +87,7 @@ void MainWindow::on_settingsButton_clicked()
 {
     SettingsWindow *sw = new SettingsWindow();
     sw->show();
+    sw->setGeometry(680, 280, 800, 500);
 }
 
 

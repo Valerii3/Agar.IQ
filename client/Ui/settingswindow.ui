@@ -13,123 +13,38 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 242, 175);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QCheckBox" name="addCheckBox">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>190</y>
-      <width>121</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Сложение</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="subCheckBox">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>230</y>
-      <width>131</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Вычитание</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="mulCheckBox">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>270</y>
-      <width>121</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Умножение</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QPushButton" name="saveSettingsButton">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>350</y>
-      <width>151</width>
-      <height>24</height>
+      <x>270</x>
+      <y>380</y>
+      <width>251</width>
+      <height>51</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	background-color: qlineargradient(spread:pad, x1:0.812, y1:0.875, x2:1, y2:1, stop:0 rgba(255, 170, 0, 255), stop:1 rgba(255, 255, 255, 255));
+	font-size: 22px;
+	color: white;
+	border-radius: 10px;
+}</string>
     </property>
     <property name="text">
      <string>Сохранить настройки</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>150</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Операнды</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>150</y>
-      <width>113</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Разрядность</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
-    <property name="geometry">
-     <rect>
-      <x>512</x>
-      <y>150</y>
-      <width>151</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Количество операндов</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QSpinBox" name="bitsBox">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>200</y>
-      <width>42</width>
-      <height>25</height>
+      <x>40</x>
+      <y>240</y>
+      <width>61</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="minimum">
@@ -143,9 +58,9 @@
     <property name="geometry">
      <rect>
       <x>560</x>
-      <y>200</y>
-      <width>42</width>
-      <height>25</height>
+      <y>240</y>
+      <width>61</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="minimum">
@@ -155,6 +70,132 @@
      <number>10</number>
     </property>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>150</y>
+      <width>161</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 170, 0);
+border-radius: 20px;
+color: black;
+fontsize: 22px;</string>
+    </property>
+    <property name="text">
+     <string>Разрядность</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>150</y>
+      <width>201</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 170, 0);
+border-radius: 20px;
+color: black;
+fontsize: 22px;</string>
+    </property>
+    <property name="text">
+     <string>Операнды</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>150</y>
+      <width>321</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 170, 0);
+border-radius: 20px;
+color: black;
+fontsize: 22px;</string>
+    </property>
+    <property name="text">
+     <string>Количество операндов</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>230</y>
+      <width>121</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCheckBox" name="mulCheckBox">
+       <property name="text">
+        <string>Умножение</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="addCheckBox">
+       <property name="text">
+        <string>Сложение</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="subCheckBox">
+       <property name="text">
+        <string>Вычитание</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -162,7 +203,7 @@
      <x>0</x>
      <y>0</y>
      <width>1410</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
