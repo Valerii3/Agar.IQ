@@ -5,6 +5,11 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    QPixmap bkgnd("C:/MERGE/Agar.IQ/client/Data/Screenshot_103.jpg");
+  //  bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, bkgnd);
+    this->setPalette(palette);
 
     scene = new Scene;
     connect(scene, &Scene::first, this, &MainWindow::show);
@@ -54,6 +59,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     modal->setQuery(*qry);
     ui->tableView->setModel(modal);
 
+
+    QPixmap p("C:/MERGE/Agar.IQ/client/Data/rama.png");
+    p = p.scaled(300,300);
+    ui->forFone->setPixmap(p);
 
 }
 
