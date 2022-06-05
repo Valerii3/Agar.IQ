@@ -11,6 +11,6 @@ int main(int argc, char *argv[]) {
     if (type){
         l.close();
     }
-
+    qDebug() << "HATEYEE";
     return a.exec();
 }

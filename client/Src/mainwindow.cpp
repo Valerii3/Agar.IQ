@@ -71,11 +71,16 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::soundClick(){
+    QMediaPlayer *sound = new QMediaPlayer();
+    sound->setMedia(QUrl("C:/MERGE/Agar.IQ/client/Data/zvuk11.mp3"));
+    sound->play();
+}
 
 void MainWindow::on_startButton_clicked()
 {
     scene->show();
-
+    soundClick();
     this->close();
     emit signalStartGame();
     emit signalSendColor(color);
@@ -88,6 +93,7 @@ void MainWindow::on_settingsButton_clicked()
     SettingsWindow *sw = new SettingsWindow();
     sw->show();
     sw->setGeometry(680, 280, 800, 500);
+    soundClick();
 }
 
 
@@ -127,6 +133,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
 void MainWindow::on_closeButton_clicked()
 {
     this->close();
+    soundClick();
 }
 
 void MainWindow::slotNameLog(QString _name){
@@ -183,6 +190,7 @@ void MainWindow::slotMaxScore(int _score){
 
 void MainWindow::on_switchUser_clicked()
 {
+    soundClick();
     Login *r;
     r = new Login;
     this->close();
@@ -190,5 +198,6 @@ void MainWindow::on_switchUser_clicked()
     set.setValue("type", false);
    // registration = new Login;
     r->showFullScreen();
+
 }
 

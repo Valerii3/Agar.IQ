@@ -92,6 +92,18 @@ void scene::update_player(int iter, QString name, double angle, int red_color, i
     players[iter].red_color = red_color;
 }
 
+void scene::soundGood(){
+    QMediaPlayer *sound = new QMediaPlayer();
+    sound->setMedia(QUrl("C:/MERGE/Agar.IQ/client/Data/true.mp3"));
+    sound->play();
+}
+
+void scene::soundBad(){
+    QMediaPlayer *sound = new QMediaPlayer();
+    sound->setMedia(QUrl("C:/MERGE/Agar.IQ/client/Data/false.mp3"));
+    sound->play();
+}
+
 bool scene::collision(Entity a, Entity b) {
     auto x1 = a.get_x_position();
     auto y1 = a.get_y_position();
@@ -185,6 +197,7 @@ void scene::update(int clientID) {
             if (answers[i].get_number() == generator) {
                 players[clientID].score += 3;
                 players[clientID].is_correct = "Correct!";
+                soundGood();
                 players[clientID].update_radius(std::min(players[clientID].get_radius() + one_point * 1.5, 90.0));
                 generator = 1 + rand() % 19;
 
@@ -195,6 +208,7 @@ void scene::update(int clientID) {
                 generator = question.get_answer();
                 update_numbers(generator);
             } else {
+                soundBad();
                 players[clientID].score -= 10;
                 players[clientID].is_correct = "Wrong!";
                 players[clientID].update_radius(std::max(players[clientID].get_radius() - one_point * 2.5, 7.0));

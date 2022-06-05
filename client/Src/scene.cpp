@@ -141,7 +141,7 @@ void Scene::paintEvent(QPaintEvent *event) {
             const QRect rectangle = QRect(center_x - 500, center_y - 500, 1000, 1000);
                         QRect boundingRect;
             painter.drawText(rectangle, Qt::AlignCenter,
-                             username, &boundingRect);
+                             "Agar.IQ", &boundingRect);
 
         } else if (in_bounds(worker->players_data[i])) {
             double new_x = center_x + worker->players_data[i].get_x_position() - worker->players_data[clientID].get_x_position();
@@ -157,7 +157,7 @@ void Scene::paintEvent(QPaintEvent *event) {
             painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
             const QRect rectangle = QRect(new_x - 500, new_y - 500, 1000, 1000);
             QRect boundingRect;
-            painter.drawText(rectangle, Qt::AlignCenter, username, &boundingRect);
+            painter.drawText(rectangle, Qt::AlignCenter, "Agar.IQ", &boundingRect);
 
         }
     }

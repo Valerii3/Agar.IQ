@@ -12,6 +12,7 @@
 #include <sstream>
 #include <iomanip>
 #include <string>
+#include <QMediaPlayer>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -49,6 +50,8 @@ private:
     QString hash;
     QString salt;
     bool autoLog = false;
+
+    void soundClick();
 };
 
 

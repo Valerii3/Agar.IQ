@@ -3,12 +3,13 @@
 
 #include <QVector>
 #include <QRandomGenerator>
-
+#include <QMediaPlayer>
 #include "player.h"
 #include "answer.h"
 #include "food.h"
 #include "question.h"
 #include "bot.h"
+
 
 class scene
 {
@@ -57,6 +58,10 @@ private:
     void update_bots();
 
     void update_numbers(int correct);
+
+    void soundGood();
+
+    void soundBad();
 
     std::vector<int> updated_food;
 

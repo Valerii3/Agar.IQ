@@ -1,6 +1,7 @@
 QT += core
 QT -= gui
 QT += network
+QT += multimedia
 
 TARGET = Agario_server
 CONFIG += c++11 console

@@ -13,6 +13,9 @@ SettingsWindow::~SettingsWindow() {
 }
 
 void SettingsWindow::on_saveSettingsButton_clicked() {
+    QMediaPlayer *sound = new QMediaPlayer();
+    sound->setMedia(QUrl("C:/MERGE/Agar.IQ/client/Data/zvuk11.mp3"));
+    sound->play();
     std::string operands;
     if (ui->addCheckBox->isChecked()) {
         operands += '+';

@@ -52,6 +52,8 @@ private:
     QString username;
     QColor color = Qt::white;
 
+    void soundClick();
+
 
 protected:
     void paintEvent(QPaintEvent *event);

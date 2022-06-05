@@ -2,6 +2,7 @@
 #define SETTINGSWINDOW_H
 
 #include <QMainWindow>
+#include <QMediaPlayer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SettingsWindow; }

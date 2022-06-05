@@ -51,11 +51,18 @@ Login::~Login()
     delete ui;
 }
 
+void Login::soundClick(){
+    QMediaPlayer *sound = new QMediaPlayer();
+    sound->setMedia(QUrl("C:/MERGE/Agar.IQ/client/Data/zvuk11.mp3"));
+    sound->play();
+}
+
 void Login::on_logButton_clicked()
 {
 
     QString login = ui->logName->text();
     QString pswd = ui->logPswd->text();
+    soundClick();
 
 
     QSqlQuery qry;
@@ -99,6 +106,7 @@ void Login::on_logButton_clicked()
 
 void Login::on_regButton_clicked()
 {
+    soundClick();
     QString name = ui->regName->text();
     QString pswd = ui->regPswd1->text();
     QString _pswd = ui->regPswd2->text();
@@ -135,6 +143,8 @@ void Login::on_guestButton_clicked()
     emit signalNameLog("Гость");
     w->show();
     this->close();
+    soundClick();
+
 }
 
 QString Login::generateSalt(){
