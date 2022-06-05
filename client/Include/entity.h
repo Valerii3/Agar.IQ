@@ -5,10 +5,13 @@
 #include <QRandomGenerator>
 
 struct Entity {
+
+private:
     double x_coordinate;
     double y_coordinate;
     double radius;
 
+public:
     std::string type = "entity";
 
     QColor color;

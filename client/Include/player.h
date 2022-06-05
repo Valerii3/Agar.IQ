@@ -6,13 +6,14 @@
 struct Player : Entity {
 public:
     std::string player_name;
-    std::string get_name() const;
     double player_speed = 0;
     double player_angle = 0;
 
     int score = 0;
     bool is_eaten = 0;
     QString is_correct = "";
+
+    std::string get_name() const;
 
     Player();
     Player(std::string name);

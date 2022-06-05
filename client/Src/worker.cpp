@@ -13,7 +13,7 @@ Worker::Worker(QObject *parent)
 }
 
 void Worker::doWork() {
-    std::chrono::nanoseconds timeStep(32ms);
+    std::chrono::nanoseconds timeStep(16ms);
     using clock = std::chrono::high_resolution_clock;
     std::chrono::nanoseconds lag(0ns);
     auto timeStart = clock::now();

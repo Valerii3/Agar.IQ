@@ -12,7 +12,6 @@ Scene::Scene(QWidget *parent) :
     connect(socket, &QTcpSocket::disconnected, this, &QTcpSocket::deleteLater);
 
    //  socket->connectToHost("srv13.yeputons.net", 8418);
-    // std::this_thread::sleep_for(std::chrono::milliseconds(2000));¶
     socket->connectToHost("127.0.0.1", 80);
 
     qDebug() << "start";
@@ -90,10 +89,11 @@ void Scene::paintEvent(QPaintEvent *event) {
 
             painter.setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::FlatCap));
             painter.drawEllipse(QPointF(new_x, new_y), 2*it.get_radius(), 2*it.get_radius());
+
             const QRect rectangle = QRect(new_x - 50 * it.get_radius(), new_y - 50 * it.get_radius(), 100 * it.get_radius(), 100 * it.get_radius());
             QRect boundingRect;
 
-            painter.setPen(QPen(Qt::black,1,Qt::SolidLine,Qt::FlatCap));
+            painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
             painter.drawText(rectangle, Qt::AlignCenter, QString::number(it.get_number()), &boundingRect);
         }
     }
@@ -110,10 +110,24 @@ void Scene::paintEvent(QPaintEvent *event) {
         }
     }
 
+    for (int i = 0; i < worker->bots_data.size(); i++) {
+           double new_x = center_x + worker->bots_data[i].get_x_position() - worker->players_data[clientID].get_x_position();
+           double new_y = center_y - worker->bots_data[i].get_y_position() + worker->players_data[clientID].get_y_position();
+
+           painter.setBrush(QBrush(worker->bots_data[i].color, Qt::SolidPattern));
+           painter.setPen(QPen(worker->bots_data[i].color, 1, Qt::SolidLine, Qt::FlatCap));
+
+           painter.drawEllipse(QPointF(new_x, new_y), 2*worker->bots_data[i].get_radius(), 2*worker->bots_data[i].get_radius());
+       }
+
+    std::vector<std::pair<int, std::string>> liderboard;
     for (int i = 0; i < worker->players_data.size(); i++) {
         if (worker->players_data[i].is_eaten){
                     continue;
         }
+
+        liderboard.push_back({worker->players_data[i].score, worker->players_data[i].get_name()});
+
         if (i == clientID) {
             painter.setBrush(QBrush(color, Qt::SolidPattern));  // it was QBrush(color...)
             painter.setPen(QPen(color, 1, Qt::SolidLine, Qt::FlatCap));
@@ -148,8 +162,22 @@ void Scene::paintEvent(QPaintEvent *event) {
         }
     }
 
+    std::sort(liderboard.begin(), liderboard.end());
+    std::reverse(liderboard.begin(), liderboard.end());
+
+    fnt.setPixelSize(25);
+    painter.setFont(fnt);
+    painter.setPen(QPen(Qt::black, 1.5, Qt::SolidLine, Qt::FlatCap));
+
+    painter.drawText(QPoint(1700, 800 - 25), "LIDERBOARD:");
+    for (int i = 0; i < 10 && i < liderboard.size(); i++) {
+        painter.drawText(QPoint(1700, 800 + 25 * i), QString::fromStdString(std::to_string(i + 1) + ". " + liderboard[i].second));
+    }
+
     fnt.setPixelSize(40);
     painter.setFont(fnt);
+    painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::FlatCap));
+
     painter.drawText(QPoint(1700,40), worker->text);
     painter.drawText(QPoint(1820,40), QString::number(worker->score));
     painter.drawText(QPoint(1700,80), worker->is_correct);
@@ -221,19 +249,16 @@ void Scene::sendToServer()
     toServer["operandsCount"] = worker->operandsCount;
     toServer["operands"] = worker->operands;
 
-    // qDebug() << QString::fromStdString(toServer.dump());¶
 
      socket->write(QString::fromStdString(toServer.dump()).toLatin1() + '$');
- //   socket->waitForBytesWritten(20000);
+     socket->waitForBytesWritten(20000);
 }
 
 void Scene::sendDisconnection() {
     json toServer;
 
-    // every message from client to server is player data and settings:
-    //      { "status":"connected", "name":player_name,
-    //       "id":clientID, "angle":player_angle, "bits":bits,
-    //       "operandsCount":operandsCount, "operands" }
+    // disconnected message from client to server is player ID and new status:
+    //      { "status":"disconnected", "id":clientID" }
 
     toServer["status"] = "disconnected";
     toServer["id"] = clientID;
@@ -265,11 +290,20 @@ void Scene::readFromServer()
     //       client's id (his number in players_data):
     //       {"status":"connected", "initialization":"yes", "id":clientID}
 
-    // every next message is all scene data, include players, answers
-    //       and dots datas, and example:
+    // second message from server to client is all scene data, include
+    //       players, answers, bots and dots datas, and example:
     //       {"status":"connected", "players":[ players data ],
     //        "answers":[ answers data ], "food":[ food data ],
-    //        "expr":example }
+    //        "bots":[ bots data ], "expr":example }
+
+    // every next message from server to online client is all changed
+    //       scene data, include players, answers, bots and changed
+    //       dots datas, and example:
+    //       {"status":"connected", "players":[ players data ],
+    //        "answers":[ answers data ], "food":[ changed food data ],
+    //        "bots":[ bots data ], "expr":example }
+
+    // message to eaten client is {"status":"eaten"}
 
     if (fromServer["status"] == "eaten") {
         emit on_pushButton_clicked();
@@ -284,8 +318,10 @@ void Scene::readFromServer()
 
         worker->answers_data.clear();
         worker->players_data.clear();
+        worker->bots_data.clear();
 
         int player_iter = 0;
+        int bot_iter = 0;
 
         for (auto player : fromServer["players"]) {
             QString name = QString::fromStdString(player["name"]);
@@ -309,6 +345,22 @@ void Scene::readFromServer()
             worker->players_data[player_iter].color = QColor(red_color, green_color, blue_color);
 
             player_iter++;
+        }
+
+        for (auto bot : fromServer["bots"]) {
+             double x = bot["x"];
+             double y = bot["y"];
+             double rad = bot["rad"];
+
+             int blue_color = bot["blue"];
+             int green_color = bot["green"];
+             int red_color = bot["red"];
+
+             worker->bots_data.push_back({x, y, rad});
+
+             worker->bots_data[bot_iter].color = QColor(red_color, green_color, blue_color);
+
+             bot_iter++;
         }
 
         for (auto answer : fromServer["answers"]) {

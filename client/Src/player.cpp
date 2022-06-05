@@ -12,18 +12,12 @@ std::string Player::get_name() const {
     return player_name;
 }
 
-Player::Player(QString name, double x, double y, double rad) {
+Player::Player(QString name, double x, double y, double rad) : Entity(x, y, rad){
     player_name = name.toStdString();
-    x_coordinate = x;
-    y_coordinate = y;
-    radius = rad;
 }
 
-Player::Player(QString name, double x, double y, double rad, int score_, QString is_correct_, bool is_eaten_) {
-    player_name = name.toStdString();
-    x_coordinate = x;
-    y_coordinate = y;
-    radius = rad;
+Player::Player(QString name, double x, double y, double rad, int score_, QString is_correct_, bool is_eaten_) : Entity(x, y, rad){
+    player_name = name.toStdString();    
 
     score = score_;
     is_correct = is_correct_;

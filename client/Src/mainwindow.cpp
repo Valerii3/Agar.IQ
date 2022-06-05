@@ -1,4 +1,4 @@
-#include "Include/mainwindow.h"
+#include "../include/mainwindow.h"
 #include "ui_mainwindow.h"
 #include "Include/settingswindow.h"
 #include "../Include/login.h"

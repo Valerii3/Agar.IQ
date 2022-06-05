@@ -12,6 +12,7 @@
 #include "food.h"
 #include "player.h"
 #include "question.h"
+#include "bot.h"
 
 class Worker : public QObject
 {
@@ -35,6 +36,7 @@ public:
     QVector<Player> players_data;
     QVector<Answer> answers_data;
     QVector<Food> food_data;
+    QVector<Bot> bots_data;
 
     Player player;
 
