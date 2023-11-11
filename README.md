@@ -46,10 +46,15 @@
 ### Screenshots and Demo Videos
 
 <div style="text-align: center;">
+    autorisation page
     <img src="readme/screenshot1.png" style="margin-bottom: 10px;" />
+    main menu page
     <img src="readme/screenshot2.png" style="margin-bottom: 10px;" />
+    game window page
     <img src="readme/screenshot3.png" style="margin-bottom: 10px;" />
+    settings page
     <img src="readme/screenshot4.png" style="margin-bottom: 10px;" />
+    demo video
 </div>
 
 [![Agar.IQ - Gameplay Footage](https://img.youtube.com/vi/7Ccrl1oAriY/0.jpg)](https://youtu.be/7Ccrl1oAriY)
