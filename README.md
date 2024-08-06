@@ -47,13 +47,13 @@
 
 <div style="text-align: center;">
     autorisation page
-    <img src="readme/screenshot1.png" style="margin-bottom: 10px;" />
+    <img src="readme/screenshot1.PNG" style="margin-bottom: 10px;" />
     main menu page
-    <img src="readme/screenshot2.png" style="margin-bottom: 10px;" />
+    <img src="readme/screenshot2.PNG" style="margin-bottom: 10px;" />
     game window page
-    <img src="readme/screenshot3.png" style="margin-bottom: 10px;" />
+    <img src="readme/screenshot3.PNG" style="margin-bottom: 10px;" />
     settings page
-    <img src="readme/screenshot4.png" style="margin-bottom: 10px;" />
+    <img src="readme/screenshot4.PNG" style="margin-bottom: 10px;" />
     demo video
 </div>
 
