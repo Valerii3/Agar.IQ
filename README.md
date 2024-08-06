@@ -1,6 +1,6 @@
-# Project Description
+# Agar.IQ (inspired by [agar.io](https://agar.io/?#ffa))
 
-## Agar.IQ - A First-Year Project at National Research University Higher School of Economics, Saint Petersburg
+## Agar.IQ - A first-year project at National Research University Higher School of Economics, Saint Petersburg
 
 ### Table of Contents
 
